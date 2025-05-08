@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    container_name: chesshub-sessions-local-app
+    ports:
+      - "9090:8080"
+    env_file: ".env.local"
+    volumes:
+      - .:/app
+      - ./config:/config
+    working_dir: /app
+    command: ["air", "-c", ".air.toml"]
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    networks:
+      - chesshub-net
+
+  db:
+    image: postgres:latest
+    container_name: chesshub-sessions-local-db
+    ports:
+      - "9432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_MULTIPLE_DATABASES: chesshub
+    volumes:
+      - ./postgres/creating-databases.sql:/docker-entrypoint-initdb.d/creating-databases.sql
+    networks:
+      - chesshub-net
+
+  adminer:
+    image: adminer
+    container_name: chesshub-sessions-local-adminer
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "9091:8080"
+    networks:
+      - chesshub-net
+
+networks:
+  chesshub-net:
