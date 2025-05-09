@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	SessionsService_CreateSession_FullMethodName = "/sessions.SessionsService/CreateSession"
+	SessionsService_CreateSession_FullMethodName          = "/sessions.SessionsService/CreateSession"
+	SessionsService_GetAllSessionsByUserId_FullMethodName = "/sessions.SessionsService/GetAllSessionsByUserId"
 )
 
 // SessionsServiceClient is the client API for SessionsService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SessionsServiceClient interface {
 	CreateSession(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*CreateSessionResponse, error)
+	GetAllSessionsByUserId(ctx context.Context, in *GetAllSessionsByUserIdRequest, opts ...grpc.CallOption) (*GetAllSessionsByUserIdResponse, error)
 }
 
 type sessionsServiceClient struct {
@@ -47,11 +49,22 @@ func (c *sessionsServiceClient) CreateSession(ctx context.Context, in *CreateSes
 	return out, nil
 }
 
+func (c *sessionsServiceClient) GetAllSessionsByUserId(ctx context.Context, in *GetAllSessionsByUserIdRequest, opts ...grpc.CallOption) (*GetAllSessionsByUserIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllSessionsByUserIdResponse)
+	err := c.cc.Invoke(ctx, SessionsService_GetAllSessionsByUserId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SessionsServiceServer is the server API for SessionsService service.
 // All implementations must embed UnimplementedSessionsServiceServer
 // for forward compatibility.
 type SessionsServiceServer interface {
 	CreateSession(context.Context, *CreateSessionRequest) (*CreateSessionResponse, error)
+	GetAllSessionsByUserId(context.Context, *GetAllSessionsByUserIdRequest) (*GetAllSessionsByUserIdResponse, error)
 	mustEmbedUnimplementedSessionsServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedSessionsServiceServer struct{}
 
 func (UnimplementedSessionsServiceServer) CreateSession(context.Context, *CreateSessionRequest) (*CreateSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateSession not implemented")
+}
+func (UnimplementedSessionsServiceServer) GetAllSessionsByUserId(context.Context, *GetAllSessionsByUserIdRequest) (*GetAllSessionsByUserIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllSessionsByUserId not implemented")
 }
 func (UnimplementedSessionsServiceServer) mustEmbedUnimplementedSessionsServiceServer() {}
 func (UnimplementedSessionsServiceServer) testEmbeddedByValue()                         {}
@@ -104,6 +120,24 @@ func _SessionsService_CreateSession_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SessionsService_GetAllSessionsByUserId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllSessionsByUserIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionsServiceServer).GetAllSessionsByUserId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SessionsService_GetAllSessionsByUserId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionsServiceServer).GetAllSessionsByUserId(ctx, req.(*GetAllSessionsByUserIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SessionsService_ServiceDesc is the grpc.ServiceDesc for SessionsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var SessionsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateSession",
 			Handler:    _SessionsService_CreateSession_Handler,
+		},
+		{
+			MethodName: "GetAllSessionsByUserId",
+			Handler:    _SessionsService_GetAllSessionsByUserId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

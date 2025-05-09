@@ -8,6 +8,7 @@ import "google/protobuf/timestamp.proto";
 
 service SessionsService {
   rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse) {}
+  rpc GetAllSessionsByUserId(GetAllSessionsByUserIdRequest) returns (GetAllSessionsByUserIdResponse) {}
 }
 
 message CreateSessionRequest {
@@ -21,3 +22,22 @@ message CreateSessionResponse {
   string sessionId = 1;
   string message = 2;
 }
+
+message GetAllSessionsByUserIdRequest {
+  int64 id = 1;
+}
+
+message GetAllSessionsByUserIdResponse {
+  repeated SessionResponse sessions = 1;
+}
+
+message SessionResponse {
+  string id = 1;
+  string ipAddress = 2;
+  string device_info = 3;
+  bool isActive = 4;
+  google.protobuf.Timestamp expired_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
