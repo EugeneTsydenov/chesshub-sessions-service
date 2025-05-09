@@ -7,6 +7,7 @@
 package sessions
 
 import (
+	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -24,10 +25,9 @@ const (
 type CreateSessionRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        int64                  `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
-	UserAgent     string                 `protobuf:"bytes,2,opt,name=userAgent,proto3" json:"userAgent,omitempty"`
-	Ip            string                 `protobuf:"bytes,3,opt,name=ip,proto3" json:"ip,omitempty"`
+	IpAddress     string                 `protobuf:"bytes,3,opt,name=ipAddress,proto3" json:"ipAddress,omitempty"`
 	DeviceInfo    string                 `protobuf:"bytes,4,opt,name=deviceInfo,proto3" json:"deviceInfo,omitempty"`
-	Fingerprint   string                 `protobuf:"bytes,5,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`
+	ExpiredAt     *timestamp.Timestamp   `protobuf:"bytes,5,opt,name=expired_at,json=expiredAt,proto3" json:"expired_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -69,16 +69,9 @@ func (x *CreateSessionRequest) GetUserId() int64 {
 	return 0
 }
 
-func (x *CreateSessionRequest) GetUserAgent() string {
+func (x *CreateSessionRequest) GetIpAddress() string {
 	if x != nil {
-		return x.UserAgent
-	}
-	return ""
-}
-
-func (x *CreateSessionRequest) GetIp() string {
-	if x != nil {
-		return x.Ip
+		return x.IpAddress
 	}
 	return ""
 }
@@ -90,11 +83,11 @@ func (x *CreateSessionRequest) GetDeviceInfo() string {
 	return ""
 }
 
-func (x *CreateSessionRequest) GetFingerprint() string {
+func (x *CreateSessionRequest) GetExpiredAt() *timestamp.Timestamp {
 	if x != nil {
-		return x.Fingerprint
+		return x.ExpiredAt
 	}
-	return ""
+	return nil
 }
 
 type CreateSessionResponse struct {
@@ -153,15 +146,15 @@ var File_sessions_proto protoreflect.FileDescriptor
 
 const file_sessions_proto_rawDesc = "" +
 	"\n" +
-	"\x0esessions.proto\x12\bsessions\"\x9e\x01\n" +
+	"\x0esessions.proto\x12\bsessions\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa7\x01\n" +
 	"\x14CreateSessionRequest\x12\x16\n" +
 	"\x06userId\x18\x01 \x01(\x03R\x06userId\x12\x1c\n" +
-	"\tuserAgent\x18\x02 \x01(\tR\tuserAgent\x12\x0e\n" +
-	"\x02ip\x18\x03 \x01(\tR\x02ip\x12\x1e\n" +
+	"\tipAddress\x18\x03 \x01(\tR\tipAddress\x12\x1e\n" +
 	"\n" +
 	"deviceInfo\x18\x04 \x01(\tR\n" +
-	"deviceInfo\x12 \n" +
-	"\vfingerprint\x18\x05 \x01(\tR\vfingerprint\"O\n" +
+	"deviceInfo\x129\n" +
+	"\n" +
+	"expired_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\texpiredAt\"O\n" +
 	"\x15CreateSessionResponse\x12\x1c\n" +
 	"\tsessionId\x18\x01 \x01(\tR\tsessionId\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage2e\n" +
@@ -184,15 +177,17 @@ var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_sessions_proto_goTypes = []any{
 	(*CreateSessionRequest)(nil),  // 0: sessions.CreateSessionRequest
 	(*CreateSessionResponse)(nil), // 1: sessions.CreateSessionResponse
+	(*timestamp.Timestamp)(nil),   // 2: google.protobuf.Timestamp
 }
 var file_sessions_proto_depIdxs = []int32{
-	0, // 0: sessions.SessionsService.CreateSession:input_type -> sessions.CreateSessionRequest
-	1, // 1: sessions.SessionsService.CreateSession:output_type -> sessions.CreateSessionResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: sessions.CreateSessionRequest.expired_at:type_name -> google.protobuf.Timestamp
+	0, // 1: sessions.SessionsService.CreateSession:input_type -> sessions.CreateSessionRequest
+	1, // 2: sessions.SessionsService.CreateSession:output_type -> sessions.CreateSessionResponse
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_sessions_proto_init() }
