@@ -13,6 +13,10 @@ type Builder struct {
 	updatedAt  time.Time
 }
 
+func NewBuilder() *Builder {
+	return &Builder{}
+}
+
 func (b *Builder) WithId(id string) *Builder {
 	b.id = id
 	return b
