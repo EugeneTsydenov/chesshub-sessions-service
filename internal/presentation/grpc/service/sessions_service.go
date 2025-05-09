@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/usecase"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/presentation/grpc/generated/sessions"
@@ -21,6 +20,10 @@ func NewSessionsService(createSessionUseCase usecase.CreateSessionUseCase) *Sess
 }
 
 func (s *SessionsService) CreateSession(ctx context.Context, req *sessions.CreateSessionRequest) (*sessions.CreateSessionResponse, error) {
+	if err := req.ValidateAll(); err != nil {
+		return nil, err
+	}
+
 	inputDto := &dto.CreateSessionInputDto{
 		UserId:     req.UserId,
 		IpAddr:     req.IpAddress,
