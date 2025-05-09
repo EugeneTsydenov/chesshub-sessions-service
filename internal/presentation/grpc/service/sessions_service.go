@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"log"
-
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/usecase"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/presentation/grpc/generated/sessions"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/presentation/grpc/grpcerrors"
 )
 
 type SessionsService struct {
@@ -19,13 +19,21 @@ func NewSessionsService(createSessionUseCase usecase.CreateSessionUseCase) *Sess
 	}
 }
 
-func (s *SessionsService) CreateSession(_ context.Context, _ *sessions.CreateSessionRequest) (*sessions.CreateSessionResponse, error) {
-	log.Print("CreateSession called")
+func (s *SessionsService) CreateSession(ctx context.Context, req *sessions.CreateSessionRequest) (*sessions.CreateSessionResponse, error) {
+	inputDto := &dto.CreateSessionInputDto{
+		UserId:     req.UserId,
+		IpAddr:     req.IpAddress,
+		DeviceInfo: req.DeviceInfo,
+		ExpiredAt:  req.ExpiredAt.AsTime(),
+	}
 
-	_, _ = s.createSessionUseCase.Execute(context.Background(), nil)
+	r, err := s.createSessionUseCase.Execute(ctx, inputDto)
+	if err != nil {
+		return nil, grpcerrors.MapAppErrorToGrpcError(err)
+	}
 
 	return &sessions.CreateSessionResponse{
-		SessionId: "10",
-		Message:   "SUCCESS",
+		SessionId: r.SessionId,
+		Message:   r.Message,
 	}, nil
 }
