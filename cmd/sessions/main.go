@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/EugeneTsydenov/chesshub-sessions-service/app"
 	"log"
+
+	"github.com/EugeneTsydenov/chesshub-sessions-service/app"
 )
 
 func main() {

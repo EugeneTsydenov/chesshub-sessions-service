@@ -2,6 +2,9 @@ package app
 
 import (
 	"fmt"
+	"net"
+	"os"
+
 	"github.com/EugeneTsydenov/chesshub-sessions-service/config"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/usecase"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session/data"
@@ -11,8 +14,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
-	"net"
-	"os"
 )
 
 type App struct {

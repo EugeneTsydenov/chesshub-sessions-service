@@ -2,9 +2,10 @@ package usecase
 
 import (
 	"context"
+	"log"
+
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session/data/repo"
-	"log"
 )
 
 type CreateSessionUseCase interface {

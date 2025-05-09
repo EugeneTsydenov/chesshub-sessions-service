@@ -2,9 +2,10 @@ package service
 
 import (
 	"context"
+	"log"
+
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/usecase"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/presentation/grpc/generated/sessions"
-	"log"
 )
 
 type SessionsService struct {

@@ -2,9 +2,10 @@ package repo
 
 import (
 	"context"
+	"log"
+
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session/data"
-	"log"
 )
 
 type SessionsRepo interface {
