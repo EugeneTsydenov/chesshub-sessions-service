@@ -3,7 +3,9 @@ package repo
 import (
 	"context"
 	"errors"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session/data/dberrors"
 	"github.com/jackc/pgx/v5"
+	"log"
 	"time"
 
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session"
@@ -38,7 +40,8 @@ func (r *SessionsRepoImpl) Create(ctx context.Context, model *session.Session) (
 	}
 
 	if err != nil {
-		return nil, err
+		log.Println("Error creating session:", err)
+		return nil, dberrors.NewUnresolvedError("failed to create session")
 	}
 
 	return createdSession, nil
