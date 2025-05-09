@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package sessions;
+
+option go_package = "github.com/EugeneTsydenov/chesshub-user-service/internal/presentation/grpc/generated/sessions;sessions";
+
+service SessionsService {
+  rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse) {}
+}
+
+message CreateSessionRequest {
+  int64 userId = 1;
+  string userAgent = 2;
+  string ip = 3;
+  string deviceInfo = 4;
+  string fingerprint = 5;
+}
+
+message CreateSessionResponse {
+  string sessionId = 1;
+  string message = 2;
+}
