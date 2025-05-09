@@ -1,6 +1,6 @@
 database:
   host: chesshub-sessions-local-db
-  port: 9432
+  port: 5432
   name: chesshub
   user: postgres
   ssl_mode: disable
