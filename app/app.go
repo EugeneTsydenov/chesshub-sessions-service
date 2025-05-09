@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/config"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/data"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/presentation/grpc/generated/sessions"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/presentation/grpc/service"
 	"google.golang.org/grpc"
@@ -15,6 +16,7 @@ import (
 type App struct {
 	grpcServer      *grpc.Server
 	cfg             *config.Config
+	dbPool          data.DbPool
 	sessionsService *service.SessionsService
 }
 
@@ -25,6 +27,10 @@ func New() *App {
 func (a *App) InitDeps() error {
 	if err := a.initConfig(); err != nil {
 		return fmt.Errorf("failed to initialize config: %w", err)
+	}
+
+	if err := a.initDB(); err != nil {
+		return fmt.Errorf("failed to initialize database: %w", err)
 	}
 
 	if err := a.initGrpcServices(); err != nil {
@@ -46,6 +52,20 @@ func (a *App) initConfig() error {
 	}
 
 	a.cfg = cfg
+	return nil
+}
+
+func (a *App) initDB() error {
+	if a.cfg == nil {
+		return fmt.Errorf("config must be initialized before database")
+	}
+
+	p, err := data.NewDbPool(a.cfg.Database.DSN())
+	if err != nil {
+		return err
+	}
+
+	a.dbPool = p
 	return nil
 }
 
