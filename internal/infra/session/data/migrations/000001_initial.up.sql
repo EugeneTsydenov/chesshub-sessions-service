@@ -5,6 +5,7 @@ CREATE TABLE sessions (
     user_id       int NOT NULL,
     ip_address    varchar(45),
     device_info   text,
+    is_active     boolean DEFAULT true NOT NULL,
     expired_at    timestamp NOT NULL DEFAULT (now() + interval '30 days'),
     created_at    timestamp DEFAULT now() NOT NULL,
     updated_at    timestamp DEFAULT now() NOT NULL
