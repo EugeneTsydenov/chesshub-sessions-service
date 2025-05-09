@@ -3,7 +3,9 @@ package app
 import (
 	"fmt"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/config"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/data"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/usecase"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session/data"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session/data/repo"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/presentation/grpc/generated/sessions"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/presentation/grpc/service"
 	"google.golang.org/grpc"
@@ -14,10 +16,12 @@ import (
 )
 
 type App struct {
-	grpcServer      *grpc.Server
-	cfg             *config.Config
-	dbPool          data.DbPool
-	sessionsService *service.SessionsService
+	grpcServer           *grpc.Server
+	cfg                  *config.Config
+	dbPool               data.DbPool
+	sessionsRepo         repo.SessionsRepo
+	createSessionUseCase usecase.CreateSessionUseCase
+	sessionsService      *service.SessionsService
 }
 
 func New() *App {
@@ -31,6 +35,14 @@ func (a *App) InitDeps() error {
 
 	if err := a.initDB(); err != nil {
 		return fmt.Errorf("failed to initialize database: %w", err)
+	}
+
+	if err := a.initRepos(); err != nil {
+		return fmt.Errorf("failed to initialize repositories: %w", err)
+	}
+
+	if err := a.initUseCases(); err != nil {
+		return fmt.Errorf("failed to initialize use cases: %w", err)
 	}
 
 	if err := a.initGrpcServices(); err != nil {
@@ -69,8 +81,30 @@ func (a *App) initDB() error {
 	return nil
 }
 
+func (a *App) initRepos() error {
+	if a.dbPool == nil {
+		return fmt.Errorf("database must be initialized before repositories")
+	}
+
+	a.sessionsRepo = repo.NewSessionsRepo(a.dbPool)
+	return nil
+}
+
+func (a *App) initUseCases() error {
+	if a.sessionsRepo == nil {
+		return fmt.Errorf("sessions repo must be initialized before use cases")
+	}
+
+	a.createSessionUseCase = usecase.NewCreateSessionUseCase(a.sessionsRepo)
+	return nil
+}
+
 func (a *App) initGrpcServices() error {
-	a.sessionsService = service.NewSessionsService()
+	if a.createSessionUseCase == nil {
+		return fmt.Errorf("use cases must be initialized before gRPC services")
+	}
+
+	a.sessionsService = service.NewSessionsService(a.createSessionUseCase)
 	return nil
 }
 
