@@ -3,13 +3,13 @@ package repo
 import (
 	"context"
 	"errors"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session/data/dberrors"
-	"github.com/jackc/pgx/v5"
 	"log"
 	"time"
 
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session/data"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session/data/dberrors"
+	"github.com/jackc/pgx/v5"
 )
 
 type SessionsRepo interface {

@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"os"
@@ -74,6 +75,11 @@ func (a *App) initDB() error {
 	}
 
 	p, err := data.NewDbPool(a.cfg.Database.DSN())
+	if err != nil {
+		return err
+	}
+
+	err = p.Ping(context.Background())
 	if err != nil {
 		return err
 	}

@@ -3,12 +3,13 @@ package usecase
 import (
 	"context"
 	"errors"
+	"log"
+	"time"
+
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/apperrors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session/data/repo"
-	"log"
-	"time"
 )
 
 type CreateSessionUseCase interface {
