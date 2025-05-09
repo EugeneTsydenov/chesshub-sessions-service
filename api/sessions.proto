@@ -8,7 +8,7 @@ import "google/protobuf/timestamp.proto";
 
 service SessionsService {
   rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse) {}
-  rpc GetAllSessionsByUserId(GetAllSessionsByUserIdRequest) returns (GetAllSessionsByUserIdResponse) {}
+  rpc GetSessionsByUserId(GetSessionsByUserIdRequest) returns (GetSessionsByUserIdResponse) {}
 }
 
 message CreateSessionRequest {
@@ -23,11 +23,11 @@ message CreateSessionResponse {
   string message = 2;
 }
 
-message GetAllSessionsByUserIdRequest {
+message GetSessionsByUserIdRequest {
   int64 id = 1;
 }
 
-message GetAllSessionsByUserIdResponse {
+message GetSessionsByUserIdResponse {
   repeated SessionResponse sessions = 1;
 }
 

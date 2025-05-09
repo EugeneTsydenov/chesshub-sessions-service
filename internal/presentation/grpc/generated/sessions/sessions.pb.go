@@ -142,27 +142,27 @@ func (x *CreateSessionResponse) GetMessage() string {
 	return ""
 }
 
-type GetAllSessionsByUserIdRequest struct {
+type GetSessionsByUserIdRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetAllSessionsByUserIdRequest) Reset() {
-	*x = GetAllSessionsByUserIdRequest{}
+func (x *GetSessionsByUserIdRequest) Reset() {
+	*x = GetSessionsByUserIdRequest{}
 	mi := &file_sessions_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetAllSessionsByUserIdRequest) String() string {
+func (x *GetSessionsByUserIdRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetAllSessionsByUserIdRequest) ProtoMessage() {}
+func (*GetSessionsByUserIdRequest) ProtoMessage() {}
 
-func (x *GetAllSessionsByUserIdRequest) ProtoReflect() protoreflect.Message {
+func (x *GetSessionsByUserIdRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_sessions_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -174,39 +174,39 @@ func (x *GetAllSessionsByUserIdRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetAllSessionsByUserIdRequest.ProtoReflect.Descriptor instead.
-func (*GetAllSessionsByUserIdRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetSessionsByUserIdRequest.ProtoReflect.Descriptor instead.
+func (*GetSessionsByUserIdRequest) Descriptor() ([]byte, []int) {
 	return file_sessions_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GetAllSessionsByUserIdRequest) GetId() int64 {
+func (x *GetSessionsByUserIdRequest) GetId() int64 {
 	if x != nil {
 		return x.Id
 	}
 	return 0
 }
 
-type GetAllSessionsByUserIdResponse struct {
+type GetSessionsByUserIdResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Sessions      []*SessionResponse     `protobuf:"bytes,1,rep,name=sessions,proto3" json:"sessions,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetAllSessionsByUserIdResponse) Reset() {
-	*x = GetAllSessionsByUserIdResponse{}
+func (x *GetSessionsByUserIdResponse) Reset() {
+	*x = GetSessionsByUserIdResponse{}
 	mi := &file_sessions_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetAllSessionsByUserIdResponse) String() string {
+func (x *GetSessionsByUserIdResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetAllSessionsByUserIdResponse) ProtoMessage() {}
+func (*GetSessionsByUserIdResponse) ProtoMessage() {}
 
-func (x *GetAllSessionsByUserIdResponse) ProtoReflect() protoreflect.Message {
+func (x *GetSessionsByUserIdResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_sessions_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -218,12 +218,12 @@ func (x *GetAllSessionsByUserIdResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetAllSessionsByUserIdResponse.ProtoReflect.Descriptor instead.
-func (*GetAllSessionsByUserIdResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetSessionsByUserIdResponse.ProtoReflect.Descriptor instead.
+func (*GetSessionsByUserIdResponse) Descriptor() ([]byte, []int) {
 	return file_sessions_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GetAllSessionsByUserIdResponse) GetSessions() []*SessionResponse {
+func (x *GetSessionsByUserIdResponse) GetSessions() []*SessionResponse {
 	if x != nil {
 		return x.Sessions
 	}
@@ -337,10 +337,10 @@ const file_sessions_proto_rawDesc = "" +
 	"expired_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\texpiredAt\"O\n" +
 	"\x15CreateSessionResponse\x12\x1c\n" +
 	"\tsessionId\x18\x01 \x01(\tR\tsessionId\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"/\n" +
-	"\x1dGetAllSessionsByUserIdRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"W\n" +
-	"\x1eGetAllSessionsByUserIdResponse\x125\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\",\n" +
+	"\x1aGetSessionsByUserIdRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"T\n" +
+	"\x1bGetSessionsByUserIdResponse\x125\n" +
 	"\bsessions\x18\x01 \x03(\v2\x19.sessions.SessionResponseR\bsessions\"\xad\x02\n" +
 	"\x0fSessionResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1c\n" +
@@ -353,10 +353,10 @@ const file_sessions_proto_rawDesc = "" +
 	"\n" +
 	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x129\n" +
 	"\n" +
-	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt2\xd4\x01\n" +
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt2\xcb\x01\n" +
 	"\x0fSessionsService\x12R\n" +
-	"\rCreateSession\x12\x1e.sessions.CreateSessionRequest\x1a\x1f.sessions.CreateSessionResponse\"\x00\x12m\n" +
-	"\x16GetAllSessionsByUserId\x12'.sessions.GetAllSessionsByUserIdRequest\x1a(.sessions.GetAllSessionsByUserIdResponse\"\x00BhZfgithub.com/EugeneTsydenov/chesshub-user-service/internal/presentation/grpc/generated/sessions;sessionsb\x06proto3"
+	"\rCreateSession\x12\x1e.sessions.CreateSessionRequest\x1a\x1f.sessions.CreateSessionResponse\"\x00\x12d\n" +
+	"\x13GetSessionsByUserId\x12$.sessions.GetSessionsByUserIdRequest\x1a%.sessions.GetSessionsByUserIdResponse\"\x00BhZfgithub.com/EugeneTsydenov/chesshub-user-service/internal/presentation/grpc/generated/sessions;sessionsb\x06proto3"
 
 var (
 	file_sessions_proto_rawDescOnce sync.Once
@@ -372,23 +372,23 @@ func file_sessions_proto_rawDescGZIP() []byte {
 
 var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_sessions_proto_goTypes = []any{
-	(*CreateSessionRequest)(nil),           // 0: sessions.CreateSessionRequest
-	(*CreateSessionResponse)(nil),          // 1: sessions.CreateSessionResponse
-	(*GetAllSessionsByUserIdRequest)(nil),  // 2: sessions.GetAllSessionsByUserIdRequest
-	(*GetAllSessionsByUserIdResponse)(nil), // 3: sessions.GetAllSessionsByUserIdResponse
-	(*SessionResponse)(nil),                // 4: sessions.SessionResponse
-	(*timestamp.Timestamp)(nil),            // 5: google.protobuf.Timestamp
+	(*CreateSessionRequest)(nil),        // 0: sessions.CreateSessionRequest
+	(*CreateSessionResponse)(nil),       // 1: sessions.CreateSessionResponse
+	(*GetSessionsByUserIdRequest)(nil),  // 2: sessions.GetSessionsByUserIdRequest
+	(*GetSessionsByUserIdResponse)(nil), // 3: sessions.GetSessionsByUserIdResponse
+	(*SessionResponse)(nil),             // 4: sessions.SessionResponse
+	(*timestamp.Timestamp)(nil),         // 5: google.protobuf.Timestamp
 }
 var file_sessions_proto_depIdxs = []int32{
 	5, // 0: sessions.CreateSessionRequest.expired_at:type_name -> google.protobuf.Timestamp
-	4, // 1: sessions.GetAllSessionsByUserIdResponse.sessions:type_name -> sessions.SessionResponse
+	4, // 1: sessions.GetSessionsByUserIdResponse.sessions:type_name -> sessions.SessionResponse
 	5, // 2: sessions.SessionResponse.expired_at:type_name -> google.protobuf.Timestamp
 	5, // 3: sessions.SessionResponse.updated_at:type_name -> google.protobuf.Timestamp
 	5, // 4: sessions.SessionResponse.created_at:type_name -> google.protobuf.Timestamp
 	0, // 5: sessions.SessionsService.CreateSession:input_type -> sessions.CreateSessionRequest
-	2, // 6: sessions.SessionsService.GetAllSessionsByUserId:input_type -> sessions.GetAllSessionsByUserIdRequest
+	2, // 6: sessions.SessionsService.GetSessionsByUserId:input_type -> sessions.GetSessionsByUserIdRequest
 	1, // 7: sessions.SessionsService.CreateSession:output_type -> sessions.CreateSessionResponse
-	3, // 8: sessions.SessionsService.GetAllSessionsByUserId:output_type -> sessions.GetAllSessionsByUserIdResponse
+	3, // 8: sessions.SessionsService.GetSessionsByUserId:output_type -> sessions.GetSessionsByUserIdResponse
 	7, // [7:9] is the sub-list for method output_type
 	5, // [5:7] is the sub-list for method input_type
 	5, // [5:5] is the sub-list for extension type_name
