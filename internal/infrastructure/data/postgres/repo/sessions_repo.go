@@ -1,0 +1,104 @@
+package repo
+
+import (
+	"context"
+	"errors"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres"
+	postgreserrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres/errors"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/spec"
+	"github.com/jackc/pgx/v5"
+	"time"
+)
+
+type PostgresSessionRepositoryImpl struct {
+	database *postgres.Database
+}
+
+func NewPostgresSessionRepository(db *postgres.Database) *PostgresSessionRepositoryImpl {
+	return &PostgresSessionRepositoryImpl{
+		database: db,
+	}
+}
+
+func (r *PostgresSessionRepositoryImpl) Create(ctx context.Context, entity *entity.Session) (*entity.Session, error) {
+	query := `INSERT INTO sessions (user_id, ip_address, device_info, expired_at) 
+			  VALUES ($1, $2, $3, $4) 
+			  RETURNING id, user_id, ip_address, device_info, is_active, expired_at, updated_at, created_at`
+
+	row := r.database.Pool().QueryRow(ctx, query, entity.UserId(), entity.IpAddr(), entity.DeviceInfo(), entity.ExpiredAt())
+
+	createdSession, err := scanSession(ctx, row)
+
+	if errors.Is(err, context.DeadlineExceeded) {
+		return nil, errors.New("insert session to postgres took too long")
+	}
+
+	if errors.Is(err, context.Canceled) {
+		return nil, errors.New("insert session was canceled by client or system")
+	}
+
+	if err != nil {
+		return nil, postgreserrors.NewUnresolvedError("failed to create session", err)
+	}
+
+	return createdSession, nil
+}
+
+func scanSession(_ context.Context, row pgx.Row) (*entity.Session, error) {
+	var (
+		id         string
+		userId     int64
+		ipAddr     string
+		deviceInfo string
+		isActive   bool
+		expiredAt  time.Time
+		updatedAt  time.Time
+		createdAt  time.Time
+	)
+
+	err := row.Scan(&id, &userId, &ipAddr, &deviceInfo, &isActive, &expiredAt, &updatedAt, &createdAt)
+	if err != nil {
+		return nil, err
+	}
+
+	b := entity.NewSessionBuilder()
+	s := b.
+		WithId(id).
+		WithUserId(userId).
+		WithIpAddr(ipAddr).
+		WithDeviceInfo(deviceInfo).
+		WithIsActive(isActive).
+		WithExpiredAt(expiredAt).
+		WithUpdatedAt(updatedAt).
+		WithCreatedAt(createdAt).
+		Build()
+
+	return s, nil
+}
+
+func (r *PostgresSessionRepositoryImpl) GetSessions(ctx context.Context, spec spec.Spec) ([]*entity.Session, error) {
+	query, args := spec.BuildQuery()
+	rows, err := r.database.Pool().Query(ctx, query, args[0])
+
+	if err != nil {
+		return nil, postgreserrors.NewUnresolvedError("failed to getting sessions", err)
+	}
+	defer rows.Close()
+
+	var sessions []*entity.Session
+
+	for rows.Next() {
+		s, err := scanSession(ctx, rows)
+		if err != nil {
+			return nil, postgreserrors.NewUnresolvedError("failed to scan session", err)
+		}
+		sessions = append(sessions, s)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, postgreserrors.NewUnresolvedError("rows iteration error", err)
+	}
+
+	return sessions, nil
+}

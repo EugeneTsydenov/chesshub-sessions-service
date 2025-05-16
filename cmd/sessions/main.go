@@ -1,21 +1,34 @@
 package main
 
 import (
-	"log"
-
-	"github.com/EugeneTsydenov/chesshub-sessions-service/app"
+	"context"
+	"fmt"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/cmd/sessions/app"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/config"
+	"os"
 )
 
 func main() {
-	a := app.New()
+	env := os.Getenv("APP_ENV")
+	cfgPath := os.Getenv("CONFIG_PATH")
+	cfg, err := config.Load(env, cfgPath)
 
-	err := a.InitDeps()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Failed to laoding config: %v\n", err)
 	}
 
-	log.Print("Starting app...")
-	if err = a.Start(); err != nil {
-		log.Fatal(err)
+	ctx := context.Background()
+
+	a := app.New(cfg)
+	if err = a.InitDeps(ctx); err != nil {
+		fmt.Printf("Failed to initialize dependencies: %v\n", err)
+		os.Exit(1)
+	}
+
+	a.SetupGRPCServer()
+
+	if err = a.Run(ctx); err != nil {
+		fmt.Printf("Application error: %v\n", err)
+		os.Exit(1)
 	}
 }

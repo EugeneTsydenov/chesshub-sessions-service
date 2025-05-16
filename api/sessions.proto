@@ -2,20 +2,20 @@ syntax = "proto3";
 
 package sessions;
 
-option go_package = "github.com/EugeneTsydenov/chesshub-user-service/internal/presentation/grpc/generated/sessions;sessions";
+option go_package = "github.com/EugeneTsydenov/chesshub-user-service/internal/controllers/grpccontroller/genproto;sessionsproto";
 
 import "google/protobuf/timestamp.proto";
 
 service SessionsService {
   rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse) {}
-  rpc GetSessionsByUserId(GetSessionsByUserIdRequest) returns (GetSessionsByUserIdResponse) {}
+  rpc GetSessions(GetSessionsRequest) returns (GetSessionsResponse) {}
 }
 
 message CreateSessionRequest {
   int64 userId = 1;
   string ipAddress = 3;
   string deviceInfo = 4;
-  google.protobuf.Timestamp expired_at = 5;
+  google.protobuf.Timestamp expiredAt = 5;
 }
 
 message CreateSessionResponse {
@@ -23,21 +23,27 @@ message CreateSessionResponse {
   string message = 2;
 }
 
-message GetSessionsByUserIdRequest {
-  int64 id = 1;
+message GetSessionsRequest {
+  optional int64 userId = 1;
+  optional string ipAddress = 2;
+  optional string deviceInfo = 3;
+  optional bool isActive = 4;
+  optional google.protobuf.Timestamp expiredAfter = 5;
+  optional google.protobuf.Timestamp expiredBefore = 6;
 }
 
-message GetSessionsByUserIdResponse {
+message GetSessionsResponse {
   repeated SessionResponse sessions = 1;
+  string message = 2;
 }
 
 message SessionResponse {
   string id = 1;
   string ipAddress = 2;
-  string device_info = 3;
+  string deviceInfo = 3;
   bool isActive = 4;
-  google.protobuf.Timestamp expired_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
-  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp expiredAt = 5;
+  google.protobuf.Timestamp updatedAt = 6;
+  google.protobuf.Timestamp createdAt = 7;
 }
 

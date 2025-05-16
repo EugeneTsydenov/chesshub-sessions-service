@@ -1,0 +1,31 @@
+package interceptor
+
+import (
+	"context"
+	"errors"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/grpcerrors"
+	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
+)
+
+func ErrorHandlingInterceptor(logger *logrus.Logger) grpc.UnaryServerInterceptor {
+	return func(
+		ctx context.Context,
+		req any,
+		info *grpc.UnaryServerInfo,
+		handler grpc.UnaryHandler,
+	) (resp any, err error) {
+		resp, err = handler(ctx, req)
+
+		if err != nil {
+			logger.
+				WithField("server", info.Server).
+				WithField("method", info.FullMethod).
+				WithField("cause", errors.Unwrap(err)).
+				Error("[Error handling interceptor]: gRPC request failed")
+			return nil, grpcerrors.ToGRPCError(err)
+		}
+
+		return resp, nil
+	}
+}

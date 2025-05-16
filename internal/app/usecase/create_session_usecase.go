@@ -3,33 +3,30 @@ package usecase
 import (
 	"context"
 	"errors"
-	"log"
-	"time"
-
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/apperrors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infra/session/data/repo"
+	apperrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/errors"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/port"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity"
 )
 
 type CreateSessionUseCase interface {
-	Executor[*dto.CreateSessionInputDto, *dto.CreateSessionOutputDto]
+	UseCase[*dto.CreateSessionInputDTO, *dto.CreateSessionOutputDTO]
 }
 
 type CreateSessionUseCaseImpl struct {
-	sessionsRepo repo.SessionsRepo
+	sessionsRepo port.SessionsRepo
 }
 
 var _ CreateSessionUseCase = new(CreateSessionUseCaseImpl)
 
-func NewCreateSessionUseCase(sessionRepo repo.SessionsRepo) *CreateSessionUseCaseImpl {
+func NewCreateSessionUseCase(sessionRepo port.SessionsRepo) *CreateSessionUseCaseImpl {
 	return &CreateSessionUseCaseImpl{
 		sessionsRepo: sessionRepo,
 	}
 }
 
-func (u *CreateSessionUseCaseImpl) Execute(ctx context.Context, input *dto.CreateSessionInputDto) (*dto.CreateSessionOutputDto, error) {
-	b := session.NewBuilder()
+func (u *CreateSessionUseCaseImpl) Execute(ctx context.Context, input *dto.CreateSessionInputDTO) (*dto.CreateSessionOutputDTO, error) {
+	b := entity.NewSessionBuilder()
 
 	s := b.
 		WithUserId(input.UserId).
@@ -38,26 +35,21 @@ func (u *CreateSessionUseCaseImpl) Execute(ctx context.Context, input *dto.Creat
 		WithExpiredAt(input.ExpiredAt).
 		Build()
 
-	ctx, cancel := context.WithTimeout(ctx, time.Second*2)
-	defer cancel()
-
 	createdSession, err := u.sessionsRepo.Create(ctx, s)
 
 	if errors.Is(err, context.DeadlineExceeded) {
-		log.Println("Context deadline exceeded: creation user to db too long(register use case)")
-		return nil, apperrors.NewDeadlineExceededError("user registration too long")
+		return nil, apperrors.NewDeadlineExceededError("creation session too long", err)
 	}
 
 	if errors.Is(err, context.Canceled) {
-		log.Println("Context cancelled: creation user closed(register use case)")
-		return nil, apperrors.NewCanceledError("user registration closed")
+		return nil, apperrors.NewCanceledError("creation session closed", err)
 	}
 
 	if err != nil {
-		return nil, apperrors.NewInternalError("Unexpected internal error")
+		return nil, apperrors.NewInternalError("Unexpected internal error", err)
 	}
 
-	return &dto.CreateSessionOutputDto{
+	return &dto.CreateSessionOutputDTO{
 		SessionId: createdSession.Id(),
 		Message:   "Session created",
 	}, nil

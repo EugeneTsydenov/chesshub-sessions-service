@@ -26,18 +26,18 @@ tasks:
     desc: "Run tests"
 
   migrate:up:
-    cmd: migrate -path=internal/infra/session/data/migrations -database "postgresql://postgres:postgres@localhost:9432/chesshub?sslmode=disable" -verbose up
+    cmd: migrate -path=internal/infrastructure/session/data/migrations -postgres "postgresql://postgres:postgres@localhost:9432/chesshub?sslmode=disable" -verbose up
     desc: "Run up migration"
 
   migrate:down:
-    cmd: migrate -path=internal/infra/session/data/migrations -database "postgresql://postgres:postgres@localhost:9432/chesshub?sslmode=disable" -verbose down
+    cmd: migrate -path=internal/infrastructure/session/data/migrations -postgres "postgresql://postgres:postgres@localhost:9432/chesshub?sslmode=disable" -verbose down
     desc: "Run down migration"
 
   migrate:generate:
     vars:
       NAME: '{{.NAME | default "migration"}}'
     cmds:
-      - migrate create -ext=sql -dir=internal/infra/session/data/migrations -seq "{{.NAME}}"
+      - migrate create -ext=sql -dir=internal/infrastructure/session/data/migrations -seq "{{.NAME}}"
     desc: "Generate migration file with a name"
 
   protoc:
@@ -45,11 +45,12 @@ tasks:
       "protoc  \
        -I=api  \
        -I=${GOPATH}/pkg/mod/github.com/envoyproxy/protoc-gen-validate@v1.2.1  \
-       --go_out=internal/presentation/grpc/generated/sessions   \
+       --go_out=internal/controllers/grpccontroller/genproto   \
        --go_opt=paths=source_relative  \
-       --go-grpc_out=internal/presentation/grpc/generated/sessions   \
+       --go-grpc_out=internal/controllers/grpccontroller/genproto   \
        --go-grpc_opt=paths=source_relative  \
-       --validate_out=paths=source_relative,lang=go:internal/presentation/grpc/generated/sessions \
+       --validate_out=paths=source_relative,lang=go:internal/controllers/grpccontroller/genproto \
+       --experimental_allow_proto3_optional \
        api/sessions.proto
       "
   lint:
