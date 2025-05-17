@@ -14,14 +14,14 @@ type GetSessionsUseCase interface {
 }
 
 type GetSessionsUseCaseImpl struct {
-	sessionRepo port.SessionsRepo
+	sessionsRepo port.SessionsRepo
 }
 
 var _ GetSessionsUseCase = new(GetSessionsUseCaseImpl)
 
-func NewGetSessionsUseCase(sessionRepo port.SessionsRepo) *GetSessionsUseCaseImpl {
+func NewGetSessionsUseCase(sessionsRepo port.SessionsRepo) *GetSessionsUseCaseImpl {
 	return &GetSessionsUseCaseImpl{
-		sessionRepo: sessionRepo,
+		sessionsRepo: sessionsRepo,
 	}
 }
 
@@ -36,7 +36,7 @@ func (u *GetSessionsUseCaseImpl) Execute(ctx context.Context, input *dto.GetSess
 		WithExpiredBefore(input.ExpiredBefore).
 		WithExpiredAfter(input.ExpiredAfter)
 
-	sessions, err := u.sessionRepo.GetSessions(ctx, s)
+	sessions, err := u.sessionsRepo.GetAll(ctx, s)
 
 	if errors.Is(err, context.DeadlineExceeded) {
 		return nil, apperrors.NewDeadlineExceededError("getting sessions too long", err)

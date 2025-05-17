@@ -5,16 +5,18 @@ import (
 	"time"
 )
 
-type GetSessionsInputDTO struct {
-	UserId        *int64
-	IpAddr        *string
-	DeviceInfo    *string
-	IsActive      *bool
-	ExpiredAfter  time.Time
-	ExpiredBefore time.Time
-}
+type (
+	GetSessionsInputDTO struct {
+		UserId        *int64
+		IpAddr        *string
+		DeviceInfo    *string
+		IsActive      *bool
+		ExpiredAfter  time.Time
+		ExpiredBefore time.Time
+	}
 
-type GetSessionsOutputDTO struct {
-	Sessions []*entity.Session
-	Message  string
-}
+	GetSessionsOutputDTO struct {
+		Sessions []*entity.Session
+		Message  string
+	}
+)

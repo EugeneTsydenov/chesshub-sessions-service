@@ -77,7 +77,27 @@ func scanSession(_ context.Context, row pgx.Row) (*entity.Session, error) {
 	return s, nil
 }
 
-func (r *PostgresSessionRepositoryImpl) GetSessions(ctx context.Context, spec spec.Spec) ([]*entity.Session, error) {
+func (r *PostgresSessionRepositoryImpl) GetById(ctx context.Context, id string) (*entity.Session, error) {
+	query := `SELECT * FROM sessions WHERE id = $1 LIMIT 1`
+	row := r.database.Pool().QueryRow(ctx, query, id)
+
+	session, err := scanSession(ctx, row)
+	if errors.Is(err, context.DeadlineExceeded) {
+		return nil, errors.New("get session by id from postgres took too long")
+	}
+
+	if errors.Is(err, context.Canceled) {
+		return nil, errors.New("get session by id was canceled by client or system")
+	}
+
+	if err != nil {
+		return nil, postgreserrors.NewUnresolvedError("failed to get session by id", err)
+	}
+
+	return session, nil
+}
+
+func (r *PostgresSessionRepositoryImpl) GetAll(ctx context.Context, spec spec.Spec) ([]*entity.Session, error) {
 	query, args := spec.BuildQuery()
 	rows, err := r.database.Pool().Query(ctx, query, args[0])
 

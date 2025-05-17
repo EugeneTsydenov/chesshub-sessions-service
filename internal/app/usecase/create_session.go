@@ -19,9 +19,9 @@ type CreateSessionUseCaseImpl struct {
 
 var _ CreateSessionUseCase = new(CreateSessionUseCaseImpl)
 
-func NewCreateSessionUseCase(sessionRepo port.SessionsRepo) *CreateSessionUseCaseImpl {
+func NewCreateSessionUseCase(sessionsRepo port.SessionsRepo) *CreateSessionUseCaseImpl {
 	return &CreateSessionUseCaseImpl{
-		sessionsRepo: sessionRepo,
+		sessionsRepo: sessionsRepo,
 	}
 }
 

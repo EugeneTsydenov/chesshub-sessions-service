@@ -10,14 +10,20 @@ import (
 
 type SessionController struct {
 	sessionsproto.UnimplementedSessionsServiceServer
-	createSessionUseCase usecase.CreateSessionUseCase
-	getSessionsUseCase   usecase.GetSessionsUseCase
+	createSessionUseCase  usecase.CreateSessionUseCase
+	getSessionByIdUseCase usecase.GetSessionByIdUseCase
+	getSessionsUseCase    usecase.GetSessionsUseCase
 }
 
-func NewSessionController(createSessionUseCase usecase.CreateSessionUseCase, getSessionsUseCase usecase.GetSessionsUseCase) *SessionController {
+func NewSessionController(
+	createSessionUseCase usecase.CreateSessionUseCase,
+	getSessionByIdUseCase usecase.GetSessionByIdUseCase,
+	getSessionsUseCase usecase.GetSessionsUseCase,
+) *SessionController {
 	return &SessionController{
-		createSessionUseCase: createSessionUseCase,
-		getSessionsUseCase:   getSessionsUseCase,
+		createSessionUseCase:  createSessionUseCase,
+		getSessionByIdUseCase: getSessionByIdUseCase,
+		getSessionsUseCase:    getSessionsUseCase,
 	}
 }
 
@@ -37,6 +43,22 @@ func (c *SessionController) CreateSession(ctx context.Context, req *sessionsprot
 	return mapper.ToCreateSessionResponse(r), nil
 }
 
+func (c *SessionController) GetSessionById(ctx context.Context, req *sessionsproto.GetSessionByIdRequest) (*sessionsproto.GetSessionByIdResponse, error) {
+	if err := req.ValidateAll(); err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
+	defer cancel()
+
+	r, err := c.getSessionByIdUseCase.Execute(ctx, mapper.ToGetSessionByIDInputDTO(req))
+	if err != nil {
+		return nil, err
+	}
+
+	return mapper.ToGetSessionByIDResponse(r), nil
+}
+
 func (c *SessionController) GetSessions(ctx context.Context, req *sessionsproto.GetSessionsRequest) (*sessionsproto.GetSessionsResponse, error) {
 	if err := req.ValidateAll(); err != nil {
 		return nil, err
@@ -52,3 +74,19 @@ func (c *SessionController) GetSessions(ctx context.Context, req *sessionsproto.
 
 	return mapper.ToGetSessionsResponse(r), nil
 }
+
+//func (c *SessionController) UpdateSession(ctx context.Context, req *sessionsproto.UpdateSessionRequest) (*sessionsproto.UpdateSessionResponse, error) {
+//	if err := req.ValidateAll(); err != nil {
+//		return nil, err
+//	}
+//
+//	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
+//	defer cancel()
+//
+//	r, err := c.updateSessionUseCase.Execute(ctx, mapper.ToUpdateSessionInputDTO(req))
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	return mapper.ToUpdateSessionResponse(r), nil
+//}

@@ -8,7 +8,9 @@ import "google/protobuf/timestamp.proto";
 
 service SessionsService {
   rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse) {}
+  rpc GetSessionById(GetSessionByIdRequest) returns (GetSessionByIdResponse) {}
   rpc GetSessions(GetSessionsRequest) returns (GetSessionsResponse) {}
+  rpc UpdateSession(UpdateSessionRequest) returns (UpdateSessionResponse) {}
 }
 
 message CreateSessionRequest {
@@ -23,6 +25,25 @@ message CreateSessionResponse {
   string message = 2;
 }
 
+message GetSessionByIdRequest {
+  string id = 1;
+}
+
+message GetSessionByIdResponse {
+  SessionData session = 1;
+  string message = 2;
+}
+
+message SessionData {
+  string id = 1;
+  string ipAddress = 2;
+  string deviceInfo = 3;
+  bool isActive = 4;
+  google.protobuf.Timestamp expiredAt = 5;
+  google.protobuf.Timestamp updatedAt = 6;
+  google.protobuf.Timestamp createdAt = 7;
+}
+
 message GetSessionsRequest {
   optional int64 userId = 1;
   optional string ipAddress = 2;
@@ -33,17 +54,19 @@ message GetSessionsRequest {
 }
 
 message GetSessionsResponse {
-  repeated SessionResponse sessions = 1;
+  repeated SessionData sessions = 1;
   string message = 2;
 }
 
-message SessionResponse {
-  string id = 1;
-  string ipAddress = 2;
-  string deviceInfo = 3;
-  bool isActive = 4;
-  google.protobuf.Timestamp expiredAt = 5;
-  google.protobuf.Timestamp updatedAt = 6;
-  google.protobuf.Timestamp createdAt = 7;
+message UpdateSessionRequest {
+  string sessionId = 1;
+  optional int64 userId = 2;
+  optional string ipAddress = 3;
+  optional string deviceInfo = 4;
+  optional bool isActive = 5;
+  optional google.protobuf.Timestamp expiredAt = 6;
 }
 
+message UpdateSessionResponse {
+  SessionData session = 1;
+}

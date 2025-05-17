@@ -8,6 +8,7 @@ services:
     container_name: chesshub-sessions-local-app
     ports:
       - "9090:8080"
+      - "9094:8081"
     env_file: ".env.local"
     volumes:
       - .:/app

@@ -8,5 +8,6 @@ import (
 
 type SessionsRepo interface {
 	Create(ctx context.Context, entity *entity.Session) (*entity.Session, error)
-	GetSessions(ctx context.Context, spec spec.Spec) ([]*entity.Session, error)
+	GetById(ctx context.Context, id string) (*entity.Session, error)
+	GetAll(ctx context.Context, spec spec.Spec) ([]*entity.Session, error)
 }
