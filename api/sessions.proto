@@ -21,15 +21,6 @@ message CreateSessionRequest {
 }
 
 message CreateSessionResponse {
-  string sessionId = 1;
-  string message = 2;
-}
-
-message GetSessionByIdRequest {
-  string id = 1;
-}
-
-message GetSessionByIdResponse {
   SessionData session = 1;
   string message = 2;
 }
@@ -42,6 +33,15 @@ message SessionData {
   google.protobuf.Timestamp expiredAt = 5;
   google.protobuf.Timestamp updatedAt = 6;
   google.protobuf.Timestamp createdAt = 7;
+}
+
+message GetSessionByIdRequest {
+  string id = 1;
+}
+
+message GetSessionByIdResponse {
+  SessionData session = 1;
+  string message = 2;
 }
 
 message GetSessionsRequest {

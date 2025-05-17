@@ -19,8 +19,8 @@ func ToCreateSessionInputDTO(req *sessionsproto.CreateSessionRequest) *dto.Creat
 
 func ToCreateSessionResponse(output *dto.CreateSessionOutputDTO) *sessionsproto.CreateSessionResponse {
 	return &sessionsproto.CreateSessionResponse{
-		SessionId: output.SessionId,
-		Message:   output.Message,
+		Session: toSessionData(output.Session),
+		Message: output.Message,
 	}
 }
 

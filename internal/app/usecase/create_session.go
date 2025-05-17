@@ -50,7 +50,7 @@ func (u *CreateSessionUseCaseImpl) Execute(ctx context.Context, input *dto.Creat
 	}
 
 	return &dto.CreateSessionOutputDTO{
-		SessionId: createdSession.Id(),
-		Message:   "Session created",
+		Session: createdSession,
+		Message: "Session created",
 	}, nil
 }

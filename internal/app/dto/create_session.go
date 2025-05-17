@@ -1,6 +1,9 @@
 package dto
 
-import "time"
+import (
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity"
+	"time"
+)
 
 type (
 	CreateSessionInputDTO struct {
@@ -11,7 +14,7 @@ type (
 	}
 
 	CreateSessionOutputDTO struct {
-		SessionId string
-		Message   string
+		Session *entity.Session
+		Message string
 	}
 )
