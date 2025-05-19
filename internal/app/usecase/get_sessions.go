@@ -29,8 +29,8 @@ func (u *GetSessionsUseCaseImpl) Execute(ctx context.Context, input *dto.GetSess
 	b := spec.NewSessionFilterSpec()
 
 	s := b.
-		WithUserId(input.UserId).
-		WithIpAddress(input.IpAddr).
+		WithUserId(input.UserID).
+		WithIpAddress(input.IPAddr).
 		WithDeviceInfo(input.DeviceInfo).
 		WithIsActive(input.IsActive).
 		WithExpiredBefore(input.ExpiredBefore).

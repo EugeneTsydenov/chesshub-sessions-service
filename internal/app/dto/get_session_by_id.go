@@ -3,11 +3,11 @@ package dto
 import "github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity"
 
 type (
-	GetSessionByIdInputDTO struct {
+	GetSessionByIDInputDTO struct {
 		ID string
 	}
 
-	GetSessionByIdOutputDTO struct {
+	GetSessionByIDOutputDTO struct {
 		Session *entity.Session
 		Message string
 	}

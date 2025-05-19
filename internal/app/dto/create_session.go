@@ -7,8 +7,8 @@ import (
 
 type (
 	CreateSessionInputDTO struct {
-		UserId     int64
-		IpAddr     string
+		UserID     int64
+		IPAddr     string
 		DeviceInfo string
 		ExpiredAt  time.Time
 	}

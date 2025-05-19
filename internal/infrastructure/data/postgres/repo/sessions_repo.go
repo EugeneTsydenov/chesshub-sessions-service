@@ -26,7 +26,7 @@ func (r *PostgresSessionRepositoryImpl) Create(ctx context.Context, entity *enti
 			  VALUES ($1, $2, $3, $4) 
 			  RETURNING id, user_id, ip_address, device_info, is_active, expired_at, updated_at, created_at`
 
-	row := r.database.Pool().QueryRow(ctx, query, entity.UserId(), entity.IpAddr(), entity.DeviceInfo(), entity.ExpiredAt())
+	row := r.database.Pool().QueryRow(ctx, query, entity.UserID(), entity.IPAddr(), entity.DeviceInfo(), entity.ExpiredAt())
 
 	createdSession, err := scanSession(ctx, row)
 
@@ -64,9 +64,9 @@ func scanSession(_ context.Context, row pgx.Row) (*entity.Session, error) {
 
 	b := entity.NewSessionBuilder()
 	s := b.
-		WithId(id).
-		WithUserId(userId).
-		WithIpAddr(ipAddr).
+		WithID(id).
+		WithUserID(userId).
+		WithIPAddr(ipAddr).
 		WithDeviceInfo(deviceInfo).
 		WithIsActive(isActive).
 		WithExpiredAt(expiredAt).
@@ -77,7 +77,7 @@ func scanSession(_ context.Context, row pgx.Row) (*entity.Session, error) {
 	return s, nil
 }
 
-func (r *PostgresSessionRepositoryImpl) GetById(ctx context.Context, id string) (*entity.Session, error) {
+func (r *PostgresSessionRepositoryImpl) GetByID(ctx context.Context, id string) (*entity.Session, error) {
 	query := `SELECT * FROM sessions WHERE id = $1 LIMIT 1`
 	row := r.database.Pool().QueryRow(ctx, query, id)
 

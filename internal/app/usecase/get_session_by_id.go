@@ -10,7 +10,7 @@ import (
 
 type (
 	GetSessionByIdUseCase interface {
-		UseCase[*dto.GetSessionByIdInputDTO, *dto.GetSessionByIdOutputDTO]
+		UseCase[*dto.GetSessionByIDInputDTO, *dto.GetSessionByIDOutputDTO]
 	}
 
 	GetSessionByIdUseCaseImpl struct {
@@ -26,8 +26,8 @@ func NewGetSessionByIdUseCase(sessionsRepo port.SessionsRepo) GetSessionByIdUseC
 	}
 }
 
-func (u *GetSessionByIdUseCaseImpl) Execute(ctx context.Context, input *dto.GetSessionByIdInputDTO) (*dto.GetSessionByIdOutputDTO, error) {
-	session, err := u.sessionsRepo.GetById(ctx, input.ID)
+func (u *GetSessionByIdUseCaseImpl) Execute(ctx context.Context, input *dto.GetSessionByIDInputDTO) (*dto.GetSessionByIDOutputDTO, error) {
+	session, err := u.sessionsRepo.GetByID(ctx, input.ID)
 
 	if errors.Is(err, context.DeadlineExceeded) {
 		return nil, apperrors.NewDeadlineExceededError("getting session by id too long", err)
@@ -41,7 +41,7 @@ func (u *GetSessionByIdUseCaseImpl) Execute(ctx context.Context, input *dto.GetS
 		return nil, apperrors.NewInternalError("something went wrong", err)
 	}
 
-	return &dto.GetSessionByIdOutputDTO{
+	return &dto.GetSessionByIDOutputDTO{
 		Session: session,
 		Message: "Success",
 	}, nil

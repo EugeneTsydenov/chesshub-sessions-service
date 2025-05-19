@@ -6,7 +6,6 @@ import (
 	"github.com/EugeneTsydenov/chesshub-sessions-service/cmd/sessions/app/grpcinterceptors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/cmd/sessions/app/tracker"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/config"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/port"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/usecase"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller"
@@ -14,7 +13,6 @@ import (
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/interceptor"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres/repo"
-	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -112,29 +110,6 @@ func (a *App) Run(ctx context.Context) error {
 		a.Logger.Info("Starting gRPC server", "port", p)
 		if err := a.GRPCServer.Serve(listener); err != nil {
 			a.Logger.Error("gRPC server error", "error", err)
-		}
-	}()
-
-	go func() {
-		r := gin.Default()
-		r.GET("/ping", func(c *gin.Context) {
-			userID := int64(1)
-			result, err := a.GetSessionsUseCase.Execute(ctx, &dto.GetSessionsInputDTO{
-				UserId: &userID,
-			})
-			if err != nil {
-				c.JSON(500, gin.H{"error": err.Error()})
-				return
-			}
-
-			c.JSON(200, gin.H{
-				"message":  result.Message,
-				"sessions": result.Sessions,
-			})
-		})
-		err = r.Run(":8081")
-		if err != nil {
-			return
 		}
 	}()
 

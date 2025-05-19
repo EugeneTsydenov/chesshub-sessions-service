@@ -29,8 +29,8 @@ func (u *CreateSessionUseCaseImpl) Execute(ctx context.Context, input *dto.Creat
 	b := entity.NewSessionBuilder()
 
 	s := b.
-		WithUserId(input.UserId).
-		WithIpAddr(input.IpAddr).
+		WithUserID(input.UserID).
+		WithIPAddr(input.IPAddr).
 		WithDeviceInfo(input.DeviceInfo).
 		WithExpiredAt(input.ExpiredAt).
 		Build()

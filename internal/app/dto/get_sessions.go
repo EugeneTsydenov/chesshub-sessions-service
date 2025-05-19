@@ -7,8 +7,8 @@ import (
 
 type (
 	GetSessionsInputDTO struct {
-		UserId        *int64
-		IpAddr        *string
+		UserID        *int64
+		IPAddr        *string
 		DeviceInfo    *string
 		IsActive      *bool
 		ExpiredAfter  time.Time

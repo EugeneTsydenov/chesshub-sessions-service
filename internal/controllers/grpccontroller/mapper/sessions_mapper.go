@@ -10,8 +10,8 @@ import (
 
 func ToCreateSessionInputDTO(req *sessionsproto.CreateSessionRequest) *dto.CreateSessionInputDTO {
 	return &dto.CreateSessionInputDTO{
-		UserId:     req.UserId,
-		IpAddr:     req.IpAddress,
+		UserID:     req.UserId,
+		IPAddr:     req.IpAddress,
 		DeviceInfo: req.DeviceInfo,
 		ExpiredAt:  req.ExpiredAt.AsTime(),
 	}
@@ -24,13 +24,13 @@ func ToCreateSessionResponse(output *dto.CreateSessionOutputDTO) *sessionsproto.
 	}
 }
 
-func ToGetSessionByIDInputDTO(req *sessionsproto.GetSessionByIdRequest) *dto.GetSessionByIdInputDTO {
-	return &dto.GetSessionByIdInputDTO{
+func ToGetSessionByIDInputDTO(req *sessionsproto.GetSessionByIdRequest) *dto.GetSessionByIDInputDTO {
+	return &dto.GetSessionByIDInputDTO{
 		ID: req.Id,
 	}
 }
 
-func ToGetSessionByIDResponse(output *dto.GetSessionByIdOutputDTO) *sessionsproto.GetSessionByIdResponse {
+func ToGetSessionByIDResponse(output *dto.GetSessionByIDOutputDTO) *sessionsproto.GetSessionByIdResponse {
 	return &sessionsproto.GetSessionByIdResponse{
 		Session: toSessionData(output.Session),
 		Message: output.Message,
@@ -47,8 +47,8 @@ func ToGetSessionsInputDTO(req *sessionsproto.GetSessionsRequest) *dto.GetSessio
 	}
 
 	return &dto.GetSessionsInputDTO{
-		UserId:        req.UserId,
-		IpAddr:        req.IpAddress,
+		UserID:        req.UserId,
+		IPAddr:        req.IpAddress,
 		DeviceInfo:    req.DeviceInfo,
 		IsActive:      req.IsActive,
 		ExpiredBefore: expiredBefore,
@@ -70,8 +70,8 @@ func ToGetSessionsResponse(output *dto.GetSessionsOutputDTO) *sessionsproto.GetS
 
 func toSessionData(session *entity.Session) *sessionsproto.SessionData {
 	return &sessionsproto.SessionData{
-		Id:         session.Id(),
-		IpAddress:  session.IpAddr(),
+		Id:         session.ID(),
+		IpAddress:  session.IPAddr(),
 		DeviceInfo: session.DeviceInfo(),
 		IsActive:   session.IsActive(),
 		ExpiredAt:  timestamppb.New(session.ExpiredAt()),
@@ -82,8 +82,8 @@ func toSessionData(session *entity.Session) *sessionsproto.SessionData {
 
 func ToUpdateSessionInputDTO(req *sessionsproto.UpdateSessionRequest) *dto.UpdateSessionInputDTO {
 	return &dto.UpdateSessionInputDTO{
-		UserId:     req.UserId,
-		IpAddr:     req.IpAddress,
+		UserID:     req.UserId,
+		IPAddr:     req.IpAddress,
 		DeviceInfo: req.DeviceInfo,
 		IsActive:   req.IsActive,
 		ExpiredAt:  req.ExpiredAt.AsTime(),

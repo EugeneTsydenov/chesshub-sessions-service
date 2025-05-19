@@ -6,7 +6,7 @@ import (
 
 type Builder struct {
 	id         string
-	userId     int64
+	userID     int64
 	ipAddr     string
 	deviceInfo string
 	isActive   bool
@@ -19,17 +19,17 @@ func NewSessionBuilder() *Builder {
 	return &Builder{}
 }
 
-func (b *Builder) WithId(id string) *Builder {
+func (b *Builder) WithID(id string) *Builder {
 	b.id = id
 	return b
 }
 
-func (b *Builder) WithUserId(userId int64) *Builder {
-	b.userId = userId
+func (b *Builder) WithUserID(userID int64) *Builder {
+	b.userID = userID
 	return b
 }
 
-func (b *Builder) WithIpAddr(ipAddr string) *Builder {
+func (b *Builder) WithIPAddr(ipAddr string) *Builder {
 	b.ipAddr = ipAddr
 	return b
 }
@@ -62,7 +62,7 @@ func (b *Builder) WithUpdatedAt(updatedAt time.Time) *Builder {
 func (b *Builder) Build() *Session {
 	return &Session{
 		id:         b.id,
-		userId:     b.userId,
+		userID:     b.userID,
 		ipAddr:     b.ipAddr,
 		deviceInfo: b.deviceInfo,
 		isActive:   b.isActive,

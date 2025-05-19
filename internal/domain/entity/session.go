@@ -4,7 +4,7 @@ import "time"
 
 type Session struct {
 	id         string
-	userId     int64
+	userID     int64
 	ipAddr     string
 	deviceInfo string
 	isActive   bool
@@ -13,15 +13,15 @@ type Session struct {
 	updatedAt  time.Time
 }
 
-func (s *Session) Id() string {
+func (s *Session) ID() string {
 	return s.id
 }
 
-func (s *Session) UserId() int64 {
-	return s.userId
+func (s *Session) UserID() int64 {
+	return s.userID
 }
 
-func (s *Session) IpAddr() string {
+func (s *Session) IPAddr() string {
 	return s.ipAddr
 }
 
