@@ -466,6 +466,178 @@ func (x *GetSessionsResponse) GetMessage() string {
 	return ""
 }
 
+type UpdateSessionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionId     string                 `protobuf:"bytes,1,opt,name=sessionId,proto3" json:"sessionId,omitempty"`
+	Fields        *UpdateFields          `protobuf:"bytes,2,opt,name=fields,proto3" json:"fields,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateSessionRequest) Reset() {
+	*x = UpdateSessionRequest{}
+	mi := &file_sessions_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateSessionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateSessionRequest) ProtoMessage() {}
+
+func (x *UpdateSessionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateSessionRequest.ProtoReflect.Descriptor instead.
+func (*UpdateSessionRequest) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *UpdateSessionRequest) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+func (x *UpdateSessionRequest) GetFields() *UpdateFields {
+	if x != nil {
+		return x.Fields
+	}
+	return nil
+}
+
+type UpdateFields struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IpAddress     *string                `protobuf:"bytes,1,opt,name=ipAddress,proto3,oneof" json:"ipAddress,omitempty"`
+	DeviceInfo    *string                `protobuf:"bytes,2,opt,name=deviceInfo,proto3,oneof" json:"deviceInfo,omitempty"`
+	IsActive      *bool                  `protobuf:"varint,3,opt,name=isActive,proto3,oneof" json:"isActive,omitempty"`
+	ExpiredAt     *timestamp.Timestamp   `protobuf:"bytes,4,opt,name=expiredAt,proto3,oneof" json:"expiredAt,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateFields) Reset() {
+	*x = UpdateFields{}
+	mi := &file_sessions_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateFields) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateFields) ProtoMessage() {}
+
+func (x *UpdateFields) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateFields.ProtoReflect.Descriptor instead.
+func (*UpdateFields) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *UpdateFields) GetIpAddress() string {
+	if x != nil && x.IpAddress != nil {
+		return *x.IpAddress
+	}
+	return ""
+}
+
+func (x *UpdateFields) GetDeviceInfo() string {
+	if x != nil && x.DeviceInfo != nil {
+		return *x.DeviceInfo
+	}
+	return ""
+}
+
+func (x *UpdateFields) GetIsActive() bool {
+	if x != nil && x.IsActive != nil {
+		return *x.IsActive
+	}
+	return false
+}
+
+func (x *UpdateFields) GetExpiredAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.ExpiredAt
+	}
+	return nil
+}
+
+type UpdateSessionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Session       *SessionData           `protobuf:"bytes,1,opt,name=session,proto3" json:"session,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateSessionResponse) Reset() {
+	*x = UpdateSessionResponse{}
+	mi := &file_sessions_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateSessionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateSessionResponse) ProtoMessage() {}
+
+func (x *UpdateSessionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateSessionResponse.ProtoReflect.Descriptor instead.
+func (*UpdateSessionResponse) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *UpdateSessionResponse) GetSession() *SessionData {
+	if x != nil {
+		return x.Session
+	}
+	return nil
+}
+
+func (x *UpdateSessionResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_sessions_proto protoreflect.FileDescriptor
 
 const file_sessions_proto_rawDesc = "" +
@@ -514,11 +686,31 @@ const file_sessions_proto_rawDesc = "" +
 	"\x0e_expiredBefore\"b\n" +
 	"\x13GetSessionsResponse\x121\n" +
 	"\bsessions\x18\x01 \x03(\v2\x15.sessions.SessionDataR\bsessions\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\x8a\x02\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"d\n" +
+	"\x14UpdateSessionRequest\x12\x1c\n" +
+	"\tsessionId\x18\x01 \x01(\tR\tsessionId\x12.\n" +
+	"\x06fields\x18\x02 \x01(\v2\x16.sessions.UpdateFieldsR\x06fields\"\xee\x01\n" +
+	"\fUpdateFields\x12!\n" +
+	"\tipAddress\x18\x01 \x01(\tH\x00R\tipAddress\x88\x01\x01\x12#\n" +
+	"\n" +
+	"deviceInfo\x18\x02 \x01(\tH\x01R\n" +
+	"deviceInfo\x88\x01\x01\x12\x1f\n" +
+	"\bisActive\x18\x03 \x01(\bH\x02R\bisActive\x88\x01\x01\x12=\n" +
+	"\texpiredAt\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampH\x03R\texpiredAt\x88\x01\x01B\f\n" +
+	"\n" +
+	"_ipAddressB\r\n" +
+	"\v_deviceInfoB\v\n" +
+	"\t_isActiveB\f\n" +
+	"\n" +
+	"_expiredAt\"b\n" +
+	"\x15UpdateSessionResponse\x12/\n" +
+	"\asession\x18\x01 \x01(\v2\x15.sessions.SessionDataR\asession\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage2\xde\x02\n" +
 	"\x0fSessionsService\x12R\n" +
 	"\rCreateSession\x12\x1e.sessions.CreateSessionRequest\x1a\x1f.sessions.CreateSessionResponse\"\x00\x12U\n" +
 	"\x0eGetSessionById\x12\x1f.sessions.GetSessionByIdRequest\x1a .sessions.GetSessionByIdResponse\"\x00\x12L\n" +
-	"\vGetSessions\x12\x1c.sessions.GetSessionsRequest\x1a\x1d.sessions.GetSessionsResponse\"\x00BlZjgithub.com/EugeneTsydenov/chesshub-user-service/internal/controllers/grpccontroller/genproto;sessionsprotob\x06proto3"
+	"\vGetSessions\x12\x1c.sessions.GetSessionsRequest\x1a\x1d.sessions.GetSessionsResponse\"\x00\x12R\n" +
+	"\rUpdateSession\x12\x1e.sessions.UpdateSessionRequest\x1a\x1f.sessions.UpdateSessionResponse\"\x00BlZjgithub.com/EugeneTsydenov/chesshub-user-service/internal/controllers/grpccontroller/genproto;sessionsprotob\x06proto3"
 
 var (
 	file_sessions_proto_rawDescOnce sync.Once
@@ -532,7 +724,7 @@ func file_sessions_proto_rawDescGZIP() []byte {
 	return file_sessions_proto_rawDescData
 }
 
-var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_sessions_proto_goTypes = []any{
 	(*CreateSessionRequest)(nil),   // 0: sessions.CreateSessionRequest
 	(*CreateSessionResponse)(nil),  // 1: sessions.CreateSessionResponse
@@ -541,29 +733,37 @@ var file_sessions_proto_goTypes = []any{
 	(*GetSessionByIdResponse)(nil), // 4: sessions.GetSessionByIdResponse
 	(*GetSessionsRequest)(nil),     // 5: sessions.GetSessionsRequest
 	(*GetSessionsResponse)(nil),    // 6: sessions.GetSessionsResponse
-	(*timestamp.Timestamp)(nil),    // 7: google.protobuf.Timestamp
+	(*UpdateSessionRequest)(nil),   // 7: sessions.UpdateSessionRequest
+	(*UpdateFields)(nil),           // 8: sessions.UpdateFields
+	(*UpdateSessionResponse)(nil),  // 9: sessions.UpdateSessionResponse
+	(*timestamp.Timestamp)(nil),    // 10: google.protobuf.Timestamp
 }
 var file_sessions_proto_depIdxs = []int32{
-	7,  // 0: sessions.CreateSessionRequest.expiredAt:type_name -> google.protobuf.Timestamp
+	10, // 0: sessions.CreateSessionRequest.expiredAt:type_name -> google.protobuf.Timestamp
 	2,  // 1: sessions.CreateSessionResponse.session:type_name -> sessions.SessionData
-	7,  // 2: sessions.SessionData.expiredAt:type_name -> google.protobuf.Timestamp
-	7,  // 3: sessions.SessionData.updatedAt:type_name -> google.protobuf.Timestamp
-	7,  // 4: sessions.SessionData.createdAt:type_name -> google.protobuf.Timestamp
+	10, // 2: sessions.SessionData.expiredAt:type_name -> google.protobuf.Timestamp
+	10, // 3: sessions.SessionData.updatedAt:type_name -> google.protobuf.Timestamp
+	10, // 4: sessions.SessionData.createdAt:type_name -> google.protobuf.Timestamp
 	2,  // 5: sessions.GetSessionByIdResponse.session:type_name -> sessions.SessionData
-	7,  // 6: sessions.GetSessionsRequest.expiredAfter:type_name -> google.protobuf.Timestamp
-	7,  // 7: sessions.GetSessionsRequest.expiredBefore:type_name -> google.protobuf.Timestamp
+	10, // 6: sessions.GetSessionsRequest.expiredAfter:type_name -> google.protobuf.Timestamp
+	10, // 7: sessions.GetSessionsRequest.expiredBefore:type_name -> google.protobuf.Timestamp
 	2,  // 8: sessions.GetSessionsResponse.sessions:type_name -> sessions.SessionData
-	0,  // 9: sessions.SessionsService.CreateSession:input_type -> sessions.CreateSessionRequest
-	3,  // 10: sessions.SessionsService.GetSessionById:input_type -> sessions.GetSessionByIdRequest
-	5,  // 11: sessions.SessionsService.GetSessions:input_type -> sessions.GetSessionsRequest
-	1,  // 12: sessions.SessionsService.CreateSession:output_type -> sessions.CreateSessionResponse
-	4,  // 13: sessions.SessionsService.GetSessionById:output_type -> sessions.GetSessionByIdResponse
-	6,  // 14: sessions.SessionsService.GetSessions:output_type -> sessions.GetSessionsResponse
-	12, // [12:15] is the sub-list for method output_type
-	9,  // [9:12] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	8,  // 9: sessions.UpdateSessionRequest.fields:type_name -> sessions.UpdateFields
+	10, // 10: sessions.UpdateFields.expiredAt:type_name -> google.protobuf.Timestamp
+	2,  // 11: sessions.UpdateSessionResponse.session:type_name -> sessions.SessionData
+	0,  // 12: sessions.SessionsService.CreateSession:input_type -> sessions.CreateSessionRequest
+	3,  // 13: sessions.SessionsService.GetSessionById:input_type -> sessions.GetSessionByIdRequest
+	5,  // 14: sessions.SessionsService.GetSessions:input_type -> sessions.GetSessionsRequest
+	7,  // 15: sessions.SessionsService.UpdateSession:input_type -> sessions.UpdateSessionRequest
+	1,  // 16: sessions.SessionsService.CreateSession:output_type -> sessions.CreateSessionResponse
+	4,  // 17: sessions.SessionsService.GetSessionById:output_type -> sessions.GetSessionByIdResponse
+	6,  // 18: sessions.SessionsService.GetSessions:output_type -> sessions.GetSessionsResponse
+	9,  // 19: sessions.SessionsService.UpdateSession:output_type -> sessions.UpdateSessionResponse
+	16, // [16:20] is the sub-list for method output_type
+	12, // [12:16] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_sessions_proto_init() }
@@ -572,13 +772,14 @@ func file_sessions_proto_init() {
 		return
 	}
 	file_sessions_proto_msgTypes[5].OneofWrappers = []any{}
+	file_sessions_proto_msgTypes[8].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_sessions_proto_rawDesc), len(file_sessions_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

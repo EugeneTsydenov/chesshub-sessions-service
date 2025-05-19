@@ -41,6 +41,7 @@ type App struct {
 	CreateSessionUseCase  usecase.CreateSessionUseCase
 	GetSessionByIdUseCase usecase.GetSessionByIdUseCase
 	GetSessionsUseCase    usecase.GetSessionsUseCase
+	UpdateSessionUseCase  usecase.UpdateSessionUseCase
 
 	SessionController *grpccontroller.SessionController
 
@@ -82,7 +83,8 @@ func (a *App) InitDeps(ctx context.Context) error {
 	a.CreateSessionUseCase = usecase.NewCreateSessionUseCase(a.SessionsRepo)
 	a.GetSessionByIdUseCase = usecase.NewGetSessionByIdUseCase(a.SessionsRepo)
 	a.GetSessionsUseCase = usecase.NewGetSessionsUseCase(a.SessionsRepo)
-	a.SessionController = grpccontroller.NewSessionController(a.CreateSessionUseCase, a.GetSessionByIdUseCase, a.GetSessionsUseCase)
+	a.UpdateSessionUseCase = usecase.NewUpdateSessionUseCase(a.SessionsRepo)
+	a.SessionController = grpccontroller.NewSessionController(a.CreateSessionUseCase, a.GetSessionByIdUseCase, a.GetSessionsUseCase, a.UpdateSessionUseCase)
 
 	return nil
 }

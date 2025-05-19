@@ -38,22 +38,23 @@ func ToGetSessionByIDResponse(output *dto.GetSessionByIDOutputDTO) *sessionsprot
 }
 
 func ToGetSessionsInputDTO(req *sessionsproto.GetSessionsRequest) *dto.GetSessionsInputDTO {
-	var expiredBefore, expiredAfter time.Time
-	if req.ExpiredBefore != nil {
-		expiredBefore = req.ExpiredBefore.AsTime()
-	}
-	if req.ExpiredAfter != nil {
-		expiredAfter = req.ExpiredAfter.AsTime()
-	}
-
 	return &dto.GetSessionsInputDTO{
 		UserID:        req.UserId,
 		IPAddr:        req.IpAddress,
 		DeviceInfo:    req.DeviceInfo,
 		IsActive:      req.IsActive,
-		ExpiredBefore: expiredBefore,
-		ExpiredAfter:  expiredAfter,
+		ExpiredBefore: toTime(req.ExpiredBefore),
+		ExpiredAfter:  toTime(req.ExpiredAfter),
 	}
+}
+
+func toTime(ts *timestamppb.Timestamp) time.Time {
+	var t time.Time
+	if ts != nil {
+		t = ts.AsTime()
+	}
+
+	return t
 }
 
 func ToGetSessionsResponse(output *dto.GetSessionsOutputDTO) *sessionsproto.GetSessionsResponse {
@@ -82,16 +83,19 @@ func toSessionData(session *entity.Session) *sessionsproto.SessionData {
 
 func ToUpdateSessionInputDTO(req *sessionsproto.UpdateSessionRequest) *dto.UpdateSessionInputDTO {
 	return &dto.UpdateSessionInputDTO{
-		UserID:     req.UserId,
-		IPAddr:     req.IpAddress,
-		DeviceInfo: req.DeviceInfo,
-		IsActive:   req.IsActive,
-		ExpiredAt:  req.ExpiredAt.AsTime(),
+		SessionID: req.SessionId,
+		Fields: &dto.UpdateFields{
+			IpAddr:     req.Fields.IpAddress,
+			DeviceInfo: req.Fields.DeviceInfo,
+			IsActive:   req.Fields.IsActive,
+			ExpiredAt:  toTime(req.Fields.ExpiredAt),
+		},
 	}
 }
 
 func ToUpdateSessionResponse(output *dto.UpdateSessionOutputDTO) *sessionsproto.UpdateSessionResponse {
 	return &sessionsproto.UpdateSessionResponse{
 		Session: toSessionData(output.Session),
+		Message: output.Message,
 	}
 }

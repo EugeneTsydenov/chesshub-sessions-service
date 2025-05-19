@@ -6,8 +6,9 @@ import (
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres"
 	postgreserrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres/errors"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/spec"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/pkg/spec"
 	"github.com/jackc/pgx/v5"
+	"log"
 	"time"
 )
 
@@ -98,8 +99,9 @@ func (r *PostgresSessionRepositoryImpl) GetByID(ctx context.Context, id string) 
 }
 
 func (r *PostgresSessionRepositoryImpl) GetAll(ctx context.Context, spec spec.Spec) ([]*entity.Session, error) {
-	query, args := spec.BuildQuery()
-	rows, err := r.database.Pool().Query(ctx, query, args[0])
+	query, args := spec.ToSQL()
+	log.Print(query)
+	rows, err := r.database.Pool().Query(ctx, query, args...)
 
 	if err != nil {
 		return nil, postgreserrors.NewUnresolvedError("failed to getting sessions", err)

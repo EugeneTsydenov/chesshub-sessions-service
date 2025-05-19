@@ -44,3 +44,19 @@ func (s *Session) CreatedAt() time.Time {
 func (s *Session) UpdatedAt() time.Time {
 	return s.updatedAt
 }
+
+func (s *Session) UpdateIpAddr(newIpAddr string) {
+	s.ipAddr = newIpAddr
+}
+
+func (s *Session) UpdateDeviceInfo(newDeviceInfo string) {
+	s.deviceInfo = newDeviceInfo
+}
+
+func (s *Session) Activate() {
+	s.isActive = true
+}
+
+func (s *Session) Deactivate() {
+	s.isActive = false
+}

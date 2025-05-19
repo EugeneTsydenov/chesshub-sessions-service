@@ -10,6 +10,7 @@ service SessionsService {
   rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse) {}
   rpc GetSessionById(GetSessionByIdRequest) returns (GetSessionByIdResponse) {}
   rpc GetSessions(GetSessionsRequest) returns (GetSessionsResponse) {}
+  rpc UpdateSession(UpdateSessionRequest) returns (UpdateSessionResponse) {}
 }
 
 message CreateSessionRequest {
@@ -54,5 +55,22 @@ message GetSessionsRequest {
 
 message GetSessionsResponse {
   repeated SessionData sessions = 1;
+  string message = 2;
+}
+
+message UpdateSessionRequest {
+  string sessionId = 1;
+  UpdateFields fields = 2;
+}
+
+message UpdateFields {
+  optional string ipAddress = 1;
+  optional string deviceInfo = 2;
+  optional bool isActive = 3;
+  optional google.protobuf.Timestamp expiredAt = 4;
+}
+
+message UpdateSessionResponse {
+  SessionData session = 1;
   string message = 2;
 }

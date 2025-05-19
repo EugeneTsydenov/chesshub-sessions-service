@@ -13,17 +13,20 @@ type SessionController struct {
 	createSessionUseCase  usecase.CreateSessionUseCase
 	getSessionByIdUseCase usecase.GetSessionByIdUseCase
 	getSessionsUseCase    usecase.GetSessionsUseCase
+	updateSessionUseCase  usecase.UpdateSessionUseCase
 }
 
 func NewSessionController(
 	createSessionUseCase usecase.CreateSessionUseCase,
 	getSessionByIdUseCase usecase.GetSessionByIdUseCase,
 	getSessionsUseCase usecase.GetSessionsUseCase,
+	updateSessionUseCase usecase.UpdateSessionUseCase,
 ) *SessionController {
 	return &SessionController{
 		createSessionUseCase:  createSessionUseCase,
 		getSessionByIdUseCase: getSessionByIdUseCase,
 		getSessionsUseCase:    getSessionsUseCase,
+		updateSessionUseCase:  updateSessionUseCase,
 	}
 }
 
@@ -73,4 +76,20 @@ func (c *SessionController) GetSessions(ctx context.Context, req *sessionsproto.
 	}
 
 	return mapper.ToGetSessionsResponse(r), nil
+}
+
+func (c *SessionController) UpdateSession(ctx context.Context, req *sessionsproto.UpdateSessionRequest) (*sessionsproto.UpdateSessionResponse, error) {
+	if err := req.ValidateAll(); err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
+	defer cancel()
+
+	r, err := c.updateSessionUseCase.Execute(ctx, mapper.ToUpdateSessionInputDTO(req))
+	if err != nil {
+		return nil, err
+	}
+
+	return mapper.ToUpdateSessionResponse(r), nil
 }

@@ -3,7 +3,7 @@ package port
 import (
 	"context"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/spec"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/pkg/spec"
 )
 
 type SessionsRepo interface {

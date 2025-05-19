@@ -6,7 +6,7 @@ import (
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
 	apperrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/errors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/port"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/spec"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/specs/sessionspec"
 )
 
 type GetSessionsUseCase interface {
@@ -26,16 +26,7 @@ func NewGetSessionsUseCase(sessionsRepo port.SessionsRepo) *GetSessionsUseCaseIm
 }
 
 func (u *GetSessionsUseCaseImpl) Execute(ctx context.Context, input *dto.GetSessionsInputDTO) (*dto.GetSessionsOutputDTO, error) {
-	b := spec.NewSessionFilterSpec()
-
-	s := b.
-		WithUserId(input.UserID).
-		WithIpAddress(input.IPAddr).
-		WithDeviceInfo(input.DeviceInfo).
-		WithIsActive(input.IsActive).
-		WithExpiredBefore(input.ExpiredBefore).
-		WithExpiredAfter(input.ExpiredAfter)
-
+	s := sessionspec.NewSessionFilterSpec(input.UserID, input.IPAddr, input.DeviceInfo, input.IsActive, input.ExpiredAfter, input.ExpiredBefore)
 	sessions, err := u.sessionsRepo.GetAll(ctx, s)
 
 	if errors.Is(err, context.DeadlineExceeded) {
