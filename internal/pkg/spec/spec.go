@@ -3,7 +3,7 @@ package spec
 import "fmt"
 
 type Spec interface {
-	ToSQL() (string, []any)
+	ToSQL() (string, []any, error)
 }
 
 func joinWithOperator(parts []string, operator string) string {

@@ -8,7 +8,6 @@ import (
 	postgreserrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres/errors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/pkg/spec"
 	"github.com/jackc/pgx/v5"
-	"log"
 	"time"
 )
 
@@ -99,8 +98,10 @@ func (r *PostgresSessionRepositoryImpl) GetByID(ctx context.Context, id string) 
 }
 
 func (r *PostgresSessionRepositoryImpl) GetAll(ctx context.Context, spec spec.Spec) ([]*entity.Session, error) {
-	query, args := spec.ToSQL()
-	log.Print(query)
+	query, args, err := spec.ToSQL()
+	if err != nil {
+		return nil, err
+	}
 	rows, err := r.database.Pool().Query(ctx, query, args...)
 
 	if err != nil {

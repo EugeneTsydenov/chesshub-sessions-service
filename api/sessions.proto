@@ -45,12 +45,13 @@ message GetSessionByIdResponse {
 }
 
 message GetSessionsRequest {
-  optional int64 userId = 1;
-  optional string ipAddress = 2;
-  optional string deviceInfo = 3;
-  optional bool isActive = 4;
-  optional google.protobuf.Timestamp expiredAfter = 5;
-  optional google.protobuf.Timestamp expiredBefore = 6;
+  map<string, string> filterMap = 2;
+//optional int64 userId = 1;
+//  optional string ipAddress = 2;
+//  optional string deviceInfo = 3;
+//  optional bool isActive = 4;
+//  optional google.protobuf.Timestamp expiredAfter = 5;
+//  optional google.protobuf.Timestamp expiredBefore = 6;
 }
 
 message GetSessionsResponse {

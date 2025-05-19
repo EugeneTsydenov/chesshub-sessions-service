@@ -332,12 +332,7 @@ func (x *GetSessionByIdResponse) GetMessage() string {
 
 type GetSessionsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        *int64                 `protobuf:"varint,1,opt,name=userId,proto3,oneof" json:"userId,omitempty"`
-	IpAddress     *string                `protobuf:"bytes,2,opt,name=ipAddress,proto3,oneof" json:"ipAddress,omitempty"`
-	DeviceInfo    *string                `protobuf:"bytes,3,opt,name=deviceInfo,proto3,oneof" json:"deviceInfo,omitempty"`
-	IsActive      *bool                  `protobuf:"varint,4,opt,name=isActive,proto3,oneof" json:"isActive,omitempty"`
-	ExpiredAfter  *timestamp.Timestamp   `protobuf:"bytes,5,opt,name=expiredAfter,proto3,oneof" json:"expiredAfter,omitempty"`
-	ExpiredBefore *timestamp.Timestamp   `protobuf:"bytes,6,opt,name=expiredBefore,proto3,oneof" json:"expiredBefore,omitempty"`
+	FilterMap     map[string]string      `protobuf:"bytes,2,rep,name=filterMap,proto3" json:"filterMap,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -372,44 +367,9 @@ func (*GetSessionsRequest) Descriptor() ([]byte, []int) {
 	return file_sessions_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *GetSessionsRequest) GetUserId() int64 {
-	if x != nil && x.UserId != nil {
-		return *x.UserId
-	}
-	return 0
-}
-
-func (x *GetSessionsRequest) GetIpAddress() string {
-	if x != nil && x.IpAddress != nil {
-		return *x.IpAddress
-	}
-	return ""
-}
-
-func (x *GetSessionsRequest) GetDeviceInfo() string {
-	if x != nil && x.DeviceInfo != nil {
-		return *x.DeviceInfo
-	}
-	return ""
-}
-
-func (x *GetSessionsRequest) GetIsActive() bool {
-	if x != nil && x.IsActive != nil {
-		return *x.IsActive
-	}
-	return false
-}
-
-func (x *GetSessionsRequest) GetExpiredAfter() *timestamp.Timestamp {
+func (x *GetSessionsRequest) GetFilterMap() map[string]string {
 	if x != nil {
-		return x.ExpiredAfter
-	}
-	return nil
-}
-
-func (x *GetSessionsRequest) GetExpiredBefore() *timestamp.Timestamp {
-	if x != nil {
-		return x.ExpiredBefore
+		return x.FilterMap
 	}
 	return nil
 }
@@ -623,23 +583,12 @@ const file_sessions_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"c\n" +
 	"\x16GetSessionByIdResponse\x12/\n" +
 	"\asession\x18\x01 \x01(\v2\x15.sessions.SessionDataR\asession\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"\xfe\x02\n" +
-	"\x12GetSessionsRequest\x12\x1b\n" +
-	"\x06userId\x18\x01 \x01(\x03H\x00R\x06userId\x88\x01\x01\x12!\n" +
-	"\tipAddress\x18\x02 \x01(\tH\x01R\tipAddress\x88\x01\x01\x12#\n" +
-	"\n" +
-	"deviceInfo\x18\x03 \x01(\tH\x02R\n" +
-	"deviceInfo\x88\x01\x01\x12\x1f\n" +
-	"\bisActive\x18\x04 \x01(\bH\x03R\bisActive\x88\x01\x01\x12C\n" +
-	"\fexpiredAfter\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampH\x04R\fexpiredAfter\x88\x01\x01\x12E\n" +
-	"\rexpiredBefore\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampH\x05R\rexpiredBefore\x88\x01\x01B\t\n" +
-	"\a_userIdB\f\n" +
-	"\n" +
-	"_ipAddressB\r\n" +
-	"\v_deviceInfoB\v\n" +
-	"\t_isActiveB\x0f\n" +
-	"\r_expiredAfterB\x10\n" +
-	"\x0e_expiredBefore\"b\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\x9d\x01\n" +
+	"\x12GetSessionsRequest\x12I\n" +
+	"\tfilterMap\x18\x02 \x03(\v2+.sessions.GetSessionsRequest.FilterMapEntryR\tfilterMap\x1a<\n" +
+	"\x0eFilterMapEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"b\n" +
 	"\x13GetSessionsResponse\x121\n" +
 	"\bsessions\x18\x01 \x03(\v2\x15.sessions.SessionDataR\bsessions\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\"\x94\x02\n" +
@@ -678,7 +627,7 @@ func file_sessions_proto_rawDescGZIP() []byte {
 	return file_sessions_proto_rawDescData
 }
 
-var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_sessions_proto_goTypes = []any{
 	(*CreateSessionRequest)(nil),   // 0: sessions.CreateSessionRequest
 	(*CreateSessionResponse)(nil),  // 1: sessions.CreateSessionResponse
@@ -689,33 +638,33 @@ var file_sessions_proto_goTypes = []any{
 	(*GetSessionsResponse)(nil),    // 6: sessions.GetSessionsResponse
 	(*UpdateSessionRequest)(nil),   // 7: sessions.UpdateSessionRequest
 	(*UpdateSessionResponse)(nil),  // 8: sessions.UpdateSessionResponse
-	(*timestamp.Timestamp)(nil),    // 9: google.protobuf.Timestamp
+	nil,                            // 9: sessions.GetSessionsRequest.FilterMapEntry
+	(*timestamp.Timestamp)(nil),    // 10: google.protobuf.Timestamp
 }
 var file_sessions_proto_depIdxs = []int32{
-	9,  // 0: sessions.CreateSessionRequest.expiredAt:type_name -> google.protobuf.Timestamp
+	10, // 0: sessions.CreateSessionRequest.expiredAt:type_name -> google.protobuf.Timestamp
 	2,  // 1: sessions.CreateSessionResponse.session:type_name -> sessions.SessionData
-	9,  // 2: sessions.SessionData.expiredAt:type_name -> google.protobuf.Timestamp
-	9,  // 3: sessions.SessionData.updatedAt:type_name -> google.protobuf.Timestamp
-	9,  // 4: sessions.SessionData.createdAt:type_name -> google.protobuf.Timestamp
+	10, // 2: sessions.SessionData.expiredAt:type_name -> google.protobuf.Timestamp
+	10, // 3: sessions.SessionData.updatedAt:type_name -> google.protobuf.Timestamp
+	10, // 4: sessions.SessionData.createdAt:type_name -> google.protobuf.Timestamp
 	2,  // 5: sessions.GetSessionByIdResponse.session:type_name -> sessions.SessionData
-	9,  // 6: sessions.GetSessionsRequest.expiredAfter:type_name -> google.protobuf.Timestamp
-	9,  // 7: sessions.GetSessionsRequest.expiredBefore:type_name -> google.protobuf.Timestamp
-	2,  // 8: sessions.GetSessionsResponse.sessions:type_name -> sessions.SessionData
-	9,  // 9: sessions.UpdateSessionRequest.expiredAt:type_name -> google.protobuf.Timestamp
-	2,  // 10: sessions.UpdateSessionResponse.session:type_name -> sessions.SessionData
-	0,  // 11: sessions.SessionsService.CreateSession:input_type -> sessions.CreateSessionRequest
-	3,  // 12: sessions.SessionsService.GetSessionById:input_type -> sessions.GetSessionByIdRequest
-	5,  // 13: sessions.SessionsService.GetSessions:input_type -> sessions.GetSessionsRequest
-	7,  // 14: sessions.SessionsService.UpdateSession:input_type -> sessions.UpdateSessionRequest
-	1,  // 15: sessions.SessionsService.CreateSession:output_type -> sessions.CreateSessionResponse
-	4,  // 16: sessions.SessionsService.GetSessionById:output_type -> sessions.GetSessionByIdResponse
-	6,  // 17: sessions.SessionsService.GetSessions:output_type -> sessions.GetSessionsResponse
-	8,  // 18: sessions.SessionsService.UpdateSession:output_type -> sessions.UpdateSessionResponse
-	15, // [15:19] is the sub-list for method output_type
-	11, // [11:15] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	9,  // 6: sessions.GetSessionsRequest.filterMap:type_name -> sessions.GetSessionsRequest.FilterMapEntry
+	2,  // 7: sessions.GetSessionsResponse.sessions:type_name -> sessions.SessionData
+	10, // 8: sessions.UpdateSessionRequest.expiredAt:type_name -> google.protobuf.Timestamp
+	2,  // 9: sessions.UpdateSessionResponse.session:type_name -> sessions.SessionData
+	0,  // 10: sessions.SessionsService.CreateSession:input_type -> sessions.CreateSessionRequest
+	3,  // 11: sessions.SessionsService.GetSessionById:input_type -> sessions.GetSessionByIdRequest
+	5,  // 12: sessions.SessionsService.GetSessions:input_type -> sessions.GetSessionsRequest
+	7,  // 13: sessions.SessionsService.UpdateSession:input_type -> sessions.UpdateSessionRequest
+	1,  // 14: sessions.SessionsService.CreateSession:output_type -> sessions.CreateSessionResponse
+	4,  // 15: sessions.SessionsService.GetSessionById:output_type -> sessions.GetSessionByIdResponse
+	6,  // 16: sessions.SessionsService.GetSessions:output_type -> sessions.GetSessionsResponse
+	8,  // 17: sessions.SessionsService.UpdateSession:output_type -> sessions.UpdateSessionResponse
+	14, // [14:18] is the sub-list for method output_type
+	10, // [10:14] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_sessions_proto_init() }
@@ -723,7 +672,6 @@ func file_sessions_proto_init() {
 	if File_sessions_proto != nil {
 		return
 	}
-	file_sessions_proto_msgTypes[5].OneofWrappers = []any{}
 	file_sessions_proto_msgTypes[7].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -731,7 +679,7 @@ func file_sessions_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_sessions_proto_rawDesc), len(file_sessions_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

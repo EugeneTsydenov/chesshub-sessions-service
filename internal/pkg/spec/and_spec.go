@@ -10,15 +10,19 @@ func NewAnd(specs ...Spec) *AndSpec {
 	return &AndSpec{Specs: specs}
 }
 
-func (s *AndSpec) ToSQL() (string, []any) {
+func (s *AndSpec) ToSQL() (string, []any, error) {
 	var sqlParts []string
 	var args []any
 
 	for _, spec := range s.Specs {
-		sqlPart, specArgs := spec.ToSQL()
+		sqlPart, specArgs, err := spec.ToSQL()
+		if err != nil {
+			return "", nil, err
+		}
+
 		sqlParts = append(sqlParts, fmt.Sprintf("(%s)", sqlPart))
 		args = append(args, specArgs...)
 	}
 
-	return joinWithOperator(sqlParts, "AND"), args
+	return joinWithOperator(sqlParts, "AND"), args, nil
 }

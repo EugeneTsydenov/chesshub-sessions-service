@@ -10,15 +10,19 @@ func NewOr(specs ...Spec) *OrSpec {
 	return &OrSpec{Specs: specs}
 }
 
-func (s *OrSpec) ToSQL() (string, []any) {
+func (s *OrSpec) ToSQL() (string, []any, error) {
 	var sqlParts []string
 	var args []any
 
 	for _, spec := range s.Specs {
-		sqlPart, specArgs := spec.ToSQL()
+		sqlPart, specArgs, err := spec.ToSQL()
+		if err != nil {
+			return "", nil, err
+		}
+
 		sqlParts = append(sqlParts, fmt.Sprintf("(%s)", sqlPart))
 		args = append(args, specArgs...)
 	}
 
-	return joinWithOperator(sqlParts, "OR"), args
+	return joinWithOperator(sqlParts, "OR"), args, nil
 }

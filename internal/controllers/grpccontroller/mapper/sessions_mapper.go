@@ -39,12 +39,7 @@ func ToGetSessionByIDResponse(output *dto.GetSessionByIDOutputDTO) *sessionsprot
 
 func ToGetSessionsInputDTO(req *sessionsproto.GetSessionsRequest) *dto.GetSessionsInputDTO {
 	return &dto.GetSessionsInputDTO{
-		UserID:        req.UserId,
-		IPAddr:        req.IpAddress,
-		DeviceInfo:    req.DeviceInfo,
-		IsActive:      req.IsActive,
-		ExpiredBefore: toTime(req.ExpiredBefore),
-		ExpiredAfter:  toTime(req.ExpiredAfter),
+		FilterMap: req.FilterMap,
 	}
 }
 
