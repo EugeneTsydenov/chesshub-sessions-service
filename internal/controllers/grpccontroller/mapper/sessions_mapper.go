@@ -83,13 +83,11 @@ func toSessionData(session *entity.Session) *sessionsproto.SessionData {
 
 func ToUpdateSessionInputDTO(req *sessionsproto.UpdateSessionRequest) *dto.UpdateSessionInputDTO {
 	return &dto.UpdateSessionInputDTO{
-		SessionID: req.SessionId,
-		Fields: &dto.UpdateFields{
-			IpAddr:     req.Fields.IpAddress,
-			DeviceInfo: req.Fields.DeviceInfo,
-			IsActive:   req.Fields.IsActive,
-			ExpiredAt:  toTime(req.Fields.ExpiredAt),
-		},
+		SessionID:  req.SessionId,
+		IpAddr:     req.IpAddress,
+		DeviceInfo: req.DeviceInfo,
+		IsActive:   req.IsActive,
+		ExpiredAt:  toTime(req.ExpiredAt),
 	}
 }
 

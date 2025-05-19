@@ -7,11 +7,7 @@ import (
 
 type (
 	UpdateSessionInputDTO struct {
-		SessionID string
-		Fields    *UpdateFields
-	}
-
-	UpdateFields struct {
+		SessionID  string
 		IpAddr     *string
 		DeviceInfo *string
 		IsActive   *bool

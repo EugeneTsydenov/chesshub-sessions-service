@@ -124,3 +124,27 @@ func (r *PostgresSessionRepositoryImpl) GetAll(ctx context.Context, spec spec.Sp
 
 	return sessions, nil
 }
+
+func (r *PostgresSessionRepositoryImpl) Update(ctx context.Context, entity *entity.Session) (*entity.Session, error) {
+	query := `
+			UPDATE sessions 
+			SET user_id = $1, ip_address = $2, device_info = $3, is_active = $4, expired_at = $5, updated_at = $6, created_at = $7 
+			WHERE id = $8 
+			RETURNING id, user_id, ip_address, device_info, is_active, expired_at, updated_at, created_at`
+	row := r.database.Pool().QueryRow(ctx, query, entity.UserID(), entity.IPAddr(), entity.DeviceInfo(), entity.IsActive(), entity.ExpiredAt(), entity.UpdatedAt(), entity.ExpiredAt(), entity.ID())
+
+	session, err := scanSession(ctx, row)
+	if errors.Is(err, context.DeadlineExceeded) {
+		return nil, errors.New("update session to postgres took too long")
+	}
+
+	if errors.Is(err, context.Canceled) {
+		return nil, errors.New("update session was canceled by client or system")
+	}
+
+	if err != nil {
+		return nil, postgreserrors.NewUnresolvedError("failed to update session", err)
+	}
+
+	return session, nil
+}

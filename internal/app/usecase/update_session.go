@@ -29,20 +29,30 @@ func (u UpdateSessionUseCaseImpl) Execute(ctx context.Context, input *dto.Update
 		return nil, apperrors.NewNotFoundError("session not found", err)
 	}
 
-	if input.Fields.IpAddr != nil {
-		session.UpdateIpAddr(*input.Fields.IpAddr)
+	if input.IpAddr != nil {
+		session.UpdateIpAddr(*input.IpAddr)
 	}
 
-	if input.Fields.DeviceInfo != nil {
-		session.UpdateDeviceInfo(*input.Fields.DeviceInfo)
+	if input.DeviceInfo != nil {
+		session.UpdateDeviceInfo(*input.DeviceInfo)
 	}
 
-	if input.Fields.IsActive != nil {
-		if *input.Fields.IsActive {
-			session.Activate()
-		} else {
-			session.Deactivate()
-		}
+	if input.IsActive != nil || *input.IsActive {
+		session.Activate()
+	} else {
+		session.Deactivate()
 	}
-	return nil, nil
+
+	if !input.ExpiredAt.IsZero() {
+		session.Refresh(input.ExpiredAt)
+	}
+
+	session.Touch()
+
+	updatedSession, err := u.sessionsRepo.Update(ctx, session)
+
+	return &dto.UpdateSessionOutputDTO{
+		Session: updatedSession,
+		Message: "Session updated",
+	}, nil
 }

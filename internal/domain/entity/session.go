@@ -60,3 +60,11 @@ func (s *Session) Activate() {
 func (s *Session) Deactivate() {
 	s.isActive = false
 }
+
+func (s *Session) Refresh(t time.Time) {
+	s.expiredAt = t
+}
+
+func (s *Session) Touch() {
+	s.updatedAt = time.Now()
+}

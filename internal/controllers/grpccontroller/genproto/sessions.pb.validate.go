@@ -1082,33 +1082,49 @@ func (m *UpdateSessionRequest) validate(all bool) error {
 
 	// no validation rules for SessionId
 
-	if all {
-		switch v := interface{}(m.GetFields()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, UpdateSessionRequestValidationError{
-					field:  "Fields",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
+	if m.IpAddress != nil {
+		// no validation rules for IpAddress
+	}
+
+	if m.DeviceInfo != nil {
+		// no validation rules for DeviceInfo
+	}
+
+	if m.IsActive != nil {
+		// no validation rules for IsActive
+	}
+
+	if m.ExpiredAt != nil {
+
+		if all {
+			switch v := interface{}(m.GetExpiredAt()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, UpdateSessionRequestValidationError{
+						field:  "ExpiredAt",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, UpdateSessionRequestValidationError{
+						field:  "ExpiredAt",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
 			}
-		case interface{ Validate() error }:
+		} else if v, ok := interface{}(m.GetExpiredAt()).(interface{ Validate() error }); ok {
 			if err := v.Validate(); err != nil {
-				errors = append(errors, UpdateSessionRequestValidationError{
-					field:  "Fields",
+				return UpdateSessionRequestValidationError{
+					field:  "ExpiredAt",
 					reason: "embedded message failed validation",
 					cause:  err,
-				})
+				}
 			}
 		}
-	} else if v, ok := interface{}(m.GetFields()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return UpdateSessionRequestValidationError{
-				field:  "Fields",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
+
 	}
 
 	if len(errors) > 0 {
@@ -1190,150 +1206,6 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = UpdateSessionRequestValidationError{}
-
-// Validate checks the field values on UpdateFields with the rules defined in
-// the proto definition for this message. If any rules are violated, the first
-// error encountered is returned, or nil if there are no violations.
-func (m *UpdateFields) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on UpdateFields with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in UpdateFieldsMultiError, or
-// nil if none found.
-func (m *UpdateFields) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *UpdateFields) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	if m.IpAddress != nil {
-		// no validation rules for IpAddress
-	}
-
-	if m.DeviceInfo != nil {
-		// no validation rules for DeviceInfo
-	}
-
-	if m.IsActive != nil {
-		// no validation rules for IsActive
-	}
-
-	if m.ExpiredAt != nil {
-
-		if all {
-			switch v := interface{}(m.GetExpiredAt()).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, UpdateFieldsValidationError{
-						field:  "ExpiredAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, UpdateFieldsValidationError{
-						field:  "ExpiredAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(m.GetExpiredAt()).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return UpdateFieldsValidationError{
-					field:  "ExpiredAt",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
-			}
-		}
-
-	}
-
-	if len(errors) > 0 {
-		return UpdateFieldsMultiError(errors)
-	}
-
-	return nil
-}
-
-// UpdateFieldsMultiError is an error wrapping multiple validation errors
-// returned by UpdateFields.ValidateAll() if the designated constraints aren't met.
-type UpdateFieldsMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m UpdateFieldsMultiError) Error() string {
-	msgs := make([]string, 0, len(m))
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m UpdateFieldsMultiError) AllErrors() []error { return m }
-
-// UpdateFieldsValidationError is the validation error returned by
-// UpdateFields.Validate if the designated constraints aren't met.
-type UpdateFieldsValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e UpdateFieldsValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e UpdateFieldsValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e UpdateFieldsValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e UpdateFieldsValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e UpdateFieldsValidationError) ErrorName() string { return "UpdateFieldsValidationError" }
-
-// Error satisfies the builtin error interface
-func (e UpdateFieldsValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sUpdateFields.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = UpdateFieldsValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = UpdateFieldsValidationError{}
 
 // Validate checks the field values on UpdateSessionResponse with the rules
 // defined in the proto definition for this message. If any rules are
