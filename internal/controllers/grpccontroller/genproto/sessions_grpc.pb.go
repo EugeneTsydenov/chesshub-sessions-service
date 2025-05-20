@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	SessionsService_CreateSession_FullMethodName  = "/sessions.SessionsService/CreateSession"
-	SessionsService_GetSessionById_FullMethodName = "/sessions.SessionsService/GetSessionById"
-	SessionsService_GetSessions_FullMethodName    = "/sessions.SessionsService/GetSessions"
-	SessionsService_UpdateSession_FullMethodName  = "/sessions.SessionsService/UpdateSession"
+	SessionsService_CreateSession_FullMethodName     = "/sessions.SessionsService/CreateSession"
+	SessionsService_GetSessionById_FullMethodName    = "/sessions.SessionsService/GetSessionById"
+	SessionsService_GetSessions_FullMethodName       = "/sessions.SessionsService/GetSessions"
+	SessionsService_UpdateSession_FullMethodName     = "/sessions.SessionsService/UpdateSession"
+	SessionsService_DeactivateSession_FullMethodName = "/sessions.SessionsService/DeactivateSession"
 )
 
 // SessionsServiceClient is the client API for SessionsService service.
@@ -33,6 +34,7 @@ type SessionsServiceClient interface {
 	GetSessionById(ctx context.Context, in *GetSessionByIdRequest, opts ...grpc.CallOption) (*GetSessionByIdResponse, error)
 	GetSessions(ctx context.Context, in *GetSessionsRequest, opts ...grpc.CallOption) (*GetSessionsResponse, error)
 	UpdateSession(ctx context.Context, in *UpdateSessionRequest, opts ...grpc.CallOption) (*UpdateSessionResponse, error)
+	DeactivateSession(ctx context.Context, in *DeactivateSessionRequest, opts ...grpc.CallOption) (*DeactivateSessionResponse, error)
 }
 
 type sessionsServiceClient struct {
@@ -83,6 +85,16 @@ func (c *sessionsServiceClient) UpdateSession(ctx context.Context, in *UpdateSes
 	return out, nil
 }
 
+func (c *sessionsServiceClient) DeactivateSession(ctx context.Context, in *DeactivateSessionRequest, opts ...grpc.CallOption) (*DeactivateSessionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeactivateSessionResponse)
+	err := c.cc.Invoke(ctx, SessionsService_DeactivateSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SessionsServiceServer is the server API for SessionsService service.
 // All implementations must embed UnimplementedSessionsServiceServer
 // for forward compatibility.
@@ -91,6 +103,7 @@ type SessionsServiceServer interface {
 	GetSessionById(context.Context, *GetSessionByIdRequest) (*GetSessionByIdResponse, error)
 	GetSessions(context.Context, *GetSessionsRequest) (*GetSessionsResponse, error)
 	UpdateSession(context.Context, *UpdateSessionRequest) (*UpdateSessionResponse, error)
+	DeactivateSession(context.Context, *DeactivateSessionRequest) (*DeactivateSessionResponse, error)
 	mustEmbedUnimplementedSessionsServiceServer()
 }
 
@@ -112,6 +125,9 @@ func (UnimplementedSessionsServiceServer) GetSessions(context.Context, *GetSessi
 }
 func (UnimplementedSessionsServiceServer) UpdateSession(context.Context, *UpdateSessionRequest) (*UpdateSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateSession not implemented")
+}
+func (UnimplementedSessionsServiceServer) DeactivateSession(context.Context, *DeactivateSessionRequest) (*DeactivateSessionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeactivateSession not implemented")
 }
 func (UnimplementedSessionsServiceServer) mustEmbedUnimplementedSessionsServiceServer() {}
 func (UnimplementedSessionsServiceServer) testEmbeddedByValue()                         {}
@@ -206,6 +222,24 @@ func _SessionsService_UpdateSession_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SessionsService_DeactivateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeactivateSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionsServiceServer).DeactivateSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SessionsService_DeactivateSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionsServiceServer).DeactivateSession(ctx, req.(*DeactivateSessionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SessionsService_ServiceDesc is the grpc.ServiceDesc for SessionsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +262,10 @@ var SessionsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateSession",
 			Handler:    _SessionsService_UpdateSession_Handler,
+		},
+		{
+			MethodName: "DeactivateSession",
+			Handler:    _SessionsService_DeactivateSession_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

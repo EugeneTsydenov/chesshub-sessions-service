@@ -79,3 +79,16 @@ func ToUpdateSessionResponse(output *dto.UpdateSessionOutputDTO) *sessionsproto.
 		Message: output.Message,
 	}
 }
+
+func ToDeactivateSessionInputDTO(req *sessionsproto.DeactivateSessionRequest) *dto.DeactivateSessionInputDTO {
+	return &dto.DeactivateSessionInputDTO{
+		SessionID: req.SessionId,
+	}
+}
+
+func ToDeactivateSessionResponse(output *dto.DeactivateSessionOutputDTO) *sessionsproto.DeactivateSessionResponse {
+	return &sessionsproto.DeactivateSessionResponse{
+		Success: output.Success,
+		Message: output.Message,
+	}
+}

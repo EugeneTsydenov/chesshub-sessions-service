@@ -1216,3 +1216,213 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = UpdateSessionResponseValidationError{}
+
+// Validate checks the field values on DeactivateSessionRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeactivateSessionRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeactivateSessionRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeactivateSessionRequestMultiError, or nil if none found.
+func (m *DeactivateSessionRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeactivateSessionRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for SessionId
+
+	if len(errors) > 0 {
+		return DeactivateSessionRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeactivateSessionRequestMultiError is an error wrapping multiple validation
+// errors returned by DeactivateSessionRequest.ValidateAll() if the designated
+// constraints aren't met.
+type DeactivateSessionRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeactivateSessionRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeactivateSessionRequestMultiError) AllErrors() []error { return m }
+
+// DeactivateSessionRequestValidationError is the validation error returned by
+// DeactivateSessionRequest.Validate if the designated constraints aren't met.
+type DeactivateSessionRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeactivateSessionRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeactivateSessionRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeactivateSessionRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeactivateSessionRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeactivateSessionRequestValidationError) ErrorName() string {
+	return "DeactivateSessionRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeactivateSessionRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeactivateSessionRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeactivateSessionRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeactivateSessionRequestValidationError{}
+
+// Validate checks the field values on DeactivateSessionResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeactivateSessionResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeactivateSessionResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeactivateSessionResponseMultiError, or nil if none found.
+func (m *DeactivateSessionResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeactivateSessionResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Success
+
+	// no validation rules for Message
+
+	if len(errors) > 0 {
+		return DeactivateSessionResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeactivateSessionResponseMultiError is an error wrapping multiple validation
+// errors returned by DeactivateSessionResponse.ValidateAll() if the
+// designated constraints aren't met.
+type DeactivateSessionResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeactivateSessionResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeactivateSessionResponseMultiError) AllErrors() []error { return m }
+
+// DeactivateSessionResponseValidationError is the validation error returned by
+// DeactivateSessionResponse.Validate if the designated constraints aren't met.
+type DeactivateSessionResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeactivateSessionResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeactivateSessionResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeactivateSessionResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeactivateSessionResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeactivateSessionResponseValidationError) ErrorName() string {
+	return "DeactivateSessionResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeactivateSessionResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeactivateSessionResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeactivateSessionResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeactivateSessionResponseValidationError{}

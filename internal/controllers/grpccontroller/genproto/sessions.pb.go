@@ -530,6 +530,102 @@ func (x *UpdateSessionResponse) GetMessage() string {
 	return ""
 }
 
+type DeactivateSessionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionId     string                 `protobuf:"bytes,1,opt,name=sessionId,proto3" json:"sessionId,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeactivateSessionRequest) Reset() {
+	*x = DeactivateSessionRequest{}
+	mi := &file_sessions_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeactivateSessionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeactivateSessionRequest) ProtoMessage() {}
+
+func (x *DeactivateSessionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeactivateSessionRequest.ProtoReflect.Descriptor instead.
+func (*DeactivateSessionRequest) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *DeactivateSessionRequest) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+type DeactivateSessionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeactivateSessionResponse) Reset() {
+	*x = DeactivateSessionResponse{}
+	mi := &file_sessions_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeactivateSessionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeactivateSessionResponse) ProtoMessage() {}
+
+func (x *DeactivateSessionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeactivateSessionResponse.ProtoReflect.Descriptor instead.
+func (*DeactivateSessionResponse) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *DeactivateSessionResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *DeactivateSessionResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_sessions_proto protoreflect.FileDescriptor
 
 const file_sessions_proto_rawDesc = "" +
@@ -576,12 +672,18 @@ const file_sessions_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"b\n" +
 	"\x15UpdateSessionResponse\x12/\n" +
 	"\asession\x18\x01 \x01(\v2\x15.sessions.SessionDataR\asession\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\xde\x02\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"8\n" +
+	"\x18DeactivateSessionRequest\x12\x1c\n" +
+	"\tsessionId\x18\x01 \x01(\tR\tsessionId\"O\n" +
+	"\x19DeactivateSessionResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage2\xbe\x03\n" +
 	"\x0fSessionsService\x12R\n" +
 	"\rCreateSession\x12\x1e.sessions.CreateSessionRequest\x1a\x1f.sessions.CreateSessionResponse\"\x00\x12U\n" +
 	"\x0eGetSessionById\x12\x1f.sessions.GetSessionByIdRequest\x1a .sessions.GetSessionByIdResponse\"\x00\x12L\n" +
 	"\vGetSessions\x12\x1c.sessions.GetSessionsRequest\x1a\x1d.sessions.GetSessionsResponse\"\x00\x12R\n" +
-	"\rUpdateSession\x12\x1e.sessions.UpdateSessionRequest\x1a\x1f.sessions.UpdateSessionResponse\"\x00BlZjgithub.com/EugeneTsydenov/chesshub-user-service/internal/controllers/grpccontroller/genproto;sessionsprotob\x06proto3"
+	"\rUpdateSession\x12\x1e.sessions.UpdateSessionRequest\x1a\x1f.sessions.UpdateSessionResponse\"\x00\x12^\n" +
+	"\x11DeactivateSession\x12\".sessions.DeactivateSessionRequest\x1a#.sessions.DeactivateSessionResponse\"\x00BlZjgithub.com/EugeneTsydenov/chesshub-user-service/internal/controllers/grpccontroller/genproto;sessionsprotob\x06proto3"
 
 var (
 	file_sessions_proto_rawDescOnce sync.Once
@@ -595,42 +697,46 @@ func file_sessions_proto_rawDescGZIP() []byte {
 	return file_sessions_proto_rawDescData
 }
 
-var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_sessions_proto_goTypes = []any{
-	(*CreateSessionRequest)(nil),   // 0: sessions.CreateSessionRequest
-	(*CreateSessionResponse)(nil),  // 1: sessions.CreateSessionResponse
-	(*SessionData)(nil),            // 2: sessions.SessionData
-	(*GetSessionByIdRequest)(nil),  // 3: sessions.GetSessionByIdRequest
-	(*GetSessionByIdResponse)(nil), // 4: sessions.GetSessionByIdResponse
-	(*GetSessionsRequest)(nil),     // 5: sessions.GetSessionsRequest
-	(*GetSessionsResponse)(nil),    // 6: sessions.GetSessionsResponse
-	(*UpdateSessionRequest)(nil),   // 7: sessions.UpdateSessionRequest
-	(*UpdateSessionResponse)(nil),  // 8: sessions.UpdateSessionResponse
-	nil,                            // 9: sessions.GetSessionsRequest.FilterMapEntry
-	nil,                            // 10: sessions.UpdateSessionRequest.FieldMapEntry
-	(*timestamp.Timestamp)(nil),    // 11: google.protobuf.Timestamp
+	(*CreateSessionRequest)(nil),      // 0: sessions.CreateSessionRequest
+	(*CreateSessionResponse)(nil),     // 1: sessions.CreateSessionResponse
+	(*SessionData)(nil),               // 2: sessions.SessionData
+	(*GetSessionByIdRequest)(nil),     // 3: sessions.GetSessionByIdRequest
+	(*GetSessionByIdResponse)(nil),    // 4: sessions.GetSessionByIdResponse
+	(*GetSessionsRequest)(nil),        // 5: sessions.GetSessionsRequest
+	(*GetSessionsResponse)(nil),       // 6: sessions.GetSessionsResponse
+	(*UpdateSessionRequest)(nil),      // 7: sessions.UpdateSessionRequest
+	(*UpdateSessionResponse)(nil),     // 8: sessions.UpdateSessionResponse
+	(*DeactivateSessionRequest)(nil),  // 9: sessions.DeactivateSessionRequest
+	(*DeactivateSessionResponse)(nil), // 10: sessions.DeactivateSessionResponse
+	nil,                               // 11: sessions.GetSessionsRequest.FilterMapEntry
+	nil,                               // 12: sessions.UpdateSessionRequest.FieldMapEntry
+	(*timestamp.Timestamp)(nil),       // 13: google.protobuf.Timestamp
 }
 var file_sessions_proto_depIdxs = []int32{
-	11, // 0: sessions.CreateSessionRequest.expiredAt:type_name -> google.protobuf.Timestamp
+	13, // 0: sessions.CreateSessionRequest.expiredAt:type_name -> google.protobuf.Timestamp
 	2,  // 1: sessions.CreateSessionResponse.session:type_name -> sessions.SessionData
-	11, // 2: sessions.SessionData.expiredAt:type_name -> google.protobuf.Timestamp
-	11, // 3: sessions.SessionData.updatedAt:type_name -> google.protobuf.Timestamp
-	11, // 4: sessions.SessionData.createdAt:type_name -> google.protobuf.Timestamp
+	13, // 2: sessions.SessionData.expiredAt:type_name -> google.protobuf.Timestamp
+	13, // 3: sessions.SessionData.updatedAt:type_name -> google.protobuf.Timestamp
+	13, // 4: sessions.SessionData.createdAt:type_name -> google.protobuf.Timestamp
 	2,  // 5: sessions.GetSessionByIdResponse.session:type_name -> sessions.SessionData
-	9,  // 6: sessions.GetSessionsRequest.filterMap:type_name -> sessions.GetSessionsRequest.FilterMapEntry
+	11, // 6: sessions.GetSessionsRequest.filterMap:type_name -> sessions.GetSessionsRequest.FilterMapEntry
 	2,  // 7: sessions.GetSessionsResponse.sessions:type_name -> sessions.SessionData
-	10, // 8: sessions.UpdateSessionRequest.fieldMap:type_name -> sessions.UpdateSessionRequest.FieldMapEntry
+	12, // 8: sessions.UpdateSessionRequest.fieldMap:type_name -> sessions.UpdateSessionRequest.FieldMapEntry
 	2,  // 9: sessions.UpdateSessionResponse.session:type_name -> sessions.SessionData
 	0,  // 10: sessions.SessionsService.CreateSession:input_type -> sessions.CreateSessionRequest
 	3,  // 11: sessions.SessionsService.GetSessionById:input_type -> sessions.GetSessionByIdRequest
 	5,  // 12: sessions.SessionsService.GetSessions:input_type -> sessions.GetSessionsRequest
 	7,  // 13: sessions.SessionsService.UpdateSession:input_type -> sessions.UpdateSessionRequest
-	1,  // 14: sessions.SessionsService.CreateSession:output_type -> sessions.CreateSessionResponse
-	4,  // 15: sessions.SessionsService.GetSessionById:output_type -> sessions.GetSessionByIdResponse
-	6,  // 16: sessions.SessionsService.GetSessions:output_type -> sessions.GetSessionsResponse
-	8,  // 17: sessions.SessionsService.UpdateSession:output_type -> sessions.UpdateSessionResponse
-	14, // [14:18] is the sub-list for method output_type
-	10, // [10:14] is the sub-list for method input_type
+	9,  // 14: sessions.SessionsService.DeactivateSession:input_type -> sessions.DeactivateSessionRequest
+	1,  // 15: sessions.SessionsService.CreateSession:output_type -> sessions.CreateSessionResponse
+	4,  // 16: sessions.SessionsService.GetSessionById:output_type -> sessions.GetSessionByIdResponse
+	6,  // 17: sessions.SessionsService.GetSessions:output_type -> sessions.GetSessionsResponse
+	8,  // 18: sessions.SessionsService.UpdateSession:output_type -> sessions.UpdateSessionResponse
+	10, // 19: sessions.SessionsService.DeactivateSession:output_type -> sessions.DeactivateSessionResponse
+	15, // [15:20] is the sub-list for method output_type
+	10, // [10:15] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name
 	10, // [10:10] is the sub-list for extension extendee
 	0,  // [0:10] is the sub-list for field type_name
@@ -647,7 +753,7 @@ func file_sessions_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_sessions_proto_rawDesc), len(file_sessions_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

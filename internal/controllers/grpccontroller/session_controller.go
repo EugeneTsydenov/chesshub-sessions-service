@@ -10,10 +10,11 @@ import (
 
 type SessionController struct {
 	sessionsproto.UnimplementedSessionsServiceServer
-	createSessionUseCase  usecase.CreateSessionUseCase
-	getSessionByIdUseCase usecase.GetSessionByIdUseCase
-	getSessionsUseCase    usecase.GetSessionsUseCase
-	updateSessionUseCase  usecase.UpdateSessionUseCase
+	createSessionUseCase     usecase.CreateSessionUseCase
+	getSessionByIdUseCase    usecase.GetSessionByIdUseCase
+	getSessionsUseCase       usecase.GetSessionsUseCase
+	updateSessionUseCase     usecase.UpdateSessionUseCase
+	deactivateSessionUseCase usecase.DeactivateSessionUseCase
 }
 
 func NewSessionController(
@@ -21,12 +22,14 @@ func NewSessionController(
 	getSessionByIdUseCase usecase.GetSessionByIdUseCase,
 	getSessionsUseCase usecase.GetSessionsUseCase,
 	updateSessionUseCase usecase.UpdateSessionUseCase,
+	deactivateSessionUseCase usecase.DeactivateSessionUseCase,
 ) *SessionController {
 	return &SessionController{
-		createSessionUseCase:  createSessionUseCase,
-		getSessionByIdUseCase: getSessionByIdUseCase,
-		getSessionsUseCase:    getSessionsUseCase,
-		updateSessionUseCase:  updateSessionUseCase,
+		createSessionUseCase:     createSessionUseCase,
+		getSessionByIdUseCase:    getSessionByIdUseCase,
+		getSessionsUseCase:       getSessionsUseCase,
+		updateSessionUseCase:     updateSessionUseCase,
+		deactivateSessionUseCase: deactivateSessionUseCase,
 	}
 }
 
@@ -92,4 +95,20 @@ func (c *SessionController) UpdateSession(ctx context.Context, req *sessionsprot
 	}
 
 	return mapper.ToUpdateSessionResponse(r), nil
+}
+
+func (c *SessionController) DeactivateSession(ctx context.Context, req *sessionsproto.DeactivateSessionRequest) (*sessionsproto.DeactivateSessionResponse, error) {
+	if err := req.ValidateAll(); err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
+	defer cancel()
+
+	r, err := c.deactivateSessionUseCase.Execute(ctx, mapper.ToDeactivateSessionInputDTO(req))
+	if err != nil {
+		return nil, err
+	}
+
+	return mapper.ToDeactivateSessionResponse(r), nil
 }

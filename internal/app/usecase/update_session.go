@@ -7,7 +7,6 @@ import (
 	apperrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/errors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/port"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/specs/sessionspec"
-	"log"
 )
 
 type UpdateSessionUseCase interface {
@@ -27,10 +26,9 @@ func NewUpdateSessionUseCase(sessionsRepo port.SessionsRepo) *UpdateSessionUseCa
 }
 
 func (u UpdateSessionUseCaseImpl) Execute(ctx context.Context, input *dto.UpdateSessionInputDTO) (*dto.UpdateSessionOutputDTO, error) {
-	log.Print(input.FieldMap)
 	spec := sessionspec.NewSessionUpdateSpec(input.SessionID, input.FieldMap)
 
-	updatedSession, err := u.sessionsRepo.Update(ctx, spec)
+	updatedSession, err := u.sessionsRepo.UpdateBySpec(ctx, spec)
 
 	if errors.Is(err, context.DeadlineExceeded) {
 		return nil, apperrors.NewDeadlineExceededError("update session too long", err)

@@ -11,6 +11,7 @@ service SessionsService {
   rpc GetSessionById(GetSessionByIdRequest) returns (GetSessionByIdResponse) {}
   rpc GetSessions(GetSessionsRequest) returns (GetSessionsResponse) {}
   rpc UpdateSession(UpdateSessionRequest) returns (UpdateSessionResponse) {}
+  rpc DeactivateSession(DeactivateSessionRequest) returns (DeactivateSessionResponse) {}
 }
 
 message CreateSessionRequest {
@@ -46,12 +47,6 @@ message GetSessionByIdResponse {
 
 message GetSessionsRequest {
   map<string, string> filterMap = 2;
-//optional int64 userId = 1;
-//  optional string ipAddress = 2;
-//  optional string deviceInfo = 3;
-//  optional bool isActive = 4;
-//  optional google.protobuf.Timestamp expiredAfter = 5;
-//  optional google.protobuf.Timestamp expiredBefore = 6;
 }
 
 message GetSessionsResponse {
@@ -66,5 +61,14 @@ message UpdateSessionRequest {
 
 message UpdateSessionResponse {
   SessionData session = 1;
+  string message = 2;
+}
+
+message DeactivateSessionRequest {
+  string sessionId = 1;
+}
+
+message DeactivateSessionResponse {
+  bool success = 1;
   string message = 2;
 }
