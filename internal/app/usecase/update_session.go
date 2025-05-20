@@ -2,9 +2,12 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
 	apperrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/errors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/port"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/specs/sessionspec"
+	"log"
 )
 
 type UpdateSessionUseCase interface {
@@ -24,32 +27,22 @@ func NewUpdateSessionUseCase(sessionsRepo port.SessionsRepo) *UpdateSessionUseCa
 }
 
 func (u UpdateSessionUseCaseImpl) Execute(ctx context.Context, input *dto.UpdateSessionInputDTO) (*dto.UpdateSessionOutputDTO, error) {
-	session, err := u.sessionsRepo.GetByID(ctx, input.SessionID)
+	log.Print(input.FieldMap)
+	spec := sessionspec.NewSessionUpdateSpec(input.SessionID, input.FieldMap)
+
+	updatedSession, err := u.sessionsRepo.Update(ctx, spec)
+
+	if errors.Is(err, context.DeadlineExceeded) {
+		return nil, apperrors.NewDeadlineExceededError("update session too long", err)
+	}
+
+	if errors.Is(err, context.Canceled) {
+		return nil, apperrors.NewCanceledError("update session closed", err)
+	}
+
 	if err != nil {
-		return nil, apperrors.NewNotFoundError("session not found", err)
+		return nil, err
 	}
-
-	if input.IpAddr != nil {
-		session.UpdateIpAddr(*input.IpAddr)
-	}
-
-	if input.DeviceInfo != nil {
-		session.UpdateDeviceInfo(*input.DeviceInfo)
-	}
-
-	if input.IsActive != nil || *input.IsActive {
-		session.Activate()
-	} else {
-		session.Deactivate()
-	}
-
-	if !input.ExpiredAt.IsZero() {
-		session.Refresh(input.ExpiredAt)
-	}
-
-	session.Touch()
-
-	updatedSession, err := u.sessionsRepo.Update(ctx, session)
 
 	return &dto.UpdateSessionOutputDTO{
 		Session: updatedSession,

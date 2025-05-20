@@ -21,6 +21,10 @@ func (s *SessionFilterSpec) ToSQL() (string, []any, error) {
 	var specs []spec.Spec
 	paramIndex := 1
 
+	if len(s.filterMap) < 1 {
+		return baseQuery, nil, nil
+	}
+
 	for key, value := range s.filterMap {
 		column, ok := fieldToColumn[key]
 		if !ok {

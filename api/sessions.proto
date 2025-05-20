@@ -61,10 +61,7 @@ message GetSessionsResponse {
 
 message UpdateSessionRequest {
   string sessionId = 1;
-  optional string ipAddress = 2;
-  optional string deviceInfo = 3;
-  optional bool isActive = 4;
-  optional google.protobuf.Timestamp expiredAt = 5;
+  map<string, string> fieldMap = 2;
 }
 
 message UpdateSessionResponse {

@@ -1002,50 +1002,7 @@ func (m *UpdateSessionRequest) validate(all bool) error {
 
 	// no validation rules for SessionId
 
-	if m.IpAddress != nil {
-		// no validation rules for IpAddress
-	}
-
-	if m.DeviceInfo != nil {
-		// no validation rules for DeviceInfo
-	}
-
-	if m.IsActive != nil {
-		// no validation rules for IsActive
-	}
-
-	if m.ExpiredAt != nil {
-
-		if all {
-			switch v := interface{}(m.GetExpiredAt()).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, UpdateSessionRequestValidationError{
-						field:  "ExpiredAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, UpdateSessionRequestValidationError{
-						field:  "ExpiredAt",
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(m.GetExpiredAt()).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return UpdateSessionRequestValidationError{
-					field:  "ExpiredAt",
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
-			}
-		}
-
-	}
+	// no validation rules for FieldMap
 
 	if len(errors) > 0 {
 		return UpdateSessionRequestMultiError(errors)

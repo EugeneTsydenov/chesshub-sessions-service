@@ -2,12 +2,14 @@ package repo
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres"
 	postgreserrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres/errors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/pkg/spec"
 	"github.com/jackc/pgx/v5"
+	"log"
 	"time"
 )
 
@@ -126,13 +128,14 @@ func (r *PostgresSessionRepositoryImpl) GetAll(ctx context.Context, spec spec.Sp
 	return sessions, nil
 }
 
-func (r *PostgresSessionRepositoryImpl) Update(ctx context.Context, entity *entity.Session) (*entity.Session, error) {
-	query := `
-			UPDATE sessions 
-			SET user_id = $1, ip_address = $2, device_info = $3, is_active = $4, expired_at = $5, updated_at = $6, created_at = $7 
-			WHERE id = $8 
-			RETURNING id, user_id, ip_address, device_info, is_active, expired_at, updated_at, created_at`
-	row := r.database.Pool().QueryRow(ctx, query, entity.UserID(), entity.IPAddr(), entity.DeviceInfo(), entity.IsActive(), entity.ExpiredAt(), entity.UpdatedAt(), entity.ExpiredAt(), entity.ID())
+func (r *PostgresSessionRepositoryImpl) Update(ctx context.Context, spec spec.Spec) (*entity.Session, error) {
+	query, args, err := spec.ToSQL()
+	log.Print(query, args)
+	if err != nil {
+		return nil, err
+	}
+
+	row := r.database.Pool().QueryRow(ctx, query, args...)
 
 	session, err := scanSession(ctx, row)
 	if errors.Is(err, context.DeadlineExceeded) {
@@ -141,6 +144,10 @@ func (r *PostgresSessionRepositoryImpl) Update(ctx context.Context, entity *enti
 
 	if errors.Is(err, context.Canceled) {
 		return nil, errors.New("update session was canceled by client or system")
+	}
+
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, postgreserrors.NewNoRowsError("session not found")
 	}
 
 	if err != nil {

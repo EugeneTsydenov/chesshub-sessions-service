@@ -5,7 +5,6 @@ import (
 	sessionsproto "github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/genproto"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"time"
 )
 
 func ToCreateSessionInputDTO(req *sessionsproto.CreateSessionRequest) *dto.CreateSessionInputDTO {
@@ -43,15 +42,6 @@ func ToGetSessionsInputDTO(req *sessionsproto.GetSessionsRequest) *dto.GetSessio
 	}
 }
 
-func toTime(ts *timestamppb.Timestamp) time.Time {
-	var t time.Time
-	if ts != nil {
-		t = ts.AsTime()
-	}
-
-	return t
-}
-
 func ToGetSessionsResponse(output *dto.GetSessionsOutputDTO) *sessionsproto.GetSessionsResponse {
 	converted := make([]*sessionsproto.SessionData, len(output.Sessions), cap(output.Sessions))
 	for i, v := range output.Sessions {
@@ -78,11 +68,8 @@ func toSessionData(session *entity.Session) *sessionsproto.SessionData {
 
 func ToUpdateSessionInputDTO(req *sessionsproto.UpdateSessionRequest) *dto.UpdateSessionInputDTO {
 	return &dto.UpdateSessionInputDTO{
-		SessionID:  req.SessionId,
-		IpAddr:     req.IpAddress,
-		DeviceInfo: req.DeviceInfo,
-		IsActive:   req.IsActive,
-		ExpiredAt:  toTime(req.ExpiredAt),
+		SessionID: req.SessionId,
+		FieldMap:  req.FieldMap,
 	}
 }
 
