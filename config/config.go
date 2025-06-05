@@ -3,9 +3,8 @@ package config
 import (
 	"errors"
 	"fmt"
-	"strings"
-
 	"github.com/spf13/viper"
+	"strings"
 )
 
 const defaultConfigName = "config"
@@ -19,6 +18,7 @@ const (
 type Config struct {
 	App      AppConfig      `mapstructure:"app"`
 	Database DatabaseConfig `mapstructure:"database"`
+	GeoIp    GeoIp
 }
 
 type AppConfig struct {
@@ -36,6 +36,10 @@ type DatabaseConfig struct {
 	SSLMode  string `mapstructure:"ssl_mode"`
 }
 
+type GeoIp struct {
+	DatabasePath string `mapstructure:"database_path"`
+}
+
 func Load(env, cfgPath string) (*Config, error) {
 	if cfgPath == "" {
 		return nil, errors.New("config file path is empty")
@@ -43,12 +47,7 @@ func Load(env, cfgPath string) (*Config, error) {
 
 	cfg := &Config{}
 
-	err := loadDefaultCfg(cfgPath)
-	if err != nil {
-		return nil, err
-	}
-
-	err = loadEnvCfg(env, cfgPath)
+	err := loadEnvCfg(env, cfgPath)
 	if err != nil {
 		return nil, err
 	}
@@ -63,18 +62,6 @@ func Load(env, cfgPath string) (*Config, error) {
 	}
 
 	return cfg, err
-}
-
-func loadDefaultCfg(cfgPath string) error {
-	viper.AddConfigPath(cfgPath)
-	viper.SetConfigName(defaultConfigName)
-	viper.SetConfigType("yaml")
-
-	if err := viper.ReadInConfig(); err != nil {
-		return fmt.Errorf("failed to read base config: %w", err)
-	}
-
-	return nil
 }
 
 func loadEnvCfg(env string, cfgPath string) error {

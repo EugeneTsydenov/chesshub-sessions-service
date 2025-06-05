@@ -1,5 +1,4 @@
 version: "3.9"
-
 services:
   app:
     build:
@@ -22,7 +21,9 @@ services:
       - chesshub-net
 
   db:
-    image: postgres:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.local.postgres
     container_name: chesshub-sessions-local-db
     ports:
       - "9432:5432"
@@ -48,3 +49,6 @@ services:
 
 networks:
   chesshub-net:
+
+volumes:
+  postgres_data:

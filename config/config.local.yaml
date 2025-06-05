@@ -1,3 +1,14 @@
 app:
   env: local
   port: 8080
+
+database:
+  host: chesshub-sessions-local-db
+  port: 5432
+  name: chesshub
+  user: postgres
+  ssl_mode: disable
+  driver: postgres
+
+geoip:
+  database_path: ./geo/GeoTestCity.BIN

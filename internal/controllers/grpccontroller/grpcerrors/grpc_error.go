@@ -3,7 +3,7 @@ package grpcerrors
 import (
 	"errors"
 	"fmt"
-	apperrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/errors"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/pkg/apperrors"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -20,7 +20,7 @@ func ToGRPCError(err error) error {
 }
 
 func appErrorToGRPCError(err *apperrors.AppError) error {
-	switch err.Code {
+	switch err.Type {
 	case apperrors.InvalidArgument:
 		return withDetails(codes.InvalidArgument, err)
 	case apperrors.NotFound:
@@ -44,9 +44,9 @@ func appErrorToGRPCError(err *apperrors.AppError) error {
 
 func withDetails(code codes.Code, err *apperrors.AppError) error {
 	errInfo := &errdetails.ErrorInfo{
-		Reason:   err.Code.String(),
-		Domain:   "user",
-		Metadata: err.Details,
+		Reason:   err.Type.String(),
+		Domain:   "session",
+		Metadata: err.Metadata,
 	}
 
 	st := status.New(code, err.Message)

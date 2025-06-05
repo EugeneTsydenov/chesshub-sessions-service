@@ -22,12 +22,114 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type DeviceType int32
+
+const (
+	DeviceType_Web     DeviceType = 0
+	DeviceType_Mobile  DeviceType = 1
+	DeviceType_Desktop DeviceType = 2
+	DeviceType_Tablet  DeviceType = 3
+)
+
+// Enum value maps for DeviceType.
+var (
+	DeviceType_name = map[int32]string{
+		0: "Web",
+		1: "Mobile",
+		2: "Desktop",
+		3: "Tablet",
+	}
+	DeviceType_value = map[string]int32{
+		"Web":     0,
+		"Mobile":  1,
+		"Desktop": 2,
+		"Tablet":  3,
+	}
+)
+
+func (x DeviceType) Enum() *DeviceType {
+	p := new(DeviceType)
+	*p = x
+	return p
+}
+
+func (x DeviceType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (DeviceType) Descriptor() protoreflect.EnumDescriptor {
+	return file_sessions_proto_enumTypes[0].Descriptor()
+}
+
+func (DeviceType) Type() protoreflect.EnumType {
+	return &file_sessions_proto_enumTypes[0]
+}
+
+func (x DeviceType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use DeviceType.Descriptor instead.
+func (DeviceType) EnumDescriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{0}
+}
+
+type AppType int32
+
+const (
+	AppType_ChesshubWeb     AppType = 0
+	AppType_ChesshubMobile  AppType = 1
+	AppType_ChesshubDesktop AppType = 2
+	AppType_ChesshubTablet  AppType = 3
+)
+
+// Enum value maps for AppType.
+var (
+	AppType_name = map[int32]string{
+		0: "ChesshubWeb",
+		1: "ChesshubMobile",
+		2: "ChesshubDesktop",
+		3: "ChesshubTablet",
+	}
+	AppType_value = map[string]int32{
+		"ChesshubWeb":     0,
+		"ChesshubMobile":  1,
+		"ChesshubDesktop": 2,
+		"ChesshubTablet":  3,
+	}
+)
+
+func (x AppType) Enum() *AppType {
+	p := new(AppType)
+	*p = x
+	return p
+}
+
+func (x AppType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (AppType) Descriptor() protoreflect.EnumDescriptor {
+	return file_sessions_proto_enumTypes[1].Descriptor()
+}
+
+func (AppType) Type() protoreflect.EnumType {
+	return &file_sessions_proto_enumTypes[1]
+}
+
+func (x AppType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use AppType.Descriptor instead.
+func (AppType) EnumDescriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{1}
+}
+
 type CreateSessionRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        int64                  `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
-	IpAddress     string                 `protobuf:"bytes,3,opt,name=ipAddress,proto3" json:"ipAddress,omitempty"`
-	DeviceInfo    string                 `protobuf:"bytes,4,opt,name=deviceInfo,proto3" json:"deviceInfo,omitempty"`
-	ExpiredAt     *timestamp.Timestamp   `protobuf:"bytes,5,opt,name=expiredAt,proto3" json:"expiredAt,omitempty"`
+	DeviceInfo    *DeviceInfo            `protobuf:"bytes,4,opt,name=deviceInfo,proto3" json:"deviceInfo,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -69,30 +171,116 @@ func (x *CreateSessionRequest) GetUserId() int64 {
 	return 0
 }
 
-func (x *CreateSessionRequest) GetIpAddress() string {
-	if x != nil {
-		return x.IpAddress
-	}
-	return ""
-}
-
-func (x *CreateSessionRequest) GetDeviceInfo() string {
+func (x *CreateSessionRequest) GetDeviceInfo() *DeviceInfo {
 	if x != nil {
 		return x.DeviceInfo
-	}
-	return ""
-}
-
-func (x *CreateSessionRequest) GetExpiredAt() *timestamp.Timestamp {
-	if x != nil {
-		return x.ExpiredAt
 	}
 	return nil
 }
 
+type DeviceInfo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	DeviceType    DeviceType             `protobuf:"varint,1,opt,name=deviceType,proto3,enum=sessions.DeviceType" json:"deviceType,omitempty"`
+	DeviceName    *string                `protobuf:"bytes,2,opt,name=deviceName,proto3,oneof" json:"deviceName,omitempty"`
+	AppType       AppType                `protobuf:"varint,3,opt,name=appType,proto3,enum=sessions.AppType" json:"appType,omitempty"`
+	AppVersion    string                 `protobuf:"bytes,4,opt,name=appVersion,proto3" json:"appVersion,omitempty"`
+	Os            string                 `protobuf:"bytes,5,opt,name=os,proto3" json:"os,omitempty"`
+	OsVersion     *string                `protobuf:"bytes,6,opt,name=osVersion,proto3,oneof" json:"osVersion,omitempty"`
+	DeviceModel   *string                `protobuf:"bytes,7,opt,name=deviceModel,proto3,oneof" json:"deviceModel,omitempty"`
+	IpAddr        string                 `protobuf:"bytes,8,opt,name=ipAddr,proto3" json:"ipAddr,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeviceInfo) Reset() {
+	*x = DeviceInfo{}
+	mi := &file_sessions_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeviceInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeviceInfo) ProtoMessage() {}
+
+func (x *DeviceInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeviceInfo.ProtoReflect.Descriptor instead.
+func (*DeviceInfo) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *DeviceInfo) GetDeviceType() DeviceType {
+	if x != nil {
+		return x.DeviceType
+	}
+	return DeviceType_Web
+}
+
+func (x *DeviceInfo) GetDeviceName() string {
+	if x != nil && x.DeviceName != nil {
+		return *x.DeviceName
+	}
+	return ""
+}
+
+func (x *DeviceInfo) GetAppType() AppType {
+	if x != nil {
+		return x.AppType
+	}
+	return AppType_ChesshubWeb
+}
+
+func (x *DeviceInfo) GetAppVersion() string {
+	if x != nil {
+		return x.AppVersion
+	}
+	return ""
+}
+
+func (x *DeviceInfo) GetOs() string {
+	if x != nil {
+		return x.Os
+	}
+	return ""
+}
+
+func (x *DeviceInfo) GetOsVersion() string {
+	if x != nil && x.OsVersion != nil {
+		return *x.OsVersion
+	}
+	return ""
+}
+
+func (x *DeviceInfo) GetDeviceModel() string {
+	if x != nil && x.DeviceModel != nil {
+		return *x.DeviceModel
+	}
+	return ""
+}
+
+func (x *DeviceInfo) GetIpAddr() string {
+	if x != nil {
+		return x.IpAddr
+	}
+	return ""
+}
+
 type CreateSessionResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Session       *SessionData           `protobuf:"bytes,1,opt,name=session,proto3" json:"session,omitempty"`
+	SessionID     string                 `protobuf:"bytes,1,opt,name=sessionID,proto3" json:"sessionID,omitempty"`
 	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -100,7 +288,7 @@ type CreateSessionResponse struct {
 
 func (x *CreateSessionResponse) Reset() {
 	*x = CreateSessionResponse{}
-	mi := &file_sessions_proto_msgTypes[1]
+	mi := &file_sessions_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -112,7 +300,7 @@ func (x *CreateSessionResponse) String() string {
 func (*CreateSessionResponse) ProtoMessage() {}
 
 func (x *CreateSessionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_sessions_proto_msgTypes[1]
+	mi := &file_sessions_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -125,14 +313,14 @@ func (x *CreateSessionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateSessionResponse.ProtoReflect.Descriptor instead.
 func (*CreateSessionResponse) Descriptor() ([]byte, []int) {
-	return file_sessions_proto_rawDescGZIP(), []int{1}
+	return file_sessions_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *CreateSessionResponse) GetSession() *SessionData {
+func (x *CreateSessionResponse) GetSessionID() string {
 	if x != nil {
-		return x.Session
+		return x.SessionID
 	}
-	return nil
+	return ""
 }
 
 func (x *CreateSessionResponse) GetMessage() string {
@@ -157,7 +345,7 @@ type SessionData struct {
 
 func (x *SessionData) Reset() {
 	*x = SessionData{}
-	mi := &file_sessions_proto_msgTypes[2]
+	mi := &file_sessions_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -169,7 +357,7 @@ func (x *SessionData) String() string {
 func (*SessionData) ProtoMessage() {}
 
 func (x *SessionData) ProtoReflect() protoreflect.Message {
-	mi := &file_sessions_proto_msgTypes[2]
+	mi := &file_sessions_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -182,7 +370,7 @@ func (x *SessionData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SessionData.ProtoReflect.Descriptor instead.
 func (*SessionData) Descriptor() ([]byte, []int) {
-	return file_sessions_proto_rawDescGZIP(), []int{2}
+	return file_sessions_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *SessionData) GetId() string {
@@ -243,7 +431,7 @@ type GetSessionByIdRequest struct {
 
 func (x *GetSessionByIdRequest) Reset() {
 	*x = GetSessionByIdRequest{}
-	mi := &file_sessions_proto_msgTypes[3]
+	mi := &file_sessions_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -255,7 +443,7 @@ func (x *GetSessionByIdRequest) String() string {
 func (*GetSessionByIdRequest) ProtoMessage() {}
 
 func (x *GetSessionByIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_sessions_proto_msgTypes[3]
+	mi := &file_sessions_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -268,7 +456,7 @@ func (x *GetSessionByIdRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSessionByIdRequest.ProtoReflect.Descriptor instead.
 func (*GetSessionByIdRequest) Descriptor() ([]byte, []int) {
-	return file_sessions_proto_rawDescGZIP(), []int{3}
+	return file_sessions_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetSessionByIdRequest) GetId() string {
@@ -288,7 +476,7 @@ type GetSessionByIdResponse struct {
 
 func (x *GetSessionByIdResponse) Reset() {
 	*x = GetSessionByIdResponse{}
-	mi := &file_sessions_proto_msgTypes[4]
+	mi := &file_sessions_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -300,7 +488,7 @@ func (x *GetSessionByIdResponse) String() string {
 func (*GetSessionByIdResponse) ProtoMessage() {}
 
 func (x *GetSessionByIdResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_sessions_proto_msgTypes[4]
+	mi := &file_sessions_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -313,7 +501,7 @@ func (x *GetSessionByIdResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSessionByIdResponse.ProtoReflect.Descriptor instead.
 func (*GetSessionByIdResponse) Descriptor() ([]byte, []int) {
-	return file_sessions_proto_rawDescGZIP(), []int{4}
+	return file_sessions_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetSessionByIdResponse) GetSession() *SessionData {
@@ -339,7 +527,7 @@ type GetSessionsRequest struct {
 
 func (x *GetSessionsRequest) Reset() {
 	*x = GetSessionsRequest{}
-	mi := &file_sessions_proto_msgTypes[5]
+	mi := &file_sessions_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -351,7 +539,7 @@ func (x *GetSessionsRequest) String() string {
 func (*GetSessionsRequest) ProtoMessage() {}
 
 func (x *GetSessionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_sessions_proto_msgTypes[5]
+	mi := &file_sessions_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -364,7 +552,7 @@ func (x *GetSessionsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSessionsRequest.ProtoReflect.Descriptor instead.
 func (*GetSessionsRequest) Descriptor() ([]byte, []int) {
-	return file_sessions_proto_rawDescGZIP(), []int{5}
+	return file_sessions_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetSessionsRequest) GetFilterMap() map[string]string {
@@ -384,7 +572,7 @@ type GetSessionsResponse struct {
 
 func (x *GetSessionsResponse) Reset() {
 	*x = GetSessionsResponse{}
-	mi := &file_sessions_proto_msgTypes[6]
+	mi := &file_sessions_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -396,7 +584,7 @@ func (x *GetSessionsResponse) String() string {
 func (*GetSessionsResponse) ProtoMessage() {}
 
 func (x *GetSessionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_sessions_proto_msgTypes[6]
+	mi := &file_sessions_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -409,7 +597,7 @@ func (x *GetSessionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSessionsResponse.ProtoReflect.Descriptor instead.
 func (*GetSessionsResponse) Descriptor() ([]byte, []int) {
-	return file_sessions_proto_rawDescGZIP(), []int{6}
+	return file_sessions_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetSessionsResponse) GetSessions() []*SessionData {
@@ -436,7 +624,7 @@ type UpdateSessionRequest struct {
 
 func (x *UpdateSessionRequest) Reset() {
 	*x = UpdateSessionRequest{}
-	mi := &file_sessions_proto_msgTypes[7]
+	mi := &file_sessions_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -448,7 +636,7 @@ func (x *UpdateSessionRequest) String() string {
 func (*UpdateSessionRequest) ProtoMessage() {}
 
 func (x *UpdateSessionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_sessions_proto_msgTypes[7]
+	mi := &file_sessions_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -461,7 +649,7 @@ func (x *UpdateSessionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSessionRequest.ProtoReflect.Descriptor instead.
 func (*UpdateSessionRequest) Descriptor() ([]byte, []int) {
-	return file_sessions_proto_rawDescGZIP(), []int{7}
+	return file_sessions_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *UpdateSessionRequest) GetSessionId() string {
@@ -488,7 +676,7 @@ type UpdateSessionResponse struct {
 
 func (x *UpdateSessionResponse) Reset() {
 	*x = UpdateSessionResponse{}
-	mi := &file_sessions_proto_msgTypes[8]
+	mi := &file_sessions_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -500,7 +688,7 @@ func (x *UpdateSessionResponse) String() string {
 func (*UpdateSessionResponse) ProtoMessage() {}
 
 func (x *UpdateSessionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_sessions_proto_msgTypes[8]
+	mi := &file_sessions_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -513,7 +701,7 @@ func (x *UpdateSessionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSessionResponse.ProtoReflect.Descriptor instead.
 func (*UpdateSessionResponse) Descriptor() ([]byte, []int) {
-	return file_sessions_proto_rawDescGZIP(), []int{8}
+	return file_sessions_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *UpdateSessionResponse) GetSession() *SessionData {
@@ -539,7 +727,7 @@ type DeactivateSessionRequest struct {
 
 func (x *DeactivateSessionRequest) Reset() {
 	*x = DeactivateSessionRequest{}
-	mi := &file_sessions_proto_msgTypes[9]
+	mi := &file_sessions_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -551,7 +739,7 @@ func (x *DeactivateSessionRequest) String() string {
 func (*DeactivateSessionRequest) ProtoMessage() {}
 
 func (x *DeactivateSessionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_sessions_proto_msgTypes[9]
+	mi := &file_sessions_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -564,7 +752,7 @@ func (x *DeactivateSessionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeactivateSessionRequest.ProtoReflect.Descriptor instead.
 func (*DeactivateSessionRequest) Descriptor() ([]byte, []int) {
-	return file_sessions_proto_rawDescGZIP(), []int{9}
+	return file_sessions_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *DeactivateSessionRequest) GetSessionId() string {
@@ -584,7 +772,7 @@ type DeactivateSessionResponse struct {
 
 func (x *DeactivateSessionResponse) Reset() {
 	*x = DeactivateSessionResponse{}
-	mi := &file_sessions_proto_msgTypes[10]
+	mi := &file_sessions_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -596,7 +784,7 @@ func (x *DeactivateSessionResponse) String() string {
 func (*DeactivateSessionResponse) ProtoMessage() {}
 
 func (x *DeactivateSessionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_sessions_proto_msgTypes[10]
+	mi := &file_sessions_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -609,7 +797,7 @@ func (x *DeactivateSessionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeactivateSessionResponse.ProtoReflect.Descriptor instead.
 func (*DeactivateSessionResponse) Descriptor() ([]byte, []int) {
-	return file_sessions_proto_rawDescGZIP(), []int{10}
+	return file_sessions_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *DeactivateSessionResponse) GetSuccess() bool {
@@ -630,16 +818,34 @@ var File_sessions_proto protoreflect.FileDescriptor
 
 const file_sessions_proto_rawDesc = "" +
 	"\n" +
-	"\x0esessions.proto\x12\bsessions\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa6\x01\n" +
+	"\x0esessions.proto\x12\bsessions\x1a\x1fgoogle/protobuf/timestamp.proto\"d\n" +
 	"\x14CreateSessionRequest\x12\x16\n" +
-	"\x06userId\x18\x01 \x01(\x03R\x06userId\x12\x1c\n" +
-	"\tipAddress\x18\x03 \x01(\tR\tipAddress\x12\x1e\n" +
+	"\x06userId\x18\x01 \x01(\x03R\x06userId\x124\n" +
 	"\n" +
-	"deviceInfo\x18\x04 \x01(\tR\n" +
-	"deviceInfo\x128\n" +
-	"\texpiredAt\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\texpiredAt\"b\n" +
-	"\x15CreateSessionResponse\x12/\n" +
-	"\asession\x18\x01 \x01(\v2\x15.sessions.SessionDataR\asession\x12\x18\n" +
+	"deviceInfo\x18\x04 \x01(\v2\x14.sessions.DeviceInfoR\n" +
+	"deviceInfo\"\xd3\x02\n" +
+	"\n" +
+	"DeviceInfo\x124\n" +
+	"\n" +
+	"deviceType\x18\x01 \x01(\x0e2\x14.sessions.DeviceTypeR\n" +
+	"deviceType\x12#\n" +
+	"\n" +
+	"deviceName\x18\x02 \x01(\tH\x00R\n" +
+	"deviceName\x88\x01\x01\x12+\n" +
+	"\aappType\x18\x03 \x01(\x0e2\x11.sessions.AppTypeR\aappType\x12\x1e\n" +
+	"\n" +
+	"appVersion\x18\x04 \x01(\tR\n" +
+	"appVersion\x12\x0e\n" +
+	"\x02os\x18\x05 \x01(\tR\x02os\x12!\n" +
+	"\tosVersion\x18\x06 \x01(\tH\x01R\tosVersion\x88\x01\x01\x12%\n" +
+	"\vdeviceModel\x18\a \x01(\tH\x02R\vdeviceModel\x88\x01\x01\x12\x16\n" +
+	"\x06ipAddr\x18\b \x01(\tR\x06ipAddrB\r\n" +
+	"\v_deviceNameB\f\n" +
+	"\n" +
+	"_osVersionB\x0e\n" +
+	"\f_deviceModel\"O\n" +
+	"\x15CreateSessionResponse\x12\x1c\n" +
+	"\tsessionID\x18\x01 \x01(\tR\tsessionID\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\"\xa5\x02\n" +
 	"\vSessionData\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1c\n" +
@@ -677,7 +883,20 @@ const file_sessions_proto_rawDesc = "" +
 	"\tsessionId\x18\x01 \x01(\tR\tsessionId\"O\n" +
 	"\x19DeactivateSessionResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\xbe\x03\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage*:\n" +
+	"\n" +
+	"DeviceType\x12\a\n" +
+	"\x03Web\x10\x00\x12\n" +
+	"\n" +
+	"\x06Mobile\x10\x01\x12\v\n" +
+	"\aDesktop\x10\x02\x12\n" +
+	"\n" +
+	"\x06Tablet\x10\x03*W\n" +
+	"\aAppType\x12\x0f\n" +
+	"\vChesshubWeb\x10\x00\x12\x12\n" +
+	"\x0eChesshubMobile\x10\x01\x12\x13\n" +
+	"\x0fChesshubDesktop\x10\x02\x12\x12\n" +
+	"\x0eChesshubTablet\x10\x032\xbe\x03\n" +
 	"\x0fSessionsService\x12R\n" +
 	"\rCreateSession\x12\x1e.sessions.CreateSessionRequest\x1a\x1f.sessions.CreateSessionResponse\"\x00\x12U\n" +
 	"\x0eGetSessionById\x12\x1f.sessions.GetSessionByIdRequest\x1a .sessions.GetSessionByIdResponse\"\x00\x12L\n" +
@@ -697,49 +916,54 @@ func file_sessions_proto_rawDescGZIP() []byte {
 	return file_sessions_proto_rawDescData
 }
 
-var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_sessions_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_sessions_proto_goTypes = []any{
-	(*CreateSessionRequest)(nil),      // 0: sessions.CreateSessionRequest
-	(*CreateSessionResponse)(nil),     // 1: sessions.CreateSessionResponse
-	(*SessionData)(nil),               // 2: sessions.SessionData
-	(*GetSessionByIdRequest)(nil),     // 3: sessions.GetSessionByIdRequest
-	(*GetSessionByIdResponse)(nil),    // 4: sessions.GetSessionByIdResponse
-	(*GetSessionsRequest)(nil),        // 5: sessions.GetSessionsRequest
-	(*GetSessionsResponse)(nil),       // 6: sessions.GetSessionsResponse
-	(*UpdateSessionRequest)(nil),      // 7: sessions.UpdateSessionRequest
-	(*UpdateSessionResponse)(nil),     // 8: sessions.UpdateSessionResponse
-	(*DeactivateSessionRequest)(nil),  // 9: sessions.DeactivateSessionRequest
-	(*DeactivateSessionResponse)(nil), // 10: sessions.DeactivateSessionResponse
-	nil,                               // 11: sessions.GetSessionsRequest.FilterMapEntry
-	nil,                               // 12: sessions.UpdateSessionRequest.FieldMapEntry
-	(*timestamp.Timestamp)(nil),       // 13: google.protobuf.Timestamp
+	(DeviceType)(0),                   // 0: sessions.DeviceType
+	(AppType)(0),                      // 1: sessions.AppType
+	(*CreateSessionRequest)(nil),      // 2: sessions.CreateSessionRequest
+	(*DeviceInfo)(nil),                // 3: sessions.DeviceInfo
+	(*CreateSessionResponse)(nil),     // 4: sessions.CreateSessionResponse
+	(*SessionData)(nil),               // 5: sessions.SessionData
+	(*GetSessionByIdRequest)(nil),     // 6: sessions.GetSessionByIdRequest
+	(*GetSessionByIdResponse)(nil),    // 7: sessions.GetSessionByIdResponse
+	(*GetSessionsRequest)(nil),        // 8: sessions.GetSessionsRequest
+	(*GetSessionsResponse)(nil),       // 9: sessions.GetSessionsResponse
+	(*UpdateSessionRequest)(nil),      // 10: sessions.UpdateSessionRequest
+	(*UpdateSessionResponse)(nil),     // 11: sessions.UpdateSessionResponse
+	(*DeactivateSessionRequest)(nil),  // 12: sessions.DeactivateSessionRequest
+	(*DeactivateSessionResponse)(nil), // 13: sessions.DeactivateSessionResponse
+	nil,                               // 14: sessions.GetSessionsRequest.FilterMapEntry
+	nil,                               // 15: sessions.UpdateSessionRequest.FieldMapEntry
+	(*timestamp.Timestamp)(nil),       // 16: google.protobuf.Timestamp
 }
 var file_sessions_proto_depIdxs = []int32{
-	13, // 0: sessions.CreateSessionRequest.expiredAt:type_name -> google.protobuf.Timestamp
-	2,  // 1: sessions.CreateSessionResponse.session:type_name -> sessions.SessionData
-	13, // 2: sessions.SessionData.expiredAt:type_name -> google.protobuf.Timestamp
-	13, // 3: sessions.SessionData.updatedAt:type_name -> google.protobuf.Timestamp
-	13, // 4: sessions.SessionData.createdAt:type_name -> google.protobuf.Timestamp
-	2,  // 5: sessions.GetSessionByIdResponse.session:type_name -> sessions.SessionData
-	11, // 6: sessions.GetSessionsRequest.filterMap:type_name -> sessions.GetSessionsRequest.FilterMapEntry
-	2,  // 7: sessions.GetSessionsResponse.sessions:type_name -> sessions.SessionData
-	12, // 8: sessions.UpdateSessionRequest.fieldMap:type_name -> sessions.UpdateSessionRequest.FieldMapEntry
-	2,  // 9: sessions.UpdateSessionResponse.session:type_name -> sessions.SessionData
-	0,  // 10: sessions.SessionsService.CreateSession:input_type -> sessions.CreateSessionRequest
-	3,  // 11: sessions.SessionsService.GetSessionById:input_type -> sessions.GetSessionByIdRequest
-	5,  // 12: sessions.SessionsService.GetSessions:input_type -> sessions.GetSessionsRequest
-	7,  // 13: sessions.SessionsService.UpdateSession:input_type -> sessions.UpdateSessionRequest
-	9,  // 14: sessions.SessionsService.DeactivateSession:input_type -> sessions.DeactivateSessionRequest
-	1,  // 15: sessions.SessionsService.CreateSession:output_type -> sessions.CreateSessionResponse
-	4,  // 16: sessions.SessionsService.GetSessionById:output_type -> sessions.GetSessionByIdResponse
-	6,  // 17: sessions.SessionsService.GetSessions:output_type -> sessions.GetSessionsResponse
-	8,  // 18: sessions.SessionsService.UpdateSession:output_type -> sessions.UpdateSessionResponse
-	10, // 19: sessions.SessionsService.DeactivateSession:output_type -> sessions.DeactivateSessionResponse
-	15, // [15:20] is the sub-list for method output_type
-	10, // [10:15] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	3,  // 0: sessions.CreateSessionRequest.deviceInfo:type_name -> sessions.DeviceInfo
+	0,  // 1: sessions.DeviceInfo.deviceType:type_name -> sessions.DeviceType
+	1,  // 2: sessions.DeviceInfo.appType:type_name -> sessions.AppType
+	16, // 3: sessions.SessionData.expiredAt:type_name -> google.protobuf.Timestamp
+	16, // 4: sessions.SessionData.updatedAt:type_name -> google.protobuf.Timestamp
+	16, // 5: sessions.SessionData.createdAt:type_name -> google.protobuf.Timestamp
+	5,  // 6: sessions.GetSessionByIdResponse.session:type_name -> sessions.SessionData
+	14, // 7: sessions.GetSessionsRequest.filterMap:type_name -> sessions.GetSessionsRequest.FilterMapEntry
+	5,  // 8: sessions.GetSessionsResponse.sessions:type_name -> sessions.SessionData
+	15, // 9: sessions.UpdateSessionRequest.fieldMap:type_name -> sessions.UpdateSessionRequest.FieldMapEntry
+	5,  // 10: sessions.UpdateSessionResponse.session:type_name -> sessions.SessionData
+	2,  // 11: sessions.SessionsService.CreateSession:input_type -> sessions.CreateSessionRequest
+	6,  // 12: sessions.SessionsService.GetSessionById:input_type -> sessions.GetSessionByIdRequest
+	8,  // 13: sessions.SessionsService.GetSessions:input_type -> sessions.GetSessionsRequest
+	10, // 14: sessions.SessionsService.UpdateSession:input_type -> sessions.UpdateSessionRequest
+	12, // 15: sessions.SessionsService.DeactivateSession:input_type -> sessions.DeactivateSessionRequest
+	4,  // 16: sessions.SessionsService.CreateSession:output_type -> sessions.CreateSessionResponse
+	7,  // 17: sessions.SessionsService.GetSessionById:output_type -> sessions.GetSessionByIdResponse
+	9,  // 18: sessions.SessionsService.GetSessions:output_type -> sessions.GetSessionsResponse
+	11, // 19: sessions.SessionsService.UpdateSession:output_type -> sessions.UpdateSessionResponse
+	13, // 20: sessions.SessionsService.DeactivateSession:output_type -> sessions.DeactivateSessionResponse
+	16, // [16:21] is the sub-list for method output_type
+	11, // [11:16] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_sessions_proto_init() }
@@ -747,18 +971,20 @@ func file_sessions_proto_init() {
 	if File_sessions_proto != nil {
 		return
 	}
+	file_sessions_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_sessions_proto_rawDesc), len(file_sessions_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   13,
+			NumEnums:      2,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_sessions_proto_goTypes,
 		DependencyIndexes: file_sessions_proto_depIdxs,
+		EnumInfos:         file_sessions_proto_enumTypes,
 		MessageInfos:      file_sessions_proto_msgTypes,
 	}.Build()
 	File_sessions_proto = out.File

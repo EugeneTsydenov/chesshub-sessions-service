@@ -6,13 +6,15 @@ import (
 	"github.com/EugeneTsydenov/chesshub-sessions-service/cmd/sessions/app/grpcinterceptors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/cmd/sessions/app/tracker"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/config"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/port"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/usecase"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller"
 	sessionsproto "github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/genproto"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/interceptor"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/interfaces"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/services"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres/repo"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/geoip"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -29,24 +31,25 @@ type Shutdowner interface {
 }
 
 type App struct {
-	RequestTracker *tracker.RequestTracker
+	requestTracker *tracker.RequestTracker
 
-	Config *config.Config
-	Logger *logrus.Logger
+	config *config.Config
+	logger *logrus.Logger
 
-	Database *postgres.Database
+	database    *postgres.Database
+	geoDatabase *geoip.Database
 
-	SessionsRepo port.SessionsRepo
+	locator interfaces.GeoIPLocator
 
-	CreateSessionUseCase     usecase.CreateSessionUseCase
-	GetSessionByIdUseCase    usecase.GetSessionByIdUseCase
-	GetSessionsUseCase       usecase.GetSessionsUseCase
-	UpdateSessionUseCase     usecase.UpdateSessionUseCase
-	DeactivateSessionUseCase usecase.DeactivateSessionUseCase
+	sessionRepo interfaces.SessionRepo
 
-	SessionController *grpccontroller.SessionController
+	sessionService interfaces.SessionService
 
-	GRPCServer *grpc.Server
+	createSessionUseCase usecase.CreateSession
+
+	sessionController *grpccontroller.SessionController
+
+	gRPCServer *grpc.Server
 
 	shutdownCh  chan struct{}
 	shutdowners []Shutdowner
@@ -58,16 +61,39 @@ func New(cfg *config.Config) *App {
 	logger.SetReportCaller(true)
 
 	return &App{
-		RequestTracker: tracker.NewRequestTracker(logger),
-		Config:         cfg,
-		Logger:         logger,
+		requestTracker: tracker.NewRequestTracker(logger),
+		config:         cfg,
+		logger:         logger,
 		shutdownCh:     make(chan struct{}),
 	}
 }
 
 func (a *App) InitDeps(ctx context.Context) error {
-	d, err := postgres.New(ctx, a.Config.Database.DSN())
-	a.Logger.Warn("DSN ", a.Config.Database.DSN())
+	err := a.initPgDatabase(ctx)
+	if err != nil {
+		a.logger.Info(err)
+		return err
+	}
+
+	err = a.InitGeoDatabase(ctx)
+	if err != nil {
+		a.logger.Info(err)
+		return err
+	}
+
+	a.sessionRepo = repo.NewPostgresSessionRepository(a.database)
+	a.locator = geoip.NewGeoIPLocator(a.geoDatabase)
+
+	a.sessionService = services.NewSessionService(a.locator)
+
+	a.createSessionUseCase = usecase.NewCreateSession(a.sessionService, a.sessionRepo)
+	a.sessionController = grpccontroller.NewSessionController(a.createSessionUseCase)
+
+	return nil
+}
+
+func (a *App) initPgDatabase(ctx context.Context) error {
+	d, err := postgres.New(ctx, a.config.Database.DSN())
 	if err != nil {
 		return err
 	}
@@ -77,101 +103,100 @@ func (a *App) InitDeps(ctx context.Context) error {
 		return err
 	}
 
-	a.Database = d
+	a.database = d
 	a.RegisterShutdowner(d)
 
-	a.SessionsRepo = repo.NewPostgresSessionRepository(a.Database)
+	return nil
+}
 
-	a.CreateSessionUseCase = usecase.NewCreateSessionUseCase(a.SessionsRepo)
-	a.GetSessionByIdUseCase = usecase.NewGetSessionByIdUseCase(a.SessionsRepo)
-	a.GetSessionsUseCase = usecase.NewGetSessionsUseCase(a.SessionsRepo)
-	a.UpdateSessionUseCase = usecase.NewUpdateSessionUseCase(a.SessionsRepo)
-	a.DeactivateSessionUseCase = usecase.NewDeactivateSessionUseCase(a.SessionsRepo)
+func (a *App) InitGeoDatabase(_ context.Context) error {
+	d, err := geoip.New(a.config.GeoIp.DatabasePath)
+	if err != nil {
+		return err
+	}
 
-	a.SessionController = grpccontroller.NewSessionController(
-		a.CreateSessionUseCase,
-		a.GetSessionByIdUseCase,
-		a.GetSessionsUseCase,
-		a.UpdateSessionUseCase,
-		a.DeactivateSessionUseCase,
-	)
+	a.geoDatabase = d
+	a.RegisterShutdowner(d)
 
 	return nil
 }
 
 func (a *App) SetupGRPCServer() {
-	a.GRPCServer = grpc.NewServer(
+	a.gRPCServer = grpc.NewServer(
 		grpc.Creds(insecure.NewCredentials()),
-		grpc.ChainUnaryInterceptor(grpcinterceptors.RequestTracking(a.RequestTracker, a.Logger), interceptor.ErrorHandlingInterceptor(a.Logger)),
+		grpc.ChainUnaryInterceptor(
+			grpcinterceptors.RequestTracking(a.requestTracker, a.logger),
+			interceptor.ErrorHandlingInterceptor(a.logger),
+		),
 	)
-	reflection.Register(a.GRPCServer)
-	sessionsproto.RegisterSessionsServiceServer(a.GRPCServer, a.SessionController)
+	reflection.Register(a.gRPCServer)
+	sessionsproto.RegisterSessionsServiceServer(a.gRPCServer, a.sessionController)
 }
 
 func (a *App) Run(ctx context.Context) error {
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 
-	p := fmt.Sprintf(":%v", a.Config.App.Port)
+	p := fmt.Sprintf(":%v", a.config.App.Port)
 	listener, err := net.Listen("tcp", p)
 	if err != nil {
 		return fmt.Errorf("failed to listen: %w", err)
 	}
 
 	go func() {
-		a.Logger.Info("Starting gRPC server", "port", p)
-		if err := a.GRPCServer.Serve(listener); err != nil {
-			a.Logger.Error("gRPC server error", "error", err)
+		a.logger.Info("Starting gRPC server", "port", p)
+		if err := a.gRPCServer.Serve(listener); err != nil {
+			a.logger.Error("gRPC server error", "error", err)
 		}
 	}()
 
-	a.Logger.Info("Application started successfully")
+	a.logger.Info("Application started successfully")
 
 	select {
 	case sig := <-sigCh:
-		a.Logger.Info("Received shutdown signal", "signal", sig)
+		a.logger.Info("Received shutdown signal", "signal", sig)
 	case <-a.shutdownCh:
-		a.Logger.Info("Shutdown requested programmatically")
+		a.logger.Info("Shutdown requested programmatically")
 	}
 
 	return a.Shutdown(ctx)
 }
 
 func (a *App) Shutdown(ctx context.Context) error {
-	a.Logger.Info("Starting graceful shutdown")
+	a.logger.Info("Starting graceful shutdown")
 
-	a.RequestTracker.SetShuttingDown(true)
+	a.requestTracker.SetShuttingDown(true)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	grpcShutdownDone := make(chan struct{})
 	go func() {
-		a.Logger.Info("Shutting down gRPC server")
-		a.GRPCServer.GracefulStop()
+		a.logger.Info("Shutting down gRPC server")
+		a.gRPCServer.GracefulStop()
 		close(grpcShutdownDone)
 	}()
 
 	select {
 	case <-grpcShutdownDone:
-		a.Logger.Info("gRPC server shut down")
+		a.logger.Info("gRPC server shut down")
 	case <-ctx.Done():
-		a.Logger.Warn("gRPC server shutdown timed out, forcing stop")
-		a.GRPCServer.Stop()
+		a.logger.Warn("gRPC server shutdown timed out, forcing stop")
+		a.gRPCServer.Stop()
 	}
 
-	if err := a.RequestTracker.WaitForCompletion(ctx); err != nil {
-		a.Logger.Error("Timed out waiting for requests to complete", "error", err)
+	if err := a.requestTracker.WaitForCompletion(ctx); err != nil {
+		a.logger.Error("Timed out waiting for requests to complete", "error", err)
 	}
 
-	a.Logger.Info("Waiting for active requests to complete")
+	a.logger.Info("Waiting for active requests to complete")
 	for _, shutdowner := range a.shutdowners {
 		if err := shutdowner.Shutdown(ctx); err != nil {
-			a.Logger.Error("Error shutting down component", "error", err)
+			a.logger.Error("Error shutting down component", "error", err)
 		}
 	}
 
-	a.Logger.Info("Graceful shutdown completed")
+	a.logger.Info("Graceful shutdown completed")
 
 	return nil
 }

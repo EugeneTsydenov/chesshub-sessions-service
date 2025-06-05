@@ -16,13 +16,37 @@ service SessionsService {
 
 message CreateSessionRequest {
   int64 userId = 1;
-  string ipAddress = 3;
-  string deviceInfo = 4;
-  google.protobuf.Timestamp expiredAt = 5;
+  DeviceInfo deviceInfo = 4;
 }
 
+message DeviceInfo {
+  DeviceType deviceType = 1;
+  optional string deviceName = 2;
+  AppType appType = 3;
+  string appVersion = 4;
+  string os = 5;
+  optional string osVersion = 6;
+  optional string deviceModel = 7;
+  string ipAddr = 8;
+}
+
+enum DeviceType {
+  Web = 0;
+  Mobile = 1;
+  Desktop = 2;
+  Tablet = 3;
+}
+
+enum AppType {
+  ChesshubWeb = 0;
+  ChesshubMobile = 1;
+  ChesshubDesktop = 2;
+  ChesshubTablet = 3;
+}
+
+
 message CreateSessionResponse {
-  SessionData session = 1;
+  string sessionID = 1;
   string message = 2;
 }
 

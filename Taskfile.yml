@@ -26,18 +26,18 @@ tasks:
     desc: "Run tests"
 
   migrate:up:
-    cmd: migrate -path=internal/infrastructure/session/data/migrations -postgres "postgresql://postgres:postgres@localhost:9432/chesshub?sslmode=disable" -verbose up
+    cmd: migrate -path=internal/infrastructure/data/postgres/migrations -database "postgresql://postgres:postgres@localhost:9432/chesshub?sslmode=disable" -verbose up
     desc: "Run up migration"
 
   migrate:down:
-    cmd: migrate -path=internal/infrastructure/session/data/migrations -postgres "postgresql://postgres:postgres@localhost:9432/chesshub?sslmode=disable" -verbose down
-    desc: "Run down migration"
+      cmd: migrate -path=internal/infrastructure/data/postgres/migrations -database "postgresql://postgres:postgres@localhost:9432/chesshub?sslmode=disable" -verbose down
+      desc: "Run down migration"
 
   migrate:generate:
     vars:
       NAME: '{{.NAME | default "migration"}}'
     cmds:
-      - migrate create -ext=sql -dir=internal/infrastructure/session/data/migrations -seq "{{.NAME}}"
+      - migrate create -ext=sql -dir=internal/infrastructure/data/postgres/migrations -seq "{{.NAME}}"
     desc: "Generate migration file with a name"
 
   protoc:

@@ -4,53 +4,62 @@ import (
 	"context"
 	"errors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
-	apperrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/errors"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/port"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/interfaces"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/pkg/apperrors"
 )
 
-type CreateSessionUseCase interface {
-	UseCase[*dto.CreateSessionInputDTO, *dto.CreateSessionOutputDTO]
+type CreateSession UseCase[*dto.CreateSessionInputDTO, *dto.CreateSessionOutputDTO]
+
+type createSession struct {
+	sessionService interfaces.SessionService
+	sessionRepo    interfaces.SessionRepo
 }
 
-type CreateSessionUseCaseImpl struct {
-	sessionsRepo port.SessionsRepo
-}
-
-var _ CreateSessionUseCase = new(CreateSessionUseCaseImpl)
-
-func NewCreateSessionUseCase(sessionsRepo port.SessionsRepo) *CreateSessionUseCaseImpl {
-	return &CreateSessionUseCaseImpl{
-		sessionsRepo: sessionsRepo,
+func NewCreateSession(sessionService interfaces.SessionService, sessionRepo interfaces.SessionRepo) CreateSession {
+	return &createSession{
+		sessionService: sessionService,
+		sessionRepo:    sessionRepo,
 	}
 }
 
-func (u *CreateSessionUseCaseImpl) Execute(ctx context.Context, input *dto.CreateSessionInputDTO) (*dto.CreateSessionOutputDTO, error) {
-	b := entity.NewSessionBuilder()
-
-	s := b.
-		WithUserID(input.UserID).
-		WithIPAddr(input.IPAddr).
-		WithDeviceInfo(input.DeviceInfo).
-		WithExpiredAt(input.ExpiredAt).
-		Build()
-
-	createdSession, err := u.sessionsRepo.Create(ctx, s)
-
-	if errors.Is(err, context.DeadlineExceeded) {
-		return nil, apperrors.NewDeadlineExceededError("creation session too long", err)
+func (uc *createSession) Execute(ctx context.Context, input *dto.CreateSessionInputDTO) (*dto.CreateSessionOutputDTO, error) {
+	if input == nil || input.DeviceInfo == nil {
+		return nil, apperrors.NewInvalidArgumentError("Invalid input: missing session data", nil)
 	}
 
-	if errors.Is(err, context.Canceled) {
-		return nil, apperrors.NewCanceledError("creation session closed", err)
+	s := uc.buildSession(input)
+
+	if err := s.Initialize(); err != nil {
+		return nil, apperrors.NewInternalError("Unexpected server error. Please try again.").WithCause(err)
 	}
+
+	uc.sessionService.EnrichLocation(s)
+
+	sessionID, err := uc.sessionRepo.Create(ctx, s)
 
 	if err != nil {
-		return nil, apperrors.NewInternalError("Unexpected internal error", err)
+		switch {
+		case errors.Is(err, context.DeadlineExceeded):
+			return nil, apperrors.NewDeadlineExceededError("Session creation timed out. Please try again.").WithCause(err)
+		case errors.Is(err, context.Canceled):
+			return nil, apperrors.NewCanceledError("Session creation was canceled.").WithCause(err)
+		default:
+			return nil, apperrors.NewInternalError("Failed to create session.").WithCause(err)
+		}
 	}
 
 	return &dto.CreateSessionOutputDTO{
-		Session: createdSession,
-		Message: "Session created",
+		SessionID: *sessionID,
+		Message:   "Session created",
 	}, nil
+}
+
+func (uc *createSession) buildSession(input *dto.CreateSessionInputDTO) *session.Session {
+	b := session.NewBuilder()
+
+	return b.
+		WithUserID(input.UserID).
+		WithDeviceInfo(input.DeviceInfo).
+		Build()
 }

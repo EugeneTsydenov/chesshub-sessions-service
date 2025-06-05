@@ -59,16 +59,12 @@ func (m *CreateSessionRequest) validate(all bool) error {
 
 	// no validation rules for UserId
 
-	// no validation rules for IpAddress
-
-	// no validation rules for DeviceInfo
-
 	if all {
-		switch v := interface{}(m.GetExpiredAt()).(type) {
+		switch v := interface{}(m.GetDeviceInfo()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
 				errors = append(errors, CreateSessionRequestValidationError{
-					field:  "ExpiredAt",
+					field:  "DeviceInfo",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -76,16 +72,16 @@ func (m *CreateSessionRequest) validate(all bool) error {
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
 				errors = append(errors, CreateSessionRequestValidationError{
-					field:  "ExpiredAt",
+					field:  "DeviceInfo",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
 			}
 		}
-	} else if v, ok := interface{}(m.GetExpiredAt()).(interface{ Validate() error }); ok {
+	} else if v, ok := interface{}(m.GetDeviceInfo()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return CreateSessionRequestValidationError{
-				field:  "ExpiredAt",
+				field:  "DeviceInfo",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
@@ -172,6 +168,127 @@ var _ interface {
 	ErrorName() string
 } = CreateSessionRequestValidationError{}
 
+// Validate checks the field values on DeviceInfo with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *DeviceInfo) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeviceInfo with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in DeviceInfoMultiError, or
+// nil if none found.
+func (m *DeviceInfo) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeviceInfo) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for DeviceType
+
+	// no validation rules for AppType
+
+	// no validation rules for AppVersion
+
+	// no validation rules for Os
+
+	// no validation rules for IpAddr
+
+	if m.DeviceName != nil {
+		// no validation rules for DeviceName
+	}
+
+	if m.OsVersion != nil {
+		// no validation rules for OsVersion
+	}
+
+	if m.DeviceModel != nil {
+		// no validation rules for DeviceModel
+	}
+
+	if len(errors) > 0 {
+		return DeviceInfoMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeviceInfoMultiError is an error wrapping multiple validation errors
+// returned by DeviceInfo.ValidateAll() if the designated constraints aren't met.
+type DeviceInfoMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeviceInfoMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeviceInfoMultiError) AllErrors() []error { return m }
+
+// DeviceInfoValidationError is the validation error returned by
+// DeviceInfo.Validate if the designated constraints aren't met.
+type DeviceInfoValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeviceInfoValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeviceInfoValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeviceInfoValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeviceInfoValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeviceInfoValidationError) ErrorName() string { return "DeviceInfoValidationError" }
+
+// Error satisfies the builtin error interface
+func (e DeviceInfoValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeviceInfo.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeviceInfoValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeviceInfoValidationError{}
+
 // Validate checks the field values on CreateSessionResponse with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
@@ -194,34 +311,7 @@ func (m *CreateSessionResponse) validate(all bool) error {
 
 	var errors []error
 
-	if all {
-		switch v := interface{}(m.GetSession()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, CreateSessionResponseValidationError{
-					field:  "Session",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, CreateSessionResponseValidationError{
-					field:  "Session",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetSession()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return CreateSessionResponseValidationError{
-				field:  "Session",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
+	// no validation rules for SessionID
 
 	// no validation rules for Message
 

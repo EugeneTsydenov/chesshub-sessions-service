@@ -1,20 +1,18 @@
 package dto
 
 import (
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity"
-	"time"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
+	"github.com/google/uuid"
 )
 
 type (
 	CreateSessionInputDTO struct {
 		UserID     int64
-		IPAddr     string
-		DeviceInfo string
-		ExpiredAt  time.Time
+		DeviceInfo *session.DeviceInfo
 	}
 
 	CreateSessionOutputDTO struct {
-		Session *entity.Session
-		Message string
+		SessionID uuid.UUID
+		Message   string
 	}
 )
