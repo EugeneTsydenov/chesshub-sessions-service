@@ -7,14 +7,11 @@ option go_package = "github.com/EugeneTsydenov/chesshub-user-service/internal/co
 import "google/protobuf/timestamp.proto";
 
 service SessionsService {
-  rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse) {}
-  rpc GetSessionById(GetSessionByIdRequest) returns (GetSessionByIdResponse) {}
-  rpc GetSessions(GetSessionsRequest) returns (GetSessionsResponse) {}
-  rpc UpdateSession(UpdateSessionRequest) returns (UpdateSessionResponse) {}
-  rpc DeactivateSession(DeactivateSessionRequest) returns (DeactivateSessionResponse) {}
+  rpc StartSession(StartSessionRequest) returns (StartSessionResponse) {}
+//  rpc GetActiveUserSessions(GetActiveUserSessionsRequest) returns (GetActiveUserSessionsResponse) {}
 }
 
-message CreateSessionRequest {
+message StartSessionRequest {
   int64 userId = 1;
   DeviceInfo deviceInfo = 4;
 }
@@ -45,54 +42,26 @@ enum AppType {
 }
 
 
-message CreateSessionResponse {
+message StartSessionResponse {
   string sessionID = 1;
   string message = 2;
 }
 
-message SessionData {
-  string id = 1;
-  string ipAddress = 2;
-  string deviceInfo = 3;
-  bool isActive = 4;
-  google.protobuf.Timestamp expiredAt = 5;
-  google.protobuf.Timestamp updatedAt = 6;
-  google.protobuf.Timestamp createdAt = 7;
-}
-
-message GetSessionByIdRequest {
-  string id = 1;
-}
-
-message GetSessionByIdResponse {
-  SessionData session = 1;
-  string message = 2;
-}
-
-message GetSessionsRequest {
-  map<string, string> filterMap = 2;
-}
-
-message GetSessionsResponse {
-  repeated SessionData sessions = 1;
-  string message = 2;
-}
-
-message UpdateSessionRequest {
-  string sessionId = 1;
-  map<string, string> fieldMap = 2;
-}
-
-message UpdateSessionResponse {
-  SessionData session = 1;
-  string message = 2;
-}
-
-message DeactivateSessionRequest {
-  string sessionId = 1;
-}
-
-message DeactivateSessionResponse {
-  bool success = 1;
-  string message = 2;
-}
+//message GetActiveUserSessionsRequest {
+//  int64 userID = 1;
+//}
+//
+//message GetActiveUserSessionsResponse {
+//  repeated Session sessions = 1;
+//  string message = 2;
+//}
+//
+//message Session {
+//  string id = 1;
+//  string ipAddress = 2;
+//  string deviceInfo = 3;
+//  bool isActive = 4;
+//  google.protobuf.Timestamp expiredAt = 5;
+//  google.protobuf.Timestamp updatedAt = 6;
+//  google.protobuf.Timestamp createdAt = 7;
+//}

@@ -10,18 +10,18 @@ import (
 
 type SessionController struct {
 	sessionsproto.UnimplementedSessionsServiceServer
-	createSessionUseCase usecase.CreateSession
+	createSessionUseCase usecase.StartSession
 }
 
 func NewSessionController(
-	createSessionUseCase usecase.CreateSession,
+	createSessionUseCase usecase.StartSession,
 ) *SessionController {
 	return &SessionController{
 		createSessionUseCase: createSessionUseCase,
 	}
 }
 
-func (c *SessionController) CreateSession(ctx context.Context, req *sessionsproto.CreateSessionRequest) (*sessionsproto.CreateSessionResponse, error) {
+func (c *SessionController) CreateSession(ctx context.Context, req *sessionsproto.StartSessionRequest) (*sessionsproto.StartSessionResponse, error) {
 	if err := req.ValidateAll(); err != nil {
 		return nil, err
 	}
@@ -29,12 +29,12 @@ func (c *SessionController) CreateSession(ctx context.Context, req *sessionsprot
 	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
 	defer cancel()
 
-	r, err := c.createSessionUseCase.Execute(ctx, mapper.ToCreateSessionInputDTO(req))
+	r, err := c.createSessionUseCase.Execute(ctx, mapper.ToStartSessionInputDTO(req))
 	if err != nil {
 		return nil, err
 	}
 
-	return mapper.ToCreateSessionResponse(r), nil
+	return mapper.ToStartSessionResponse(r), nil
 }
 
 //

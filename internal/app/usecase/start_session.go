@@ -9,21 +9,21 @@ import (
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/pkg/apperrors"
 )
 
-type CreateSession UseCase[*dto.CreateSessionInputDTO, *dto.CreateSessionOutputDTO]
+type StartSession UseCase[*dto.StartSessionInputDTO, *dto.StartSessionOutputDTO]
 
-type createSession struct {
+type startSession struct {
 	sessionService interfaces.SessionService
 	sessionRepo    interfaces.SessionRepo
 }
 
-func NewCreateSession(sessionService interfaces.SessionService, sessionRepo interfaces.SessionRepo) CreateSession {
-	return &createSession{
+func NewStartSession(sessionService interfaces.SessionService, sessionRepo interfaces.SessionRepo) StartSession {
+	return &startSession{
 		sessionService: sessionService,
 		sessionRepo:    sessionRepo,
 	}
 }
 
-func (uc *createSession) Execute(ctx context.Context, input *dto.CreateSessionInputDTO) (*dto.CreateSessionOutputDTO, error) {
+func (uc *startSession) Execute(ctx context.Context, input *dto.StartSessionInputDTO) (*dto.StartSessionOutputDTO, error) {
 	if input == nil || input.DeviceInfo == nil {
 		return nil, apperrors.NewInvalidArgumentError("Invalid input: missing session data", nil)
 	}
@@ -49,13 +49,13 @@ func (uc *createSession) Execute(ctx context.Context, input *dto.CreateSessionIn
 		}
 	}
 
-	return &dto.CreateSessionOutputDTO{
+	return &dto.StartSessionOutputDTO{
 		SessionID: *sessionID,
 		Message:   "Session created",
 	}, nil
 }
 
-func (uc *createSession) buildSession(input *dto.CreateSessionInputDTO) *session.Session {
+func (uc *startSession) buildSession(input *dto.StartSessionInputDTO) *session.Session {
 	b := session.NewBuilder()
 
 	return b.

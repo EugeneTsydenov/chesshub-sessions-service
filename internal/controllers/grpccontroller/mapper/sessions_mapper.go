@@ -6,8 +6,8 @@ import (
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
 )
 
-func ToCreateSessionInputDTO(req *sessionsproto.CreateSessionRequest) *dto.CreateSessionInputDTO {
-	return &dto.CreateSessionInputDTO{
+func ToStartSessionInputDTO(req *sessionsproto.StartSessionRequest) *dto.StartSessionInputDTO {
+	return &dto.StartSessionInputDTO{
 		UserID:     req.UserId,
 		DeviceInfo: toDeviceInfo(req.DeviceInfo),
 	}
@@ -34,8 +34,8 @@ func toAppType(input sessionsproto.AppType) session.AppType {
 	return session.AppType(input)
 }
 
-func ToCreateSessionResponse(output *dto.CreateSessionOutputDTO) *sessionsproto.CreateSessionResponse {
-	return &sessionsproto.CreateSessionResponse{
+func ToStartSessionResponse(output *dto.StartSessionOutputDTO) *sessionsproto.StartSessionResponse {
+	return &sessionsproto.StartSessionResponse{
 		SessionID: output.SessionID.String(),
 		Message:   output.Message,
 	}

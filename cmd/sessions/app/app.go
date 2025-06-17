@@ -45,7 +45,7 @@ type App struct {
 
 	sessionService interfaces.SessionService
 
-	createSessionUseCase usecase.CreateSession
+	startSessionUseCase usecase.StartSession
 
 	sessionController *grpccontroller.SessionController
 
@@ -82,12 +82,12 @@ func (a *App) InitDeps(ctx context.Context) error {
 	}
 
 	a.sessionRepo = repo.NewPostgresSessionRepository(a.database)
-	a.locator = geoip.NewGeoIPLocator(a.geoDatabase)
+	a.locator = geoip.NewLocator(a.geoDatabase)
 
 	a.sessionService = services.NewSessionService(a.locator)
 
-	a.createSessionUseCase = usecase.NewCreateSession(a.sessionService, a.sessionRepo)
-	a.sessionController = grpccontroller.NewSessionController(a.createSessionUseCase)
+	a.startSessionUseCase = usecase.NewStartSession(a.sessionService, a.sessionRepo)
+	a.sessionController = grpccontroller.NewSessionController(a.startSessionUseCase)
 
 	return nil
 }

@@ -6,12 +6,12 @@ import (
 )
 
 type (
-	CreateSessionInputDTO struct {
+	StartSessionInputDTO struct {
 		UserID     int64
 		DeviceInfo *session.DeviceInfo
 	}
 
-	CreateSessionOutputDTO struct {
+	StartSessionOutputDTO struct {
 		SessionID uuid.UUID
 		Message   string
 	}

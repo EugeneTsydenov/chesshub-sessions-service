@@ -23,7 +23,7 @@ CREATE TABLE sessions
     device_model VARCHAR(50),
     ip_address VARCHAR(100) NOT NULL,
     city VARCHAR(100),
-    country VARCHAR(100),
+    country VARCHAR(70),
     is_active BOOLEAN DEFAULT TRUE NOT NULL,
     lifetime INTERVAL NOT NULL DEFAULT INTERVAL '30 days',
     last_active_at TIMESTAMP NOT NULL,

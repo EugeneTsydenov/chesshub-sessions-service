@@ -2,36 +2,47 @@ package geoip
 
 import (
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
+	"log"
 	"net"
+	"strings"
 )
 
-type GeoIPLocator struct {
+type Locator struct {
 	database *Database
 }
 
-func NewGeoIPLocator(db *Database) *GeoIPLocator {
-	return &GeoIPLocator{
+func NewLocator(db *Database) *Locator {
+	return &Locator{
 		database: db,
 	}
 }
 
-func (l *GeoIPLocator) GetLocation(ip net.IP) (*session.Location, error) {
+func (l *Locator) GetLocation(ip net.IP) (*session.Location, error) {
 	record, err := l.database.Conn().Get_all(ip.String())
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
 	city := record.City
 	country := record.Country_long
-
-	location := session.NewLocation(nilIfEmpty(city), nilIfEmpty(country))
+	location := session.NewLocation(nilIfInvalid(city), nilIfInvalid(country))
 
 	return location, nil
 }
 
-func nilIfEmpty(s string) *string {
+func isValidLocation(location string) bool {
+	return !strings.Contains(location, "IP2Location")
+}
+
+func nilIfInvalid(s string) *string {
 	if s == "" {
 		return nil
 	}
+
+	if !isValidLocation(s) {
+		return nil
+	}
+
 	return &s
 }
