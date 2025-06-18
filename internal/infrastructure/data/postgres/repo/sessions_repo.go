@@ -3,17 +3,21 @@ package repo
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/interfaces"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres"
 	postgreserrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres/errors"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"time"
 )
 
 type PostgresSessionRepo struct {
 	database *postgres.Database
 }
+
+var _ interfaces.SessionRepo = new(PostgresSessionRepo)
 
 func NewPostgresSessionRepository(db *postgres.Database) *PostgresSessionRepo {
 	return &PostgresSessionRepo{database: db}
@@ -53,13 +57,110 @@ func (r *PostgresSessionRepo) Create(ctx context.Context, s *session.Session) (*
 	var id *uuid.UUID
 
 	err := row.Scan(&id)
-
 	if err != nil {
 		if ctxErr := ctx.Err(); ctxErr != nil {
 			return nil, fmt.Errorf("PostgresSessionRepo.Create ctx=%v", ctxErr)
 		}
 
 		return nil, postgreserrors.NewUnresolvedError("creation session finished with error", err)
+	}
+
+	return id, nil
+}
+
+func (r *PostgresSessionRepo) GetByID(ctx context.Context, sessionID uuid.UUID) (*session.Session, error) {
+	query := `
+	SELECT 
+		id,
+		user_id,
+		device_type,
+		device_name,
+		app_type,
+		app_version,
+		os,
+		os_version,
+		device_model,
+		ip_address,
+		city,
+		country,
+		is_active,
+		last_active_at,
+		updated_at,
+		created_at,
+		lifetime
+	FROM sessions
+	WHERE id = $1
+	`
+
+	row := r.database.Pool().QueryRow(ctx, query, sessionID)
+	s, err := scanSession(row)
+	if err != nil {
+		if ctxErr := ctx.Err(); ctxErr != nil {
+			return nil, fmt.Errorf("PostgresSessionRepo.GetByID ctx=%v", ctxErr)
+		}
+
+		return nil, postgreserrors.NewUnresolvedError("getting session by id finished with error", err)
+	}
+
+	return s, nil
+}
+
+func (r *PostgresSessionRepo) Update(ctx context.Context, session *session.Session) (*uuid.UUID, error) {
+	query := `
+	UPDATE sessions
+	SET
+		user_id = $1,
+		device_type = $2,
+		device_name = $3,
+		app_type = $4,
+		app_version = $5,
+		os = $6,
+		os_version = $7,
+		device_model = $8,
+		ip_address = $9,
+		city = $10,
+		country = $11,
+		is_active = $12,
+		lifetime = $13,
+		last_active_at = $14,
+		updated_at = $15,
+		created_at = $16
+	WHERE id = $17
+	RETURNING id
+	`
+
+	deviceInfo := session.DeviceInfo()
+	location := session.Location()
+
+	row := r.database.Pool().QueryRow(ctx, query,
+		session.UserID(),
+		deviceInfo.DeviceType(),
+		deviceInfo.DeviceName(),
+		deviceInfo.AppType(),
+		deviceInfo.AppVersion(),
+		deviceInfo.OS(),
+		deviceInfo.OSVersion(),
+		deviceInfo.DeviceModel(),
+		deviceInfo.IPAddr(),
+		location.City(),
+		location.Country(),
+		session.IsActive(),
+		session.Lifetime(),
+		session.LastActiveAt(),
+		session.UpdatedAt(),
+		session.CreatedAt(),
+		session.ID(),
+	)
+
+	var id *uuid.UUID
+
+	err := row.Scan(&id)
+	if err != nil {
+		if ctxErr := ctx.Err(); ctxErr != nil {
+			return nil, fmt.Errorf("PostgresSessionRepo.Update ctx=%v", ctxErr)
+		}
+
+		return nil, postgreserrors.NewUnresolvedError("updating session finished with error", err)
 	}
 
 	return id, nil
@@ -201,12 +302,11 @@ func scanSession(row pgx.Row) (*session.Session, error) {
 		&city,
 		&country,
 		&isActive,
-		&lifetime,
 		&lastActiveAt,
 		&updatedAt,
 		&createdAt,
+		&lifetime,
 	)
-
 	if err != nil {
 		return nil, err
 	}

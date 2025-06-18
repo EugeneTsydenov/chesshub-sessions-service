@@ -1,10 +1,11 @@
 package geoip
 
 import (
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
 	"log"
 	"net"
 	"strings"
+
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
 )
 
 type Locator struct {

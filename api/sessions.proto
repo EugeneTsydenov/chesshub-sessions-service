@@ -8,6 +8,7 @@ import "google/protobuf/timestamp.proto";
 
 service SessionsService {
   rpc StartSession(StartSessionRequest) returns (StartSessionResponse) {}
+  rpc StopSession(StopSessionRequest) returns (StopSessionResponse) {}
 //  rpc GetActiveUserSessions(GetActiveUserSessionsRequest) returns (GetActiveUserSessionsResponse) {}
 }
 
@@ -45,6 +46,14 @@ enum AppType {
 message StartSessionResponse {
   string sessionID = 1;
   string message = 2;
+}
+
+message StopSessionRequest {
+  string sessionID = 1;
+}
+
+message StopSessionResponse {
+  string message = 1;
 }
 
 //message GetActiveUserSessionsRequest {

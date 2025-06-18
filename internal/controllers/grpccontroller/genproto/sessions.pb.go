@@ -330,6 +330,94 @@ func (x *StartSessionResponse) GetMessage() string {
 	return ""
 }
 
+type StopSessionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionID     string                 `protobuf:"bytes,1,opt,name=sessionID,proto3" json:"sessionID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StopSessionRequest) Reset() {
+	*x = StopSessionRequest{}
+	mi := &file_sessions_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StopSessionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StopSessionRequest) ProtoMessage() {}
+
+func (x *StopSessionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StopSessionRequest.ProtoReflect.Descriptor instead.
+func (*StopSessionRequest) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *StopSessionRequest) GetSessionID() string {
+	if x != nil {
+		return x.SessionID
+	}
+	return ""
+}
+
+type StopSessionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StopSessionResponse) Reset() {
+	*x = StopSessionResponse{}
+	mi := &file_sessions_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StopSessionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StopSessionResponse) ProtoMessage() {}
+
+func (x *StopSessionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StopSessionResponse.ProtoReflect.Descriptor instead.
+func (*StopSessionResponse) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *StopSessionResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_sessions_proto protoreflect.FileDescriptor
 
 const file_sessions_proto_rawDesc = "" +
@@ -362,7 +450,11 @@ const file_sessions_proto_rawDesc = "" +
 	"\f_deviceModel\"N\n" +
 	"\x14StartSessionResponse\x12\x1c\n" +
 	"\tsessionID\x18\x01 \x01(\tR\tsessionID\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage*:\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"2\n" +
+	"\x12StopSessionRequest\x12\x1c\n" +
+	"\tsessionID\x18\x01 \x01(\tR\tsessionID\"/\n" +
+	"\x13StopSessionResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage*:\n" +
 	"\n" +
 	"DeviceType\x12\a\n" +
 	"\x03Web\x10\x00\x12\n" +
@@ -375,9 +467,10 @@ const file_sessions_proto_rawDesc = "" +
 	"\vChesshubWeb\x10\x00\x12\x12\n" +
 	"\x0eChesshubMobile\x10\x01\x12\x13\n" +
 	"\x0fChesshubDesktop\x10\x02\x12\x12\n" +
-	"\x0eChesshubTablet\x10\x032b\n" +
+	"\x0eChesshubTablet\x10\x032\xb0\x01\n" +
 	"\x0fSessionsService\x12O\n" +
-	"\fStartSession\x12\x1d.sessions.StartSessionRequest\x1a\x1e.sessions.StartSessionResponse\"\x00BlZjgithub.com/EugeneTsydenov/chesshub-user-service/internal/controllers/grpccontroller/genproto;sessionsprotob\x06proto3"
+	"\fStartSession\x12\x1d.sessions.StartSessionRequest\x1a\x1e.sessions.StartSessionResponse\"\x00\x12L\n" +
+	"\vStopSession\x12\x1c.sessions.StopSessionRequest\x1a\x1d.sessions.StopSessionResponse\"\x00BlZjgithub.com/EugeneTsydenov/chesshub-user-service/internal/controllers/grpccontroller/genproto;sessionsprotob\x06proto3"
 
 var (
 	file_sessions_proto_rawDescOnce sync.Once
@@ -392,22 +485,26 @@ func file_sessions_proto_rawDescGZIP() []byte {
 }
 
 var file_sessions_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_sessions_proto_goTypes = []any{
 	(DeviceType)(0),              // 0: sessions.DeviceType
 	(AppType)(0),                 // 1: sessions.AppType
 	(*StartSessionRequest)(nil),  // 2: sessions.StartSessionRequest
 	(*DeviceInfo)(nil),           // 3: sessions.DeviceInfo
 	(*StartSessionResponse)(nil), // 4: sessions.StartSessionResponse
+	(*StopSessionRequest)(nil),   // 5: sessions.StopSessionRequest
+	(*StopSessionResponse)(nil),  // 6: sessions.StopSessionResponse
 }
 var file_sessions_proto_depIdxs = []int32{
 	3, // 0: sessions.StartSessionRequest.deviceInfo:type_name -> sessions.DeviceInfo
 	0, // 1: sessions.DeviceInfo.deviceType:type_name -> sessions.DeviceType
 	1, // 2: sessions.DeviceInfo.appType:type_name -> sessions.AppType
 	2, // 3: sessions.SessionsService.StartSession:input_type -> sessions.StartSessionRequest
-	4, // 4: sessions.SessionsService.StartSession:output_type -> sessions.StartSessionResponse
-	4, // [4:5] is the sub-list for method output_type
-	3, // [3:4] is the sub-list for method input_type
+	5, // 4: sessions.SessionsService.StopSession:input_type -> sessions.StopSessionRequest
+	4, // 5: sessions.SessionsService.StartSession:output_type -> sessions.StartSessionResponse
+	6, // 6: sessions.SessionsService.StopSession:output_type -> sessions.StopSessionResponse
+	5, // [5:7] is the sub-list for method output_type
+	3, // [3:5] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
 	3, // [3:3] is the sub-list for extension extendee
 	0, // [0:3] is the sub-list for field type_name
@@ -425,7 +522,7 @@ func file_sessions_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_sessions_proto_rawDesc), len(file_sessions_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

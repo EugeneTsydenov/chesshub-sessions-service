@@ -394,3 +394,211 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = StartSessionResponseValidationError{}
+
+// Validate checks the field values on StopSessionRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *StopSessionRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on StopSessionRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// StopSessionRequestMultiError, or nil if none found.
+func (m *StopSessionRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *StopSessionRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for SessionID
+
+	if len(errors) > 0 {
+		return StopSessionRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// StopSessionRequestMultiError is an error wrapping multiple validation errors
+// returned by StopSessionRequest.ValidateAll() if the designated constraints
+// aren't met.
+type StopSessionRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m StopSessionRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m StopSessionRequestMultiError) AllErrors() []error { return m }
+
+// StopSessionRequestValidationError is the validation error returned by
+// StopSessionRequest.Validate if the designated constraints aren't met.
+type StopSessionRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e StopSessionRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e StopSessionRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e StopSessionRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e StopSessionRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e StopSessionRequestValidationError) ErrorName() string {
+	return "StopSessionRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e StopSessionRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sStopSessionRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = StopSessionRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = StopSessionRequestValidationError{}
+
+// Validate checks the field values on StopSessionResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *StopSessionResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on StopSessionResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// StopSessionResponseMultiError, or nil if none found.
+func (m *StopSessionResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *StopSessionResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Message
+
+	if len(errors) > 0 {
+		return StopSessionResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// StopSessionResponseMultiError is an error wrapping multiple validation
+// errors returned by StopSessionResponse.ValidateAll() if the designated
+// constraints aren't met.
+type StopSessionResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m StopSessionResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m StopSessionResponseMultiError) AllErrors() []error { return m }
+
+// StopSessionResponseValidationError is the validation error returned by
+// StopSessionResponse.Validate if the designated constraints aren't met.
+type StopSessionResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e StopSessionResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e StopSessionResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e StopSessionResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e StopSessionResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e StopSessionResponseValidationError) ErrorName() string {
+	return "StopSessionResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e StopSessionResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sStopSessionResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = StopSessionResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = StopSessionResponseValidationError{}

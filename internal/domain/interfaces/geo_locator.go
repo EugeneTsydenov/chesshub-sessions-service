@@ -1,8 +1,9 @@
 package interfaces
 
 import (
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
 	"net"
+
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
 )
 
 type GeoIPLocator interface {

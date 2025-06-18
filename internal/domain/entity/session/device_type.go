@@ -45,8 +45,9 @@ func (t *DeviceType) Scan(value any) error {
 		return fmt.Errorf("cannot scan device type: %v", value)
 	}
 
-	d := DeviceType(i)
-	if !d.IsValid() {
+	*t = DeviceType(i)
+
+	if !t.IsValid() {
 		return fmt.Errorf("invalid device type: %d", i)
 	}
 

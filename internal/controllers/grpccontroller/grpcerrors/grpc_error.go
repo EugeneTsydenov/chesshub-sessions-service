@@ -3,6 +3,7 @@ package grpcerrors
 import (
 	"errors"
 	"fmt"
+
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/pkg/apperrors"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"

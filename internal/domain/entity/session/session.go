@@ -2,13 +2,12 @@ package session
 
 import (
 	"errors"
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
 )
 
-var (
-	ErrGenerateID = errors.New("error generating session id")
-)
+var ErrGenerateID = errors.New("error generating session id")
 
 type Session struct {
 	id           uuid.UUID
@@ -29,6 +28,7 @@ func newSession(b *Builder) *Session {
 		deviceInfo:   b.deviceInfo,
 		location:     b.location,
 		isActive:     b.isActive,
+		lifetime:     b.lifetime,
 		lastActiveAt: b.lastActiveAt,
 		createdAt:    b.createdAt,
 		updatedAt:    b.updatedAt,
@@ -101,6 +101,21 @@ func (s *Session) RefreshLastActiveAt() {
 
 func (s *Session) UpdateLocation(location *Location) {
 	s.location = location
+}
+
+func (s *Session) IsEmpty() bool {
+	return s == nil
+}
+
+func (s *Session) Deactivate() {
+	s.isActive = false
+
+	s.RefreshLastActiveAt()
+	s.Touch()
+}
+
+func (s *Session) Touch() {
+	s.updatedAt = time.Now()
 }
 
 //func (s *Session) UpdateIpAddr(newIpAddr string) {

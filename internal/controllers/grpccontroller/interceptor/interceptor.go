@@ -3,6 +3,7 @@ package interceptor
 import (
 	"context"
 	"errors"
+
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/grpcerrors"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -16,7 +17,6 @@ func ErrorHandlingInterceptor(logger *logrus.Logger) grpc.UnaryServerInterceptor
 		handler grpc.UnaryHandler,
 	) (resp any, err error) {
 		resp, err = handler(ctx, req)
-
 		if err != nil {
 			requestID := ctx.Value("request-id").(string)
 			logger.

@@ -2,7 +2,7 @@ package mapper
 
 import (
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/genproto"
+	sessionsproto "github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/genproto"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
 )
 
@@ -38,6 +38,18 @@ func ToStartSessionResponse(output *dto.StartSessionOutputDTO) *sessionsproto.St
 	return &sessionsproto.StartSessionResponse{
 		SessionID: output.SessionID.String(),
 		Message:   output.Message,
+	}
+}
+
+func ToStopSessionInputDTO(req *sessionsproto.StopSessionRequest) *dto.StopSessionInputDTO {
+	return &dto.StopSessionInputDTO{
+		SessionID: req.SessionID,
+	}
+}
+
+func ToStopSessionResponse(output *dto.StopSessionOutputDTO) *sessionsproto.StopSessionResponse {
+	return &sessionsproto.StopSessionResponse{
+		Message: output.Message,
 	}
 }
 

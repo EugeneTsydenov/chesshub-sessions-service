@@ -3,10 +3,11 @@ package tracker
 import (
 	"context"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 type requestInfo struct {

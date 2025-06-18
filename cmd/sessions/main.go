@@ -3,16 +3,16 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+
 	"github.com/EugeneTsydenov/chesshub-sessions-service/cmd/sessions/app"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/config"
-	"os"
 )
 
 func main() {
 	env := os.Getenv("APP_ENV")
 	cfgPath := os.Getenv("CONFIG_PATH")
 	cfg, err := config.Load(env, cfgPath)
-
 	if err != nil {
 		fmt.Printf("Failed to laoding config: %v\n", err)
 	}

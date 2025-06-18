@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -11,7 +12,6 @@ type Database struct {
 
 func New(ctx context.Context, connStr string) (*Database, error) {
 	pool, err := pgxpool.New(ctx, connStr)
-
 	if err != nil {
 		return nil, err
 	}

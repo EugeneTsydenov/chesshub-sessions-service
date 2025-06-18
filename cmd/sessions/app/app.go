@@ -3,6 +3,12 @@ package app
 import (
 	"context"
 	"fmt"
+	"net"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	"github.com/EugeneTsydenov/chesshub-sessions-service/cmd/sessions/app/grpcinterceptors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/cmd/sessions/app/tracker"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/config"
@@ -19,11 +25,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
-	"net"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 )
 
 type Shutdowner interface {
@@ -46,6 +47,7 @@ type App struct {
 	sessionService interfaces.SessionService
 
 	startSessionUseCase usecase.StartSession
+	stopSessionUseCase  usecase.StopSession
 
 	sessionController *grpccontroller.SessionController
 
@@ -84,10 +86,12 @@ func (a *App) InitDeps(ctx context.Context) error {
 	a.sessionRepo = repo.NewPostgresSessionRepository(a.database)
 	a.locator = geoip.NewLocator(a.geoDatabase)
 
-	a.sessionService = services.NewSessionService(a.locator)
+	a.sessionService = services.NewSessionService(a.locator, a.sessionRepo)
 
 	a.startSessionUseCase = usecase.NewStartSession(a.sessionService, a.sessionRepo)
-	a.sessionController = grpccontroller.NewSessionController(a.startSessionUseCase)
+	a.stopSessionUseCase = usecase.NewStopSession(a.sessionService, a.sessionRepo)
+
+	a.sessionController = grpccontroller.NewSessionController(a.startSessionUseCase, a.stopSessionUseCase)
 
 	return nil
 }

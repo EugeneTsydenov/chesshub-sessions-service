@@ -45,8 +45,8 @@ func (a *AppType) Scan(value any) error {
 		return fmt.Errorf("cannot scan app type: %v", value)
 	}
 
-	t := AppType(i)
-	if !t.IsValid() {
+	*a = AppType(i)
+	if !a.IsValid() {
 		return fmt.Errorf("invalid app type: %d", i)
 	}
 

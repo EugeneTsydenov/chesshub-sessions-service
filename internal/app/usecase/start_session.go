@@ -3,18 +3,23 @@ package usecase
 import (
 	"context"
 	"errors"
+
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/interfaces"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/pkg/apperrors"
 )
 
-type StartSession UseCase[*dto.StartSessionInputDTO, *dto.StartSessionOutputDTO]
+type (
+	StartSession UseCase[*dto.StartSessionInputDTO, *dto.StartSessionOutputDTO]
 
-type startSession struct {
-	sessionService interfaces.SessionService
-	sessionRepo    interfaces.SessionRepo
-}
+	startSession struct {
+		sessionService interfaces.SessionService
+		sessionRepo    interfaces.SessionRepo
+	}
+)
+
+var _ StartSession = new(startSession)
 
 func NewStartSession(sessionService interfaces.SessionService, sessionRepo interfaces.SessionRepo) StartSession {
 	return &startSession{
@@ -37,7 +42,6 @@ func (uc *startSession) Execute(ctx context.Context, input *dto.StartSessionInpu
 	uc.sessionService.EnrichLocation(s)
 
 	sessionID, err := uc.sessionRepo.Create(ctx, s)
-
 	if err != nil {
 		switch {
 		case errors.Is(err, context.DeadlineExceeded):

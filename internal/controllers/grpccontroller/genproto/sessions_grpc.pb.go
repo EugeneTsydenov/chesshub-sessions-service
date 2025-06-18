@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	SessionsService_StartSession_FullMethodName = "/sessions.SessionsService/StartSession"
+	SessionsService_StopSession_FullMethodName  = "/sessions.SessionsService/StopSession"
 )
 
 // SessionsServiceClient is the client API for SessionsService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SessionsServiceClient interface {
 	StartSession(ctx context.Context, in *StartSessionRequest, opts ...grpc.CallOption) (*StartSessionResponse, error)
+	StopSession(ctx context.Context, in *StopSessionRequest, opts ...grpc.CallOption) (*StopSessionResponse, error)
 }
 
 type sessionsServiceClient struct {
@@ -47,11 +49,22 @@ func (c *sessionsServiceClient) StartSession(ctx context.Context, in *StartSessi
 	return out, nil
 }
 
+func (c *sessionsServiceClient) StopSession(ctx context.Context, in *StopSessionRequest, opts ...grpc.CallOption) (*StopSessionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StopSessionResponse)
+	err := c.cc.Invoke(ctx, SessionsService_StopSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SessionsServiceServer is the server API for SessionsService service.
 // All implementations must embed UnimplementedSessionsServiceServer
 // for forward compatibility.
 type SessionsServiceServer interface {
 	StartSession(context.Context, *StartSessionRequest) (*StartSessionResponse, error)
+	StopSession(context.Context, *StopSessionRequest) (*StopSessionResponse, error)
 	mustEmbedUnimplementedSessionsServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedSessionsServiceServer struct{}
 
 func (UnimplementedSessionsServiceServer) StartSession(context.Context, *StartSessionRequest) (*StartSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StartSession not implemented")
+}
+func (UnimplementedSessionsServiceServer) StopSession(context.Context, *StopSessionRequest) (*StopSessionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StopSession not implemented")
 }
 func (UnimplementedSessionsServiceServer) mustEmbedUnimplementedSessionsServiceServer() {}
 func (UnimplementedSessionsServiceServer) testEmbeddedByValue()                         {}
@@ -104,6 +120,24 @@ func _SessionsService_StartSession_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SessionsService_StopSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StopSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionsServiceServer).StopSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SessionsService_StopSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionsServiceServer).StopSession(ctx, req.(*StopSessionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SessionsService_ServiceDesc is the grpc.ServiceDesc for SessionsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var SessionsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "StartSession",
 			Handler:    _SessionsService_StartSession_Handler,
+		},
+		{
+			MethodName: "StopSession",
+			Handler:    _SessionsService_StopSession_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

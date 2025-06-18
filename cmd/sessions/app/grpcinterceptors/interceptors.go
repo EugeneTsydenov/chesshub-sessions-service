@@ -2,6 +2,7 @@ package grpcinterceptors
 
 import (
 	"context"
+
 	"github.com/EugeneTsydenov/chesshub-sessions-service/cmd/sessions/app/tracker"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"

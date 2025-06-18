@@ -2,26 +2,30 @@ package grpccontroller
 
 import (
 	"context"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/usecase"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/genproto"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/mapper"
 	"time"
+
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/usecase"
+	sessionsproto "github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/genproto"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/mapper"
 )
 
 type SessionController struct {
 	sessionsproto.UnimplementedSessionsServiceServer
-	createSessionUseCase usecase.StartSession
+	startSessionUseCase usecase.StartSession
+	stopSessionUseCase  usecase.StopSession
 }
 
 func NewSessionController(
-	createSessionUseCase usecase.StartSession,
+	startSessionUseCase usecase.StartSession,
+	stopSessionUseCase usecase.StopSession,
 ) *SessionController {
 	return &SessionController{
-		createSessionUseCase: createSessionUseCase,
+		startSessionUseCase: startSessionUseCase,
+		stopSessionUseCase:  stopSessionUseCase,
 	}
 }
 
-func (c *SessionController) CreateSession(ctx context.Context, req *sessionsproto.StartSessionRequest) (*sessionsproto.StartSessionResponse, error) {
+func (c *SessionController) StartSession(ctx context.Context, req *sessionsproto.StartSessionRequest) (*sessionsproto.StartSessionResponse, error) {
 	if err := req.ValidateAll(); err != nil {
 		return nil, err
 	}
@@ -29,12 +33,28 @@ func (c *SessionController) CreateSession(ctx context.Context, req *sessionsprot
 	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
 	defer cancel()
 
-	r, err := c.createSessionUseCase.Execute(ctx, mapper.ToStartSessionInputDTO(req))
+	r, err := c.startSessionUseCase.Execute(ctx, mapper.ToStartSessionInputDTO(req))
 	if err != nil {
 		return nil, err
 	}
 
 	return mapper.ToStartSessionResponse(r), nil
+}
+
+func (c *SessionController) StopSession(ctx context.Context, req *sessionsproto.StopSessionRequest) (*sessionsproto.StopSessionResponse, error) {
+	if err := req.ValidateAll(); err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
+	r, err := c.stopSessionUseCase.Execute(ctx, mapper.ToStopSessionInputDTO(req))
+	if err != nil {
+		return nil, err
+	}
+
+	return mapper.ToStopSessionResponse(r), nil
 }
 
 //

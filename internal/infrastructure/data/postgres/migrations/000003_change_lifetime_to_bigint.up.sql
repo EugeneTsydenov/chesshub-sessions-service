@@ -1,0 +1,5 @@
+ALTER TABLE sessions ADD COLUMN lifetime_new BIGINT NOT NULL DEFAULT 2592000000000000;
+
+ALTER TABLE sessions DROP COLUMN lifetime;
+
+ALTER TABLE sessions RENAME COLUMN lifetime_new TO lifetime;
