@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 	"fmt"
-
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/interfaces"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/pkg/apperrors"
