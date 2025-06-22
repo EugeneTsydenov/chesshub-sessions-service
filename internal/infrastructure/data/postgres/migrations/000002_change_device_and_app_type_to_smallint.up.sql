@@ -1,5 +1,0 @@
-ALTER TABLE sessions
-    ALTER COLUMN device_type TYPE SMALLINT USING device_type::SMALLINT;
-
-ALTER TABLE sessions
-    ALTER COLUMN app_type TYPE SMALLINT USING app_type::SMALLINT;

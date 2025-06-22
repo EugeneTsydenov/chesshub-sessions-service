@@ -2,7 +2,9 @@ package repo
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
@@ -13,25 +15,31 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+var (
+	ErrInvalidSQLStatement = errors.New("invalid SQL statement")
+)
+
 type PostgresSessionRepo struct {
 	database *postgres.Database
+
+	queryFactory postgres.SessionQueryFactory
 }
 
 var _ interfaces.SessionRepo = new(PostgresSessionRepo)
 
-func NewPostgresSessionRepository(db *postgres.Database) *PostgresSessionRepo {
-	return &PostgresSessionRepo{database: db}
+func NewPostgresSessionRepository(db *postgres.Database, factory postgres.SessionQueryFactory) *PostgresSessionRepo {
+	return &PostgresSessionRepo{database: db, queryFactory: factory}
 }
 
 func (r *PostgresSessionRepo) Create(ctx context.Context, s *session.Session) (*uuid.UUID, error) {
 	query := `INSERT INTO sessions (
 				id, user_id, device_type, device_name, app_type, 
                 app_version, os, os_version, device_model, ip_address, 
-                city, country, is_active, last_active_at
+                city, country, is_active, lifetime, last_active_at
 			) VALUES (
 				$1, $2, $3, $4, $5,
 				$6, $7, $8, $9, $10, 
-			    $11, $12, $13, $14
+			    $11, $12, $13, $14, $15
 			) RETURNING id`
 
 	deviceInfo := s.DeviceInfo()
@@ -51,6 +59,7 @@ func (r *PostgresSessionRepo) Create(ctx context.Context, s *session.Session) (*
 		location.City(),
 		location.Country(),
 		s.IsActive(),
+		s.Lifetime(),
 		s.LastActiveAt(),
 	)
 
@@ -84,10 +93,10 @@ func (r *PostgresSessionRepo) GetByID(ctx context.Context, sessionID uuid.UUID) 
 		city,
 		country,
 		is_active,
+		lifetime,
 		last_active_at,
 		updated_at,
-		created_at,
-		lifetime
+		created_at
 	FROM sessions
 	WHERE id = $1
 	`
@@ -155,6 +164,7 @@ func (r *PostgresSessionRepo) Update(ctx context.Context, session *session.Sessi
 	var id *uuid.UUID
 
 	err := row.Scan(&id)
+
 	if err != nil {
 		if ctxErr := ctx.Err(); ctxErr != nil {
 			return nil, fmt.Errorf("PostgresSessionRepo.Update ctx=%v", ctxErr)
@@ -166,106 +176,35 @@ func (r *PostgresSessionRepo) Update(ctx context.Context, session *session.Sessi
 	return id, nil
 }
 
-//func (r *PostgresSessionRepo) GetByID(ctx context.Context, id string) (*session.Session, error) {
-//	query := `SELECT * FROM sessions WHERE id = $1`
-//	row := r.database.Pool().QueryRow(ctx, query, id)
-//
-//	s, err := scanSession(row)
-//
-//	if ctxErr := ctx.Err(); ctxErr != nil {
-//		return nil, fmt.Errorf("PostgresSessionRepo.GetByID: %w", ctxErr)
-//	}
-//
-//	if err != nil {
-//		return nil, postgreserrors.NewUnresolvedError("retrieving session finished with error", err)
-//	}
-//
-//	return s, nil
-//}
-//
-//func (r *PostgresSessionRepo) GetActiveSessions(ctx context.Context, userID int64) ([]*session.Session, error) {
-//	query := `SELECT * FROM sessions WHERE user_id = $1 AND is_active = true AND expired_at > now()`
-//	rows, err := r.database.Pool().Query(ctx, query, userID)
-//
-//	if ctxErr := ctx.Err(); ctxErr != nil {
-//		return nil, fmt.Errorf("PostgresSessionRepo.GetActiveSessions: %w", ctxErr)
-//	}
-//
-//	if err != nil {
-//		return nil, postgreserrors.NewUnresolvedError("failed to get active sessions", err)
-//	}
-//	defer rows.Close()
-//
-//	var sessions []*session.Session
-//	for rows.Next() {
-//		s, err := scanSession(rows)
-//		if err != nil {
-//			return nil, postgreserrors.NewUnresolvedError("failed to scan session on get active sessions", err)
-//		}
-//		sessions = append(sessions, s)
-//	}
-//
-//	if err = rows.Err(); err != nil {
-//		return nil, postgreserrors.NewUnresolvedError("rows iteration error on get active sessions", err)
-//	}
-//
-//	return sessions, nil
-//}
-//
-//func (r *PostgresSessionRepo) Update(ctx context.Context, s *session.Session) error {
-//	query := `UPDATE sessions
-//			  SET
-//				user_id = $1, device_type = $2, device_name = $3, app_name = $4, app_version = $5,
-//			    os = $6, os_version = $7, device_model = $8, ip_address = $9, city = $10,
-//			    country = $11, is_active = $12, last_active_at = $13, expired_at = $14,
-//			    updated_at = $15
-//			  WHERE id = $16`
-//
-//	_, err := r.database.Pool().Exec(ctx, query,
-//		s.GetUserID(),
-//		s.GetDeviceType(),
-//		s.GetDeviceName(),
-//		s.GetAppName(),
-//		s.GetAppVersion(),
-//		s.GetOS(),
-//		s.GetOSVersion(),
-//		s.GetDeviceModel(),
-//		s.GetIPAddr(),
-//		s.GetCity(),
-//		s.GetCountry(),
-//		s.GetIsActive(),
-//		s.GetLastActiveAt(),
-//		s.GetExpiredAt(),
-//		s.GetUpdatedAt(),
-//		s.GetID(),
-//	)
-//
-//	if ctxErr := ctx.Err(); ctxErr != nil {
-//		return fmt.Errorf("PostgresSessionRepo.Update: %w", ctxErr)
-//	}
-//
-//	if err != nil {
-//		return postgreserrors.NewUnresolvedError("update session finished with error", err)
-//	}
-//
-//	return nil
-//}
-//
-//func (r *PostgresSessionRepo) Delete(ctx context.Context, s *session.Session) error {
-//	query := `DELETE FROM sessions WHERE id = $1`
-//
-//	_, err := r.database.Pool().Exec(ctx, query, s.GetID())
-//
-//	if ctxErr := ctx.Err(); ctxErr != nil {
-//		return fmt.Errorf("PostgresSessionRepo.Delete: %w", ctxErr)
-//	}
-//
-//	if err != nil {
-//		return postgreserrors.NewUnresolvedError("failed to delete session", err)
-//	}
-//
-//	return nil
-//}
+func (r *PostgresSessionRepo) Find(ctx context.Context, criteria *session.Criteria) ([]*session.Session, error) {
+	query, args, err := r.queryFactory.BuildQuery(criteria)
+	log.Print(query, args)
+	if err != nil {
+		return nil, errors.Join(err, ErrInvalidSQLStatement)
+	}
+
+	rows, err := r.database.Pool().Query(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var sessions []*session.Session
+
+	for rows.Next() {
+		s, err := scanSession(rows)
+		if err != nil {
+			return nil, postgreserrors.NewUnresolvedError("reading session finished with error", err)
+		}
+		sessions = append(sessions, s)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return sessions, nil
+}
 
 func scanSession(row pgx.Row) (*session.Session, error) {
 	var (
@@ -302,16 +241,26 @@ func scanSession(row pgx.Row) (*session.Session, error) {
 		&city,
 		&country,
 		&isActive,
+		&lifetime,
 		&lastActiveAt,
 		&updatedAt,
 		&createdAt,
-		&lifetime,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	deviceInfo := session.NewDeviceInfo(deviceType, deviceName, appType, appVersion, os, osVersion, deviceModel, ipAddr)
+	deviceInfo := session.NewDeviceInfo(
+		deviceType,
+		deviceName,
+		appType,
+		appVersion,
+		os,
+		osVersion,
+		deviceModel,
+		ipAddr,
+	)
+
 	location := session.NewLocation(city, country)
 
 	s := session.NewBuilder().

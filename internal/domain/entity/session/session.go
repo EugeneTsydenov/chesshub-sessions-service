@@ -76,7 +76,12 @@ func (s *Session) Initialize() error {
 		return err
 	}
 	s.Activate()
+
+	day := 24 * time.Hour
+	s.lifetime = 30 * day
+
 	s.RefreshLastActiveAt()
+	
 	return nil
 }
 

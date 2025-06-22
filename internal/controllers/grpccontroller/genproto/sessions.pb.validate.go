@@ -602,3 +602,864 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = StopSessionResponseValidationError{}
+
+// Validate checks the field values on ListSessionsRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListSessionsRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListSessionsRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListSessionsRequestMultiError, or nil if none found.
+func (m *ListSessionsRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListSessionsRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetFilter()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ListSessionsRequestValidationError{
+					field:  "Filter",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ListSessionsRequestValidationError{
+					field:  "Filter",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetFilter()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ListSessionsRequestValidationError{
+				field:  "Filter",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return ListSessionsRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListSessionsRequestMultiError is an error wrapping multiple validation
+// errors returned by ListSessionsRequest.ValidateAll() if the designated
+// constraints aren't met.
+type ListSessionsRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListSessionsRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListSessionsRequestMultiError) AllErrors() []error { return m }
+
+// ListSessionsRequestValidationError is the validation error returned by
+// ListSessionsRequest.Validate if the designated constraints aren't met.
+type ListSessionsRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListSessionsRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListSessionsRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListSessionsRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListSessionsRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListSessionsRequestValidationError) ErrorName() string {
+	return "ListSessionsRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListSessionsRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListSessionsRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListSessionsRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListSessionsRequestValidationError{}
+
+// Validate checks the field values on ListSessionsResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListSessionsResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListSessionsResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListSessionsResponseMultiError, or nil if none found.
+func (m *ListSessionsResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListSessionsResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetSessions() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ListSessionsResponseValidationError{
+						field:  fmt.Sprintf("Sessions[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ListSessionsResponseValidationError{
+						field:  fmt.Sprintf("Sessions[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ListSessionsResponseValidationError{
+					field:  fmt.Sprintf("Sessions[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	// no validation rules for Count
+
+	// no validation rules for Message
+
+	if len(errors) > 0 {
+		return ListSessionsResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListSessionsResponseMultiError is an error wrapping multiple validation
+// errors returned by ListSessionsResponse.ValidateAll() if the designated
+// constraints aren't met.
+type ListSessionsResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListSessionsResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListSessionsResponseMultiError) AllErrors() []error { return m }
+
+// ListSessionsResponseValidationError is the validation error returned by
+// ListSessionsResponse.Validate if the designated constraints aren't met.
+type ListSessionsResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListSessionsResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListSessionsResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListSessionsResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListSessionsResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListSessionsResponseValidationError) ErrorName() string {
+	return "ListSessionsResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListSessionsResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListSessionsResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListSessionsResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListSessionsResponseValidationError{}
+
+// Validate checks the field values on Session with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *Session) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Session with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in SessionMultiError, or nil if none found.
+func (m *Session) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Session) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	// no validation rules for UserID
+
+	// no validation rules for DeviceType
+
+	// no validation rules for AppType
+
+	// no validation rules for AppVersion
+
+	// no validation rules for Os
+
+	// no validation rules for IpAddr
+
+	// no validation rules for IsActive
+
+	if all {
+		switch v := interface{}(m.GetLifetime()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, SessionValidationError{
+					field:  "Lifetime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, SessionValidationError{
+					field:  "Lifetime",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetLifetime()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return SessionValidationError{
+				field:  "Lifetime",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetLastActiveAt()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, SessionValidationError{
+					field:  "LastActiveAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, SessionValidationError{
+					field:  "LastActiveAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetLastActiveAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return SessionValidationError{
+				field:  "LastActiveAt",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetUpdatedAt()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, SessionValidationError{
+					field:  "UpdatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, SessionValidationError{
+					field:  "UpdatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetUpdatedAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return SessionValidationError{
+				field:  "UpdatedAt",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetCreatedAt()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, SessionValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, SessionValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCreatedAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return SessionValidationError{
+				field:  "CreatedAt",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if m.DeviceName != nil {
+		// no validation rules for DeviceName
+	}
+
+	if m.OsVersion != nil {
+		// no validation rules for OsVersion
+	}
+
+	if m.DeviceModel != nil {
+		// no validation rules for DeviceModel
+	}
+
+	if m.City != nil {
+		// no validation rules for City
+	}
+
+	if m.Country != nil {
+		// no validation rules for Country
+	}
+
+	if len(errors) > 0 {
+		return SessionMultiError(errors)
+	}
+
+	return nil
+}
+
+// SessionMultiError is an error wrapping multiple validation errors returned
+// by Session.ValidateAll() if the designated constraints aren't met.
+type SessionMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m SessionMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m SessionMultiError) AllErrors() []error { return m }
+
+// SessionValidationError is the validation error returned by Session.Validate
+// if the designated constraints aren't met.
+type SessionValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e SessionValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e SessionValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e SessionValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e SessionValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e SessionValidationError) ErrorName() string { return "SessionValidationError" }
+
+// Error satisfies the builtin error interface
+func (e SessionValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sSession.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = SessionValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = SessionValidationError{}
+
+// Validate checks the field values on ListSessionsRequest_Filter with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListSessionsRequest_Filter) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListSessionsRequest_Filter with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListSessionsRequest_FilterMultiError, or nil if none found.
+func (m *ListSessionsRequest_Filter) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListSessionsRequest_Filter) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.UserID != nil {
+		// no validation rules for UserID
+	}
+
+	if m.OnlyActive != nil {
+		// no validation rules for OnlyActive
+	}
+
+	if m.DeviceType != nil {
+		// no validation rules for DeviceType
+	}
+
+	if m.DeviceName != nil {
+		// no validation rules for DeviceName
+	}
+
+	if m.AppType != nil {
+		// no validation rules for AppType
+	}
+
+	if m.AppVersion != nil {
+		// no validation rules for AppVersion
+	}
+
+	if m.Os != nil {
+		// no validation rules for Os
+	}
+
+	if m.OsVersion != nil {
+		// no validation rules for OsVersion
+	}
+
+	if m.DeviceModel != nil {
+		// no validation rules for DeviceModel
+	}
+
+	if m.IpAddr != nil {
+		// no validation rules for IpAddr
+	}
+
+	if m.LastActiveBefore != nil {
+
+		if all {
+			switch v := interface{}(m.GetLastActiveBefore()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ListSessionsRequest_FilterValidationError{
+						field:  "LastActiveBefore",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ListSessionsRequest_FilterValidationError{
+						field:  "LastActiveBefore",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetLastActiveBefore()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ListSessionsRequest_FilterValidationError{
+					field:  "LastActiveBefore",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if m.LastActiveAfter != nil {
+
+		if all {
+			switch v := interface{}(m.GetLastActiveAfter()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ListSessionsRequest_FilterValidationError{
+						field:  "LastActiveAfter",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ListSessionsRequest_FilterValidationError{
+						field:  "LastActiveAfter",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetLastActiveAfter()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ListSessionsRequest_FilterValidationError{
+					field:  "LastActiveAfter",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if m.UpdatedBefore != nil {
+
+		if all {
+			switch v := interface{}(m.GetUpdatedBefore()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ListSessionsRequest_FilterValidationError{
+						field:  "UpdatedBefore",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ListSessionsRequest_FilterValidationError{
+						field:  "UpdatedBefore",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetUpdatedBefore()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ListSessionsRequest_FilterValidationError{
+					field:  "UpdatedBefore",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if m.UpdatedAfter != nil {
+
+		if all {
+			switch v := interface{}(m.GetUpdatedAfter()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ListSessionsRequest_FilterValidationError{
+						field:  "UpdatedAfter",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ListSessionsRequest_FilterValidationError{
+						field:  "UpdatedAfter",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetUpdatedAfter()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ListSessionsRequest_FilterValidationError{
+					field:  "UpdatedAfter",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if m.CreatedBefore != nil {
+
+		if all {
+			switch v := interface{}(m.GetCreatedBefore()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ListSessionsRequest_FilterValidationError{
+						field:  "CreatedBefore",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ListSessionsRequest_FilterValidationError{
+						field:  "CreatedBefore",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetCreatedBefore()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ListSessionsRequest_FilterValidationError{
+					field:  "CreatedBefore",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if m.CreatedAfter != nil {
+
+		if all {
+			switch v := interface{}(m.GetCreatedAfter()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ListSessionsRequest_FilterValidationError{
+						field:  "CreatedAfter",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ListSessionsRequest_FilterValidationError{
+						field:  "CreatedAfter",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetCreatedAfter()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ListSessionsRequest_FilterValidationError{
+					field:  "CreatedAfter",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return ListSessionsRequest_FilterMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListSessionsRequest_FilterMultiError is an error wrapping multiple
+// validation errors returned by ListSessionsRequest_Filter.ValidateAll() if
+// the designated constraints aren't met.
+type ListSessionsRequest_FilterMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListSessionsRequest_FilterMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListSessionsRequest_FilterMultiError) AllErrors() []error { return m }
+
+// ListSessionsRequest_FilterValidationError is the validation error returned
+// by ListSessionsRequest_Filter.Validate if the designated constraints aren't met.
+type ListSessionsRequest_FilterValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListSessionsRequest_FilterValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListSessionsRequest_FilterValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListSessionsRequest_FilterValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListSessionsRequest_FilterValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListSessionsRequest_FilterValidationError) ErrorName() string {
+	return "ListSessionsRequest_FilterValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListSessionsRequest_FilterValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListSessionsRequest_Filter.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListSessionsRequest_FilterValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListSessionsRequest_FilterValidationError{}

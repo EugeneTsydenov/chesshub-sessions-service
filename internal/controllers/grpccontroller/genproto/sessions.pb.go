@@ -7,7 +7,8 @@
 package sessionsproto
 
 import (
-	_ "github.com/golang/protobuf/ptypes/timestamp"
+	duration "github.com/golang/protobuf/ptypes/duration"
+	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -418,11 +419,451 @@ func (x *StopSessionResponse) GetMessage() string {
 	return ""
 }
 
+type ListSessionsRequest struct {
+	state         protoimpl.MessageState      `protogen:"open.v1"`
+	Filter        *ListSessionsRequest_Filter `protobuf:"bytes,1,opt,name=filter,proto3" json:"filter,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListSessionsRequest) Reset() {
+	*x = ListSessionsRequest{}
+	mi := &file_sessions_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSessionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSessionsRequest) ProtoMessage() {}
+
+func (x *ListSessionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListSessionsRequest.ProtoReflect.Descriptor instead.
+func (*ListSessionsRequest) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ListSessionsRequest) GetFilter() *ListSessionsRequest_Filter {
+	if x != nil {
+		return x.Filter
+	}
+	return nil
+}
+
+type ListSessionsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Sessions      []*Session             `protobuf:"bytes,1,rep,name=sessions,proto3" json:"sessions,omitempty"`
+	Count         int32                  `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
+	Message       string                 `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListSessionsResponse) Reset() {
+	*x = ListSessionsResponse{}
+	mi := &file_sessions_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSessionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSessionsResponse) ProtoMessage() {}
+
+func (x *ListSessionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListSessionsResponse.ProtoReflect.Descriptor instead.
+func (*ListSessionsResponse) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ListSessionsResponse) GetSessions() []*Session {
+	if x != nil {
+		return x.Sessions
+	}
+	return nil
+}
+
+func (x *ListSessionsResponse) GetCount() int32 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+func (x *ListSessionsResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type Session struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserID        int64                  `protobuf:"varint,2,opt,name=userID,proto3" json:"userID,omitempty"`
+	DeviceType    DeviceType             `protobuf:"varint,3,opt,name=deviceType,proto3,enum=sessions.DeviceType" json:"deviceType,omitempty"`
+	DeviceName    *string                `protobuf:"bytes,4,opt,name=deviceName,proto3,oneof" json:"deviceName,omitempty"`
+	AppType       AppType                `protobuf:"varint,5,opt,name=appType,proto3,enum=sessions.AppType" json:"appType,omitempty"`
+	AppVersion    string                 `protobuf:"bytes,6,opt,name=appVersion,proto3" json:"appVersion,omitempty"`
+	Os            string                 `protobuf:"bytes,7,opt,name=os,proto3" json:"os,omitempty"`
+	OsVersion     *string                `protobuf:"bytes,8,opt,name=osVersion,proto3,oneof" json:"osVersion,omitempty"`
+	DeviceModel   *string                `protobuf:"bytes,9,opt,name=deviceModel,proto3,oneof" json:"deviceModel,omitempty"`
+	IpAddr        string                 `protobuf:"bytes,10,opt,name=ipAddr,proto3" json:"ipAddr,omitempty"`
+	City          *string                `protobuf:"bytes,11,opt,name=city,proto3,oneof" json:"city,omitempty"`
+	Country       *string                `protobuf:"bytes,12,opt,name=country,proto3,oneof" json:"country,omitempty"`
+	IsActive      bool                   `protobuf:"varint,13,opt,name=isActive,proto3" json:"isActive,omitempty"`
+	Lifetime      *duration.Duration     `protobuf:"bytes,14,opt,name=lifetime,proto3" json:"lifetime,omitempty"`
+	LastActiveAt  *timestamp.Timestamp   `protobuf:"bytes,15,opt,name=lastActiveAt,proto3" json:"lastActiveAt,omitempty"`
+	UpdatedAt     *timestamp.Timestamp   `protobuf:"bytes,16,opt,name=updatedAt,proto3" json:"updatedAt,omitempty"`
+	CreatedAt     *timestamp.Timestamp   `protobuf:"bytes,17,opt,name=createdAt,proto3" json:"createdAt,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Session) Reset() {
+	*x = Session{}
+	mi := &file_sessions_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Session) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Session) ProtoMessage() {}
+
+func (x *Session) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Session.ProtoReflect.Descriptor instead.
+func (*Session) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *Session) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Session) GetUserID() int64 {
+	if x != nil {
+		return x.UserID
+	}
+	return 0
+}
+
+func (x *Session) GetDeviceType() DeviceType {
+	if x != nil {
+		return x.DeviceType
+	}
+	return DeviceType_Web
+}
+
+func (x *Session) GetDeviceName() string {
+	if x != nil && x.DeviceName != nil {
+		return *x.DeviceName
+	}
+	return ""
+}
+
+func (x *Session) GetAppType() AppType {
+	if x != nil {
+		return x.AppType
+	}
+	return AppType_ChesshubWeb
+}
+
+func (x *Session) GetAppVersion() string {
+	if x != nil {
+		return x.AppVersion
+	}
+	return ""
+}
+
+func (x *Session) GetOs() string {
+	if x != nil {
+		return x.Os
+	}
+	return ""
+}
+
+func (x *Session) GetOsVersion() string {
+	if x != nil && x.OsVersion != nil {
+		return *x.OsVersion
+	}
+	return ""
+}
+
+func (x *Session) GetDeviceModel() string {
+	if x != nil && x.DeviceModel != nil {
+		return *x.DeviceModel
+	}
+	return ""
+}
+
+func (x *Session) GetIpAddr() string {
+	if x != nil {
+		return x.IpAddr
+	}
+	return ""
+}
+
+func (x *Session) GetCity() string {
+	if x != nil && x.City != nil {
+		return *x.City
+	}
+	return ""
+}
+
+func (x *Session) GetCountry() string {
+	if x != nil && x.Country != nil {
+		return *x.Country
+	}
+	return ""
+}
+
+func (x *Session) GetIsActive() bool {
+	if x != nil {
+		return x.IsActive
+	}
+	return false
+}
+
+func (x *Session) GetLifetime() *duration.Duration {
+	if x != nil {
+		return x.Lifetime
+	}
+	return nil
+}
+
+func (x *Session) GetLastActiveAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.LastActiveAt
+	}
+	return nil
+}
+
+func (x *Session) GetUpdatedAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
+}
+
+func (x *Session) GetCreatedAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+type ListSessionsRequest_Filter struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	UserID           *int64                 `protobuf:"varint,1,opt,name=userID,proto3,oneof" json:"userID,omitempty"`
+	OnlyActive       *bool                  `protobuf:"varint,2,opt,name=onlyActive,proto3,oneof" json:"onlyActive,omitempty"`
+	DeviceType       *DeviceType            `protobuf:"varint,3,opt,name=deviceType,proto3,enum=sessions.DeviceType,oneof" json:"deviceType,omitempty"`
+	DeviceName       *string                `protobuf:"bytes,4,opt,name=deviceName,proto3,oneof" json:"deviceName,omitempty"`
+	AppType          *AppType               `protobuf:"varint,5,opt,name=appType,proto3,enum=sessions.AppType,oneof" json:"appType,omitempty"`
+	AppVersion       *string                `protobuf:"bytes,6,opt,name=appVersion,proto3,oneof" json:"appVersion,omitempty"`
+	Os               *string                `protobuf:"bytes,7,opt,name=os,proto3,oneof" json:"os,omitempty"`
+	OsVersion        *string                `protobuf:"bytes,8,opt,name=osVersion,proto3,oneof" json:"osVersion,omitempty"`
+	DeviceModel      *string                `protobuf:"bytes,9,opt,name=deviceModel,proto3,oneof" json:"deviceModel,omitempty"`
+	IpAddr           *string                `protobuf:"bytes,10,opt,name=ipAddr,proto3,oneof" json:"ipAddr,omitempty"`
+	LastActiveBefore *timestamp.Timestamp   `protobuf:"bytes,11,opt,name=lastActiveBefore,proto3,oneof" json:"lastActiveBefore,omitempty"`
+	LastActiveAfter  *timestamp.Timestamp   `protobuf:"bytes,12,opt,name=lastActiveAfter,proto3,oneof" json:"lastActiveAfter,omitempty"`
+	UpdatedBefore    *timestamp.Timestamp   `protobuf:"bytes,13,opt,name=updatedBefore,proto3,oneof" json:"updatedBefore,omitempty"`
+	UpdatedAfter     *timestamp.Timestamp   `protobuf:"bytes,14,opt,name=updatedAfter,proto3,oneof" json:"updatedAfter,omitempty"`
+	CreatedBefore    *timestamp.Timestamp   `protobuf:"bytes,15,opt,name=createdBefore,proto3,oneof" json:"createdBefore,omitempty"`
+	CreatedAfter     *timestamp.Timestamp   `protobuf:"bytes,16,opt,name=createdAfter,proto3,oneof" json:"createdAfter,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *ListSessionsRequest_Filter) Reset() {
+	*x = ListSessionsRequest_Filter{}
+	mi := &file_sessions_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSessionsRequest_Filter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSessionsRequest_Filter) ProtoMessage() {}
+
+func (x *ListSessionsRequest_Filter) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListSessionsRequest_Filter.ProtoReflect.Descriptor instead.
+func (*ListSessionsRequest_Filter) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{5, 0}
+}
+
+func (x *ListSessionsRequest_Filter) GetUserID() int64 {
+	if x != nil && x.UserID != nil {
+		return *x.UserID
+	}
+	return 0
+}
+
+func (x *ListSessionsRequest_Filter) GetOnlyActive() bool {
+	if x != nil && x.OnlyActive != nil {
+		return *x.OnlyActive
+	}
+	return false
+}
+
+func (x *ListSessionsRequest_Filter) GetDeviceType() DeviceType {
+	if x != nil && x.DeviceType != nil {
+		return *x.DeviceType
+	}
+	return DeviceType_Web
+}
+
+func (x *ListSessionsRequest_Filter) GetDeviceName() string {
+	if x != nil && x.DeviceName != nil {
+		return *x.DeviceName
+	}
+	return ""
+}
+
+func (x *ListSessionsRequest_Filter) GetAppType() AppType {
+	if x != nil && x.AppType != nil {
+		return *x.AppType
+	}
+	return AppType_ChesshubWeb
+}
+
+func (x *ListSessionsRequest_Filter) GetAppVersion() string {
+	if x != nil && x.AppVersion != nil {
+		return *x.AppVersion
+	}
+	return ""
+}
+
+func (x *ListSessionsRequest_Filter) GetOs() string {
+	if x != nil && x.Os != nil {
+		return *x.Os
+	}
+	return ""
+}
+
+func (x *ListSessionsRequest_Filter) GetOsVersion() string {
+	if x != nil && x.OsVersion != nil {
+		return *x.OsVersion
+	}
+	return ""
+}
+
+func (x *ListSessionsRequest_Filter) GetDeviceModel() string {
+	if x != nil && x.DeviceModel != nil {
+		return *x.DeviceModel
+	}
+	return ""
+}
+
+func (x *ListSessionsRequest_Filter) GetIpAddr() string {
+	if x != nil && x.IpAddr != nil {
+		return *x.IpAddr
+	}
+	return ""
+}
+
+func (x *ListSessionsRequest_Filter) GetLastActiveBefore() *timestamp.Timestamp {
+	if x != nil {
+		return x.LastActiveBefore
+	}
+	return nil
+}
+
+func (x *ListSessionsRequest_Filter) GetLastActiveAfter() *timestamp.Timestamp {
+	if x != nil {
+		return x.LastActiveAfter
+	}
+	return nil
+}
+
+func (x *ListSessionsRequest_Filter) GetUpdatedBefore() *timestamp.Timestamp {
+	if x != nil {
+		return x.UpdatedBefore
+	}
+	return nil
+}
+
+func (x *ListSessionsRequest_Filter) GetUpdatedAfter() *timestamp.Timestamp {
+	if x != nil {
+		return x.UpdatedAfter
+	}
+	return nil
+}
+
+func (x *ListSessionsRequest_Filter) GetCreatedBefore() *timestamp.Timestamp {
+	if x != nil {
+		return x.CreatedBefore
+	}
+	return nil
+}
+
+func (x *ListSessionsRequest_Filter) GetCreatedAfter() *timestamp.Timestamp {
+	if x != nil {
+		return x.CreatedAfter
+	}
+	return nil
+}
+
 var File_sessions_proto protoreflect.FileDescriptor
 
 const file_sessions_proto_rawDesc = "" +
 	"\n" +
-	"\x0esessions.proto\x12\bsessions\x1a\x1fgoogle/protobuf/timestamp.proto\"c\n" +
+	"\x0esessions.proto\x12\bsessions\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\"c\n" +
 	"\x13StartSessionRequest\x12\x16\n" +
 	"\x06userId\x18\x01 \x01(\x03R\x06userId\x124\n" +
 	"\n" +
@@ -454,7 +895,90 @@ const file_sessions_proto_rawDesc = "" +
 	"\x12StopSessionRequest\x12\x1c\n" +
 	"\tsessionID\x18\x01 \x01(\tR\tsessionID\"/\n" +
 	"\x13StopSessionResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage*:\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"\xf5\b\n" +
+	"\x13ListSessionsRequest\x12<\n" +
+	"\x06filter\x18\x01 \x01(\v2$.sessions.ListSessionsRequest.FilterR\x06filter\x1a\x9f\b\n" +
+	"\x06Filter\x12\x1b\n" +
+	"\x06userID\x18\x01 \x01(\x03H\x00R\x06userID\x88\x01\x01\x12#\n" +
+	"\n" +
+	"onlyActive\x18\x02 \x01(\bH\x01R\n" +
+	"onlyActive\x88\x01\x01\x129\n" +
+	"\n" +
+	"deviceType\x18\x03 \x01(\x0e2\x14.sessions.DeviceTypeH\x02R\n" +
+	"deviceType\x88\x01\x01\x12#\n" +
+	"\n" +
+	"deviceName\x18\x04 \x01(\tH\x03R\n" +
+	"deviceName\x88\x01\x01\x120\n" +
+	"\aappType\x18\x05 \x01(\x0e2\x11.sessions.AppTypeH\x04R\aappType\x88\x01\x01\x12#\n" +
+	"\n" +
+	"appVersion\x18\x06 \x01(\tH\x05R\n" +
+	"appVersion\x88\x01\x01\x12\x13\n" +
+	"\x02os\x18\a \x01(\tH\x06R\x02os\x88\x01\x01\x12!\n" +
+	"\tosVersion\x18\b \x01(\tH\aR\tosVersion\x88\x01\x01\x12%\n" +
+	"\vdeviceModel\x18\t \x01(\tH\bR\vdeviceModel\x88\x01\x01\x12\x1b\n" +
+	"\x06ipAddr\x18\n" +
+	" \x01(\tH\tR\x06ipAddr\x88\x01\x01\x12K\n" +
+	"\x10lastActiveBefore\x18\v \x01(\v2\x1a.google.protobuf.TimestampH\n" +
+	"R\x10lastActiveBefore\x88\x01\x01\x12I\n" +
+	"\x0flastActiveAfter\x18\f \x01(\v2\x1a.google.protobuf.TimestampH\vR\x0flastActiveAfter\x88\x01\x01\x12E\n" +
+	"\rupdatedBefore\x18\r \x01(\v2\x1a.google.protobuf.TimestampH\fR\rupdatedBefore\x88\x01\x01\x12C\n" +
+	"\fupdatedAfter\x18\x0e \x01(\v2\x1a.google.protobuf.TimestampH\rR\fupdatedAfter\x88\x01\x01\x12E\n" +
+	"\rcreatedBefore\x18\x0f \x01(\v2\x1a.google.protobuf.TimestampH\x0eR\rcreatedBefore\x88\x01\x01\x12C\n" +
+	"\fcreatedAfter\x18\x10 \x01(\v2\x1a.google.protobuf.TimestampH\x0fR\fcreatedAfter\x88\x01\x01B\t\n" +
+	"\a_userIDB\r\n" +
+	"\v_onlyActiveB\r\n" +
+	"\v_deviceTypeB\r\n" +
+	"\v_deviceNameB\n" +
+	"\n" +
+	"\b_appTypeB\r\n" +
+	"\v_appVersionB\x05\n" +
+	"\x03_osB\f\n" +
+	"\n" +
+	"_osVersionB\x0e\n" +
+	"\f_deviceModelB\t\n" +
+	"\a_ipAddrB\x13\n" +
+	"\x11_lastActiveBeforeB\x12\n" +
+	"\x10_lastActiveAfterB\x10\n" +
+	"\x0e_updatedBeforeB\x0f\n" +
+	"\r_updatedAfterB\x10\n" +
+	"\x0e_createdBeforeB\x0f\n" +
+	"\r_createdAfter\"u\n" +
+	"\x14ListSessionsResponse\x12-\n" +
+	"\bsessions\x18\x01 \x03(\v2\x11.sessions.SessionR\bsessions\x12\x14\n" +
+	"\x05count\x18\x02 \x01(\x05R\x05count\x12\x18\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\"\xcc\x05\n" +
+	"\aSession\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
+	"\x06userID\x18\x02 \x01(\x03R\x06userID\x124\n" +
+	"\n" +
+	"deviceType\x18\x03 \x01(\x0e2\x14.sessions.DeviceTypeR\n" +
+	"deviceType\x12#\n" +
+	"\n" +
+	"deviceName\x18\x04 \x01(\tH\x00R\n" +
+	"deviceName\x88\x01\x01\x12+\n" +
+	"\aappType\x18\x05 \x01(\x0e2\x11.sessions.AppTypeR\aappType\x12\x1e\n" +
+	"\n" +
+	"appVersion\x18\x06 \x01(\tR\n" +
+	"appVersion\x12\x0e\n" +
+	"\x02os\x18\a \x01(\tR\x02os\x12!\n" +
+	"\tosVersion\x18\b \x01(\tH\x01R\tosVersion\x88\x01\x01\x12%\n" +
+	"\vdeviceModel\x18\t \x01(\tH\x02R\vdeviceModel\x88\x01\x01\x12\x16\n" +
+	"\x06ipAddr\x18\n" +
+	" \x01(\tR\x06ipAddr\x12\x17\n" +
+	"\x04city\x18\v \x01(\tH\x03R\x04city\x88\x01\x01\x12\x1d\n" +
+	"\acountry\x18\f \x01(\tH\x04R\acountry\x88\x01\x01\x12\x1a\n" +
+	"\bisActive\x18\r \x01(\bR\bisActive\x125\n" +
+	"\blifetime\x18\x0e \x01(\v2\x19.google.protobuf.DurationR\blifetime\x12>\n" +
+	"\flastActiveAt\x18\x0f \x01(\v2\x1a.google.protobuf.TimestampR\flastActiveAt\x128\n" +
+	"\tupdatedAt\x18\x10 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x128\n" +
+	"\tcreatedAt\x18\x11 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAtB\r\n" +
+	"\v_deviceNameB\f\n" +
+	"\n" +
+	"_osVersionB\x0e\n" +
+	"\f_deviceModelB\a\n" +
+	"\x05_cityB\n" +
+	"\n" +
+	"\b_country*:\n" +
 	"\n" +
 	"DeviceType\x12\a\n" +
 	"\x03Web\x10\x00\x12\n" +
@@ -467,10 +991,11 @@ const file_sessions_proto_rawDesc = "" +
 	"\vChesshubWeb\x10\x00\x12\x12\n" +
 	"\x0eChesshubMobile\x10\x01\x12\x13\n" +
 	"\x0fChesshubDesktop\x10\x02\x12\x12\n" +
-	"\x0eChesshubTablet\x10\x032\xb0\x01\n" +
+	"\x0eChesshubTablet\x10\x032\x81\x02\n" +
 	"\x0fSessionsService\x12O\n" +
 	"\fStartSession\x12\x1d.sessions.StartSessionRequest\x1a\x1e.sessions.StartSessionResponse\"\x00\x12L\n" +
-	"\vStopSession\x12\x1c.sessions.StopSessionRequest\x1a\x1d.sessions.StopSessionResponse\"\x00BlZjgithub.com/EugeneTsydenov/chesshub-user-service/internal/controllers/grpccontroller/genproto;sessionsprotob\x06proto3"
+	"\vStopSession\x12\x1c.sessions.StopSessionRequest\x1a\x1d.sessions.StopSessionResponse\"\x00\x12O\n" +
+	"\fListSessions\x12\x1d.sessions.ListSessionsRequest\x1a\x1e.sessions.ListSessionsResponse\"\x00BlZjgithub.com/EugeneTsydenov/chesshub-user-service/internal/controllers/grpccontroller/genproto;sessionsprotob\x06proto3"
 
 var (
 	file_sessions_proto_rawDescOnce sync.Once
@@ -485,29 +1010,53 @@ func file_sessions_proto_rawDescGZIP() []byte {
 }
 
 var file_sessions_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_sessions_proto_goTypes = []any{
-	(DeviceType)(0),              // 0: sessions.DeviceType
-	(AppType)(0),                 // 1: sessions.AppType
-	(*StartSessionRequest)(nil),  // 2: sessions.StartSessionRequest
-	(*DeviceInfo)(nil),           // 3: sessions.DeviceInfo
-	(*StartSessionResponse)(nil), // 4: sessions.StartSessionResponse
-	(*StopSessionRequest)(nil),   // 5: sessions.StopSessionRequest
-	(*StopSessionResponse)(nil),  // 6: sessions.StopSessionResponse
+	(DeviceType)(0),                    // 0: sessions.DeviceType
+	(AppType)(0),                       // 1: sessions.AppType
+	(*StartSessionRequest)(nil),        // 2: sessions.StartSessionRequest
+	(*DeviceInfo)(nil),                 // 3: sessions.DeviceInfo
+	(*StartSessionResponse)(nil),       // 4: sessions.StartSessionResponse
+	(*StopSessionRequest)(nil),         // 5: sessions.StopSessionRequest
+	(*StopSessionResponse)(nil),        // 6: sessions.StopSessionResponse
+	(*ListSessionsRequest)(nil),        // 7: sessions.ListSessionsRequest
+	(*ListSessionsResponse)(nil),       // 8: sessions.ListSessionsResponse
+	(*Session)(nil),                    // 9: sessions.Session
+	(*ListSessionsRequest_Filter)(nil), // 10: sessions.ListSessionsRequest.Filter
+	(*duration.Duration)(nil),          // 11: google.protobuf.Duration
+	(*timestamp.Timestamp)(nil),        // 12: google.protobuf.Timestamp
 }
 var file_sessions_proto_depIdxs = []int32{
-	3, // 0: sessions.StartSessionRequest.deviceInfo:type_name -> sessions.DeviceInfo
-	0, // 1: sessions.DeviceInfo.deviceType:type_name -> sessions.DeviceType
-	1, // 2: sessions.DeviceInfo.appType:type_name -> sessions.AppType
-	2, // 3: sessions.SessionsService.StartSession:input_type -> sessions.StartSessionRequest
-	5, // 4: sessions.SessionsService.StopSession:input_type -> sessions.StopSessionRequest
-	4, // 5: sessions.SessionsService.StartSession:output_type -> sessions.StartSessionResponse
-	6, // 6: sessions.SessionsService.StopSession:output_type -> sessions.StopSessionResponse
-	5, // [5:7] is the sub-list for method output_type
-	3, // [3:5] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	3,  // 0: sessions.StartSessionRequest.deviceInfo:type_name -> sessions.DeviceInfo
+	0,  // 1: sessions.DeviceInfo.deviceType:type_name -> sessions.DeviceType
+	1,  // 2: sessions.DeviceInfo.appType:type_name -> sessions.AppType
+	10, // 3: sessions.ListSessionsRequest.filter:type_name -> sessions.ListSessionsRequest.Filter
+	9,  // 4: sessions.ListSessionsResponse.sessions:type_name -> sessions.Session
+	0,  // 5: sessions.Session.deviceType:type_name -> sessions.DeviceType
+	1,  // 6: sessions.Session.appType:type_name -> sessions.AppType
+	11, // 7: sessions.Session.lifetime:type_name -> google.protobuf.Duration
+	12, // 8: sessions.Session.lastActiveAt:type_name -> google.protobuf.Timestamp
+	12, // 9: sessions.Session.updatedAt:type_name -> google.protobuf.Timestamp
+	12, // 10: sessions.Session.createdAt:type_name -> google.protobuf.Timestamp
+	0,  // 11: sessions.ListSessionsRequest.Filter.deviceType:type_name -> sessions.DeviceType
+	1,  // 12: sessions.ListSessionsRequest.Filter.appType:type_name -> sessions.AppType
+	12, // 13: sessions.ListSessionsRequest.Filter.lastActiveBefore:type_name -> google.protobuf.Timestamp
+	12, // 14: sessions.ListSessionsRequest.Filter.lastActiveAfter:type_name -> google.protobuf.Timestamp
+	12, // 15: sessions.ListSessionsRequest.Filter.updatedBefore:type_name -> google.protobuf.Timestamp
+	12, // 16: sessions.ListSessionsRequest.Filter.updatedAfter:type_name -> google.protobuf.Timestamp
+	12, // 17: sessions.ListSessionsRequest.Filter.createdBefore:type_name -> google.protobuf.Timestamp
+	12, // 18: sessions.ListSessionsRequest.Filter.createdAfter:type_name -> google.protobuf.Timestamp
+	2,  // 19: sessions.SessionsService.StartSession:input_type -> sessions.StartSessionRequest
+	5,  // 20: sessions.SessionsService.StopSession:input_type -> sessions.StopSessionRequest
+	7,  // 21: sessions.SessionsService.ListSessions:input_type -> sessions.ListSessionsRequest
+	4,  // 22: sessions.SessionsService.StartSession:output_type -> sessions.StartSessionResponse
+	6,  // 23: sessions.SessionsService.StopSession:output_type -> sessions.StopSessionResponse
+	8,  // 24: sessions.SessionsService.ListSessions:output_type -> sessions.ListSessionsResponse
+	22, // [22:25] is the sub-list for method output_type
+	19, // [19:22] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() { file_sessions_proto_init() }
@@ -516,13 +1065,15 @@ func file_sessions_proto_init() {
 		return
 	}
 	file_sessions_proto_msgTypes[1].OneofWrappers = []any{}
+	file_sessions_proto_msgTypes[7].OneofWrappers = []any{}
+	file_sessions_proto_msgTypes[8].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_sessions_proto_rawDesc), len(file_sessions_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   5,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

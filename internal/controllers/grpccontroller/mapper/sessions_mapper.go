@@ -2,8 +2,12 @@ package mapper
 
 import (
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/sessionfilter"
 	sessionsproto "github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/genproto"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	"time"
 )
 
 func ToStartSessionInputDTO(req *sessionsproto.StartSessionRequest) *dto.StartSessionInputDTO {
@@ -51,6 +55,135 @@ func ToStopSessionResponse(output *dto.StopSessionOutputDTO) *sessionsproto.Stop
 	return &sessionsproto.StopSessionResponse{
 		Message: output.Message,
 	}
+}
+
+func ToListSessionInputDTO(req *sessionsproto.ListSessionsRequest) *dto.ListSessionsInputDTO {
+	filter := req.Filter
+
+	return &dto.ListSessionsInputDTO{
+		Filter: &sessionfilter.SessionFilter{
+			UserID:           filter.UserID,
+			OnlyActive:       filter.OnlyActive,
+			DeviceType:       toDeviceTypePtr(filter.DeviceType),
+			DeviceName:       filter.DeviceName,
+			AppType:          toAppTypePtr(filter.AppType),
+			AppVersion:       filter.AppVersion,
+			OS:               filter.Os,
+			OSVersion:        filter.OsVersion,
+			DeviceModel:      filter.DeviceModel,
+			IPAddr:           filter.IpAddr,
+			LastActiveBefore: toTimePtr(filter.LastActiveBefore),
+			LastActiveAfter:  toTimePtr(filter.LastActiveAfter),
+			UpdatedBefore:    toTimePtr(filter.UpdatedBefore),
+			UpdatedAfter:     toTimePtr(filter.UpdatedAfter),
+			CreatedBefore:    toTimePtr(filter.CreatedBefore),
+			CreatedAfter:     toTimePtr(filter.CreatedAfter),
+		},
+	}
+}
+
+func toDeviceTypePtr(protoDeviceType *sessionsproto.DeviceType) *session.DeviceType {
+	if protoDeviceType == nil {
+		return nil
+	}
+
+	t := toDeviceType(*protoDeviceType)
+	return &t
+}
+
+func toAppTypePtr(protoAppType *sessionsproto.AppType) *session.AppType {
+	if protoAppType == nil {
+		return nil
+	}
+
+	t := toAppType(*protoAppType)
+	return &t
+}
+
+func toTimePtr(timestamp *timestamppb.Timestamp) *time.Time {
+	if timestamp == nil {
+		return nil
+	}
+
+	t := timestamp.AsTime()
+
+	return &t
+}
+
+func ToListSessionsResponse(output *dto.ListSessionsOutputDTO) *sessionsproto.ListSessionsResponse {
+	return &sessionsproto.ListSessionsResponse{
+		Sessions: toListProtoSessions(output.Sessions),
+		Count:    int32(output.Count),
+		Message:  output.Message,
+	}
+}
+
+func toListProtoSessions(sessions []*session.Session) []*sessionsproto.Session {
+	var protoSessions []*sessionsproto.Session
+	for _, s := range sessions {
+		protoSessions = append(protoSessions, toProtoSession(s))
+	}
+	return protoSessions
+}
+
+func toProtoSession(session *session.Session) *sessionsproto.Session {
+	return &sessionsproto.Session{
+		Id:           session.ID().String(),
+		UserID:       session.UserID(),
+		DeviceType:   toProtoDeviceType(session.DeviceInfo().DeviceType()),
+		DeviceName:   session.DeviceInfo().DeviceName(),
+		AppType:      toProtoAppType(session.DeviceInfo().AppType()),
+		AppVersion:   session.DeviceInfo().AppVersion(),
+		Os:           session.DeviceInfo().OS(),
+		OsVersion:    session.DeviceInfo().OSVersion(),
+		DeviceModel:  session.DeviceInfo().DeviceModel(),
+		IpAddr:       session.DeviceInfo().IPAddr(),
+		City:         session.Location().City(),
+		Country:      session.Location().Country(),
+		IsActive:     session.IsActive(),
+		Lifetime:     toProtoDuration(session.Lifetime()),
+		LastActiveAt: toProtoTime(session.LastActiveAt()),
+		UpdatedAt:    toProtoTime(session.UpdatedAt()),
+		CreatedAt:    toProtoTime(session.CreatedAt()),
+	}
+}
+
+func toProtoDeviceType(t session.DeviceType) sessionsproto.DeviceType {
+	switch t {
+	case session.DeviceTypeWeb:
+		return sessionsproto.DeviceType_Web
+	case session.DeviceTypeMobile:
+		return sessionsproto.DeviceType_Mobile
+	case session.DeviceTypeDesktop:
+		return sessionsproto.DeviceType_Desktop
+	case session.DeviceTypeTablet:
+		return sessionsproto.DeviceType_Tablet
+	default:
+		return sessionsproto.DeviceType_Web // или sessionsproto.DeviceType(0), или специальное значение Unknown
+	}
+}
+
+func toProtoAppType(t session.AppType) sessionsproto.AppType {
+	switch t {
+	case session.AppTypeChesshubWeb:
+		return sessionsproto.AppType_ChesshubWeb
+	case session.AppTypeChesshubMobile:
+		return sessionsproto.AppType_ChesshubMobile
+	case session.AppTypeChesshubDesktop:
+		return sessionsproto.AppType_ChesshubDesktop
+	case session.AppTypeChesshubTablet:
+		return sessionsproto.AppType_ChesshubTablet
+	default:
+		return sessionsproto.AppType_ChesshubWeb
+	}
+}
+
+func toProtoDuration(t time.Duration) *durationpb.Duration {
+	return durationpb.New(t)
+}
+
+func toProtoTime(t time.Time) *timestamppb.Timestamp {
+	return timestamppb.New(t)
 }
 
 //func ToGetSessionByIDInputDTO(req *sessionsproto.GetSessionByIdRequest) *dto.GetSessionByIDInputDTO {

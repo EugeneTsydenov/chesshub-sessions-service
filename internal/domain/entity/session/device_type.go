@@ -1,7 +1,5 @@
 package session
 
-import "fmt"
-
 type DeviceType int
 
 const (
@@ -37,19 +35,4 @@ func (t *DeviceType) IsValid() bool {
 	default:
 		return false
 	}
-}
-
-func (t *DeviceType) Scan(value any) error {
-	i, ok := value.(int64)
-	if !ok {
-		return fmt.Errorf("cannot scan device type: %v", value)
-	}
-
-	*t = DeviceType(i)
-
-	if !t.IsValid() {
-		return fmt.Errorf("invalid device type: %d", i)
-	}
-
-	return nil
 }

@@ -10,5 +10,6 @@ import (
 type SessionRepo interface {
 	Create(ctx context.Context, session *session.Session) (*uuid.UUID, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*session.Session, error)
+	Find(ctx context.Context, criteria *session.Criteria) ([]*session.Session, error)
 	Update(ctx context.Context, session *session.Session) (*uuid.UUID, error)
 }

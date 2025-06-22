@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/sessionfilter"
 	"net"
 	"os"
 	"os/signal"
@@ -40,14 +41,19 @@ type App struct {
 	database    *postgres.Database
 	geoDatabase *geoip.Database
 
+	postgresSessionQueryFactory postgres.SessionQueryFactory
+
 	locator interfaces.GeoIPLocator
 
 	sessionRepo interfaces.SessionRepo
 
 	sessionService interfaces.SessionService
 
+	sessionFilterBuilder sessionfilter.Builder
+
 	startSessionUseCase usecase.StartSession
 	stopSessionUseCase  usecase.StopSession
+	listSessionsUseCase usecase.ListSessions
 
 	sessionController *grpccontroller.SessionController
 
@@ -83,15 +89,20 @@ func (a *App) InitDeps(ctx context.Context) error {
 		return err
 	}
 
-	a.sessionRepo = repo.NewPostgresSessionRepository(a.database)
+	a.postgresSessionQueryFactory = postgres.NewSessionQueryFactory()
+
+	a.sessionRepo = repo.NewPostgresSessionRepository(a.database, a.postgresSessionQueryFactory)
 	a.locator = geoip.NewLocator(a.geoDatabase)
 
 	a.sessionService = services.NewSessionService(a.locator, a.sessionRepo)
 
+	a.sessionFilterBuilder = sessionfilter.NewBuilder()
+
 	a.startSessionUseCase = usecase.NewStartSession(a.sessionService, a.sessionRepo)
 	a.stopSessionUseCase = usecase.NewStopSession(a.sessionService, a.sessionRepo)
+	a.listSessionsUseCase = usecase.NewListSessions(a.sessionFilterBuilder, a.sessionRepo)
 
-	a.sessionController = grpccontroller.NewSessionController(a.startSessionUseCase, a.stopSessionUseCase)
+	a.sessionController = grpccontroller.NewSessionController(a.startSessionUseCase, a.stopSessionUseCase, a.listSessionsUseCase)
 
 	return nil
 }

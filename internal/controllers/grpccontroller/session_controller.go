@@ -13,15 +13,18 @@ type SessionController struct {
 	sessionsproto.UnimplementedSessionsServiceServer
 	startSessionUseCase usecase.StartSession
 	stopSessionUseCase  usecase.StopSession
+	listSessionsUseCase usecase.ListSessions
 }
 
 func NewSessionController(
 	startSessionUseCase usecase.StartSession,
 	stopSessionUseCase usecase.StopSession,
+	listSessionsUseCase usecase.ListSessions,
 ) *SessionController {
 	return &SessionController{
 		startSessionUseCase: startSessionUseCase,
 		stopSessionUseCase:  stopSessionUseCase,
+		listSessionsUseCase: listSessionsUseCase,
 	}
 }
 
@@ -55,6 +58,22 @@ func (c *SessionController) StopSession(ctx context.Context, req *sessionsproto.
 	}
 
 	return mapper.ToStopSessionResponse(r), nil
+}
+
+func (c *SessionController) ListSessions(ctx context.Context, req *sessionsproto.ListSessionsRequest) (*sessionsproto.ListSessionsResponse, error) {
+	if err := req.ValidateAll(); err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
+	r, err := c.listSessionsUseCase.Execute(ctx, mapper.ToListSessionInputDTO(req))
+	if err != nil {
+		return nil, err
+	}
+
+	return mapper.ToListSessionsResponse(r), nil
 }
 
 //
