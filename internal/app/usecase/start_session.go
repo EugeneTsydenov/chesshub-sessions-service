@@ -2,12 +2,10 @@ package usecase
 
 import (
 	"context"
-	"errors"
-
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
+	apperrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/errors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/interfaces"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/pkg/apperrors"
 )
 
 type (
@@ -36,25 +34,18 @@ func (uc *startSession) Execute(ctx context.Context, input *dto.StartSessionInpu
 	s := uc.buildSession(input)
 
 	if err := s.Initialize(); err != nil {
-		return nil, apperrors.NewInternalError("Unexpected server error. Please try again.").WithCause(err)
+		return nil, apperrors.NewInternalError("Unexpected server error.").WithCause(err)
 	}
 
 	uc.sessionService.EnrichLocation(s)
 
 	sessionID, err := uc.sessionRepo.Create(ctx, s)
 	if err != nil {
-		switch {
-		case errors.Is(err, context.DeadlineExceeded):
-			return nil, apperrors.NewDeadlineExceededError("Session creation timed out. Please try again.").WithCause(err)
-		case errors.Is(err, context.Canceled):
-			return nil, apperrors.NewCanceledError("Session creation was canceled.").WithCause(err)
-		default:
-			return nil, apperrors.NewInternalError("Failed to create session.").WithCause(err)
-		}
+		return nil, apperrors.FromDomainError(err)
 	}
 
 	return &dto.StartSessionOutputDTO{
-		SessionID: *sessionID,
+		SessionID: sessionID,
 		Message:   "Session created",
 	}, nil
 }

@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
+	apperrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/errors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/interfaces"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/pkg/apperrors"
 	"github.com/google/uuid"
 )
 
@@ -37,16 +37,12 @@ func (uc *stopSession) Execute(ctx context.Context, input *dto.StopSessionInputD
 
 	s, err := uc.sessionRepo.GetByID(ctx, sessionUUID)
 	if err != nil {
-		return nil, apperrors.NewInternalError("Failed to stop session.").WithCause(err)
-	}
-
-	if s.IsEmpty() {
-		return nil, apperrors.NewNotFoundError(fmt.Sprintf("Session with ID %s not found", sessionID))
+		return nil, apperrors.FromDomainError(err)
 	}
 
 	err = uc.sessionService.DeactivateSession(ctx, s)
 	if err != nil {
-		return nil, apperrors.NewInternalError("Failed to stop session.").WithCause(err)
+		return nil, apperrors.FromDomainError(err)
 	}
 
 	return &dto.StopSessionOutputDTO{

@@ -186,6 +186,19 @@ func toProtoTime(t time.Time) *timestamppb.Timestamp {
 	return timestamppb.New(t)
 }
 
+func ToGetSessionInputDTO(req *sessionsproto.GetSessionRequest) *dto.GetSessionInputDTO {
+	return &dto.GetSessionInputDTO{
+		SessionID: req.SessionID,
+	}
+}
+
+func ToGetSessionResponse(output *dto.GetSessionOutputDTO) *sessionsproto.GetSessionResponse {
+	return &sessionsproto.GetSessionResponse{
+		Session: toProtoSession(output.Session),
+		Message: output.Message,
+	}
+}
+
 //func ToGetSessionByIDInputDTO(req *sessionsproto.GetSessionByIdRequest) *dto.GetSessionByIDInputDTO {
 //	return &dto.GetSessionByIDInputDTO{
 //		ID: req.Id,

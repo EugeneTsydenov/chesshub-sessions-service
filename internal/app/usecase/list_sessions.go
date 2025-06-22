@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/dto"
+	apperrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/errors"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/sessionfilter"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/interfaces"
 )
@@ -30,7 +31,7 @@ func (uc listSessions) Execute(ctx context.Context, input *dto.ListSessionsInput
 
 	sessions, err := uc.sessionRepo.Find(ctx, criteria)
 	if err != nil {
-		return nil, err
+		return nil, apperrors.FromDomainError(err)
 	}
 
 	return &dto.ListSessionsOutputDTO{

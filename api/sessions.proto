@@ -11,7 +11,7 @@ service SessionsService {
   rpc StartSession(StartSessionRequest) returns (StartSessionResponse) {}
   rpc StopSession(StopSessionRequest) returns (StopSessionResponse) {}
   rpc ListSessions(ListSessionsRequest) returns (ListSessionsResponse) {}
-//  rpc GetActiveUserSessions(GetActiveUserSessionsRequest) returns (GetActiveUserSessionsResponse) {}
+  rpc GetSession(GetSessionRequest) returns (GetSessionResponse) {}
 }
 
 message StartSessionRequest {
@@ -107,21 +107,13 @@ message Session {
   google.protobuf.Timestamp createdAt = 17;
 }
 
-//message GetActiveUserSessionsRequest {
-//  int64 userID = 1;
-//}
-//
-//message GetActiveUserSessionsResponse {
-//  repeated Session sessions = 1;
-//  string message = 2;
-//}
-//
-//message Session {
-//  string id = 1;
-//  string ipAddress = 2;
-//  string deviceInfo = 3;
-//  bool isActive = 4;
-//  google.protobuf.Timestamp expiredAt = 5;
-//  google.protobuf.Timestamp updatedAt = 6;
-//  google.protobuf.Timestamp createdAt = 7;
-//}
+message GetSessionRequest {
+  string sessionID = 1;
+}
+
+message GetSessionResponse {
+  Session session = 1;
+  string Message = 2;
+}
+
+

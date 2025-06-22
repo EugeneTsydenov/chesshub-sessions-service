@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/pkg/apperrors"
+	apperrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/errors"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -17,7 +17,7 @@ func ToGRPCError(err error) error {
 		return appErrorToGRPCError(appErr)
 	}
 
-	return status.Error(codes.Unknown, err.Error())
+	return status.Error(codes.Unknown, "Unexpected server error.")
 }
 
 func appErrorToGRPCError(err *apperrors.AppError) error {
@@ -25,21 +25,21 @@ func appErrorToGRPCError(err *apperrors.AppError) error {
 	case apperrors.InvalidArgument:
 		return withDetails(codes.InvalidArgument, err)
 	case apperrors.NotFound:
-		return status.Error(codes.NotFound, err.Error())
+		return status.Error(codes.NotFound, err.Message)
 	case apperrors.Conflict:
 		return withDetails(codes.AlreadyExists, err)
 	case apperrors.Internal:
-		return status.Error(codes.Internal, err.Error())
+		return status.Error(codes.Internal, err.Message)
 	case apperrors.Unauthenticated:
-		return status.Error(codes.Unauthenticated, err.Error())
+		return status.Error(codes.Unauthenticated, err.Message)
 	case apperrors.Forbidden:
-		return status.Error(codes.PermissionDenied, err.Error())
+		return status.Error(codes.PermissionDenied, err.Message)
 	case apperrors.Canceled:
-		return status.Error(codes.Canceled, err.Error())
+		return status.Error(codes.Canceled, err.Message)
 	case apperrors.DeadlineExceeded:
-		return status.Error(codes.DeadlineExceeded, err.Error())
+		return status.Error(codes.DeadlineExceeded, err.Message)
 	default:
-		return status.Error(codes.Unknown, err.Error())
+		return status.Error(codes.Unknown, err.Message)
 	}
 }
 

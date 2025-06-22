@@ -4,19 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
+	domainerrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/errors"
+	postgreserrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres/errors"
 	"time"
 
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/interfaces"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres"
-	postgreserrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres/errors"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-)
-
-var (
-	ErrInvalidSQLStatement = errors.New("invalid SQL statement")
 )
 
 type PostgresSessionRepo struct {
@@ -31,7 +27,7 @@ func NewPostgresSessionRepository(db *postgres.Database, factory postgres.Sessio
 	return &PostgresSessionRepo{database: db, queryFactory: factory}
 }
 
-func (r *PostgresSessionRepo) Create(ctx context.Context, s *session.Session) (*uuid.UUID, error) {
+func (r *PostgresSessionRepo) Create(ctx context.Context, s *session.Session) (uuid.UUID, error) {
 	query := `INSERT INTO sessions (
 				id, user_id, device_type, device_name, app_type, 
                 app_version, os, os_version, device_model, ip_address, 
@@ -63,15 +59,11 @@ func (r *PostgresSessionRepo) Create(ctx context.Context, s *session.Session) (*
 		s.LastActiveAt(),
 	)
 
-	var id *uuid.UUID
+	var id uuid.UUID
 
 	err := row.Scan(&id)
 	if err != nil {
-		if ctxErr := ctx.Err(); ctxErr != nil {
-			return nil, fmt.Errorf("PostgresSessionRepo.Create ctx=%v", ctxErr)
-		}
-
-		return nil, postgreserrors.NewUnresolvedError("creation session finished with error", err)
+		return uuid.Nil, postgreserrors.WrapWithMapper("PostgresSessionRepo.Create", err, nil)
 	}
 
 	return id, nil
@@ -104,11 +96,12 @@ func (r *PostgresSessionRepo) GetByID(ctx context.Context, sessionID uuid.UUID) 
 	row := r.database.Pool().QueryRow(ctx, query, sessionID)
 	s, err := scanSession(row)
 	if err != nil {
-		if ctxErr := ctx.Err(); ctxErr != nil {
-			return nil, fmt.Errorf("PostgresSessionRepo.GetByID ctx=%v", ctxErr)
-		}
-
-		return nil, postgreserrors.NewUnresolvedError("getting session by id finished with error", err)
+		return nil, postgreserrors.WrapWithMapper("PostgresSessionRepo.GetByID", err, func(e error) error {
+			if errors.Is(e, pgx.ErrNoRows) {
+				return domainerrors.ErrSessionNotFound
+			}
+			return fmt.Errorf("scan error: %w", e)
+		})
 	}
 
 	return s, nil
@@ -166,11 +159,7 @@ func (r *PostgresSessionRepo) Update(ctx context.Context, session *session.Sessi
 	err := row.Scan(&id)
 
 	if err != nil {
-		if ctxErr := ctx.Err(); ctxErr != nil {
-			return nil, fmt.Errorf("PostgresSessionRepo.Update ctx=%v", ctxErr)
-		}
-
-		return nil, postgreserrors.NewUnresolvedError("updating session finished with error", err)
+		return nil, postgreserrors.WrapWithMapper("PostgresSessionRepo.Update", err, nil)
 	}
 
 	return id, nil
@@ -178,14 +167,13 @@ func (r *PostgresSessionRepo) Update(ctx context.Context, session *session.Sessi
 
 func (r *PostgresSessionRepo) Find(ctx context.Context, criteria *session.Criteria) ([]*session.Session, error) {
 	query, args, err := r.queryFactory.BuildQuery(criteria)
-	log.Print(query, args)
 	if err != nil {
-		return nil, errors.Join(err, ErrInvalidSQLStatement)
+		return nil, postgreserrors.WrapWithMapper("PostgresSessionRepo.Find query builder", err, nil)
 	}
 
 	rows, err := r.database.Pool().Query(ctx, query, args...)
 	if err != nil {
-		return nil, err
+		return nil, postgreserrors.WrapWithMapper("PostgresSessionRepo.Find query", err, nil)
 	}
 	defer rows.Close()
 
@@ -194,13 +182,13 @@ func (r *PostgresSessionRepo) Find(ctx context.Context, criteria *session.Criter
 	for rows.Next() {
 		s, err := scanSession(rows)
 		if err != nil {
-			return nil, postgreserrors.NewUnresolvedError("reading session finished with error", err)
+			return nil, postgreserrors.WrapWithMapper("PostgresSessionRepo.Find scan row", err, nil)
 		}
 		sessions = append(sessions, s)
 	}
 
-	if err = rows.Err(); err != nil {
-		return nil, err
+	if err := rows.Err(); err != nil {
+		return nil, postgreserrors.WrapWithMapper("PostgresSessionRepo.Find rows iteration", err, nil)
 	}
 
 	return sessions, nil

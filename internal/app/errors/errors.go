@@ -1,8 +1,10 @@
-package apperrors
+package errors
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	domainerrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/errors"
 )
 
 type ErrorType int
@@ -115,4 +117,17 @@ func NewDeadlineExceededError(msg string) *AppError {
 
 func NewCanceledError(msg string) *AppError {
 	return NewAppError(Canceled, msg, nil, nil)
+}
+
+func FromDomainError(err error) *AppError {
+	switch {
+	case errors.Is(err, context.Canceled):
+		return NewCanceledError("Operation was canceled.").WithCause(err)
+	case errors.Is(err, context.DeadlineExceeded):
+		return NewDeadlineExceededError("Operation time out.").WithCause(err)
+	case errors.Is(err, domainerrors.ErrSessionNotFound):
+		return NewNotFoundError("Session not found.").WithCause(err)
+	default:
+		return NewInternalError("Unexpected server error.").WithCause(err)
+	}
 }
