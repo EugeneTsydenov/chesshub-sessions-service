@@ -199,6 +199,18 @@ func ToGetSessionResponse(output *dto.GetSessionOutputDTO) *sessionsproto.GetSes
 	}
 }
 
+func ToStopAllSessionsInputDTO(req *sessionsproto.StopAllSessionsRequest) *dto.StopAllSessionsInputDTO {
+	return &dto.StopAllSessionsInputDTO{
+		UserID: req.UserID,
+	}
+}
+
+func ToStopAllSessionsResponse(output *dto.StopAllSessionsOutputDTO) *sessionsproto.StopAllSessionsResponse {
+	return &sessionsproto.StopAllSessionsResponse{
+		Message: output.Message,
+	}
+}
+
 //func ToGetSessionByIDInputDTO(req *sessionsproto.GetSessionByIdRequest) *dto.GetSessionByIDInputDTO {
 //	return &dto.GetSessionByIDInputDTO{
 //		ID: req.Id,

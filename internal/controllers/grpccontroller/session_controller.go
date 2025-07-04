@@ -11,10 +11,11 @@ import (
 
 type SessionController struct {
 	sessionsproto.UnimplementedSessionsServiceServer
-	startSessionUseCase usecase.StartSession
-	stopSessionUseCase  usecase.StopSession
-	listSessionsUseCase usecase.ListSessions
-	getSessionUseCase   usecase.GetSession
+	startSessionUseCase    usecase.StartSession
+	stopSessionUseCase     usecase.StopSession
+	listSessionsUseCase    usecase.ListSessions
+	getSessionUseCase      usecase.GetSession
+	stopAllSessionsUseCase usecase.StopAllSessions
 }
 
 func NewSessionController(
@@ -22,12 +23,14 @@ func NewSessionController(
 	stopSessionUseCase usecase.StopSession,
 	listSessionsUseCase usecase.ListSessions,
 	getSessionUseCase usecase.GetSession,
+	stopAllSessionsUseCase usecase.StopAllSessions,
 ) *SessionController {
 	return &SessionController{
-		startSessionUseCase: startSessionUseCase,
-		stopSessionUseCase:  stopSessionUseCase,
-		listSessionsUseCase: listSessionsUseCase,
-		getSessionUseCase:   getSessionUseCase,
+		startSessionUseCase:    startSessionUseCase,
+		stopSessionUseCase:     stopSessionUseCase,
+		listSessionsUseCase:    listSessionsUseCase,
+		getSessionUseCase:      getSessionUseCase,
+		stopAllSessionsUseCase: stopAllSessionsUseCase,
 	}
 }
 
@@ -93,6 +96,22 @@ func (c *SessionController) GetSession(ctx context.Context, req *sessionsproto.G
 	}
 
 	return mapper.ToGetSessionResponse(r), nil
+}
+
+func (c *SessionController) StopAllSessions(ctx context.Context, req *sessionsproto.StopAllSessionsRequest) (*sessionsproto.StopAllSessionsResponse, error) {
+	if err := req.ValidateAll(); err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
+	r, err := c.stopAllSessionsUseCase.Execute(ctx, mapper.ToStopAllSessionsInputDTO(req))
+	if err != nil {
+		return nil, err
+	}
+
+	return mapper.ToStopAllSessionsResponse(r), nil
 }
 
 //

@@ -24,6 +24,7 @@ func ErrorHandlingInterceptor(logger *logrus.Logger) grpc.UnaryServerInterceptor
 				WithField("method", info.FullMethod).
 				WithField("request-id", requestID).
 				WithField("cause", errors.Unwrap(err)).
+				WithField("error", err).
 				Error("[Error handling interceptor]: gRPC request failed")
 			return nil, grpcerrors.ToGRPCError(err)
 		}

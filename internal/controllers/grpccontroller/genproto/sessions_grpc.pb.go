@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	SessionsService_StartSession_FullMethodName = "/sessions.SessionsService/StartSession"
-	SessionsService_StopSession_FullMethodName  = "/sessions.SessionsService/StopSession"
-	SessionsService_ListSessions_FullMethodName = "/sessions.SessionsService/ListSessions"
-	SessionsService_GetSession_FullMethodName   = "/sessions.SessionsService/GetSession"
+	SessionsService_StartSession_FullMethodName    = "/sessions.SessionsService/StartSession"
+	SessionsService_StopSession_FullMethodName     = "/sessions.SessionsService/StopSession"
+	SessionsService_ListSessions_FullMethodName    = "/sessions.SessionsService/ListSessions"
+	SessionsService_GetSession_FullMethodName      = "/sessions.SessionsService/GetSession"
+	SessionsService_StopAllSessions_FullMethodName = "/sessions.SessionsService/StopAllSessions"
 )
 
 // SessionsServiceClient is the client API for SessionsService service.
@@ -33,6 +34,7 @@ type SessionsServiceClient interface {
 	StopSession(ctx context.Context, in *StopSessionRequest, opts ...grpc.CallOption) (*StopSessionResponse, error)
 	ListSessions(ctx context.Context, in *ListSessionsRequest, opts ...grpc.CallOption) (*ListSessionsResponse, error)
 	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetSessionResponse, error)
+	StopAllSessions(ctx context.Context, in *StopAllSessionsRequest, opts ...grpc.CallOption) (*StopAllSessionsResponse, error)
 }
 
 type sessionsServiceClient struct {
@@ -83,6 +85,16 @@ func (c *sessionsServiceClient) GetSession(ctx context.Context, in *GetSessionRe
 	return out, nil
 }
 
+func (c *sessionsServiceClient) StopAllSessions(ctx context.Context, in *StopAllSessionsRequest, opts ...grpc.CallOption) (*StopAllSessionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StopAllSessionsResponse)
+	err := c.cc.Invoke(ctx, SessionsService_StopAllSessions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SessionsServiceServer is the server API for SessionsService service.
 // All implementations must embed UnimplementedSessionsServiceServer
 // for forward compatibility.
@@ -91,6 +103,7 @@ type SessionsServiceServer interface {
 	StopSession(context.Context, *StopSessionRequest) (*StopSessionResponse, error)
 	ListSessions(context.Context, *ListSessionsRequest) (*ListSessionsResponse, error)
 	GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error)
+	StopAllSessions(context.Context, *StopAllSessionsRequest) (*StopAllSessionsResponse, error)
 	mustEmbedUnimplementedSessionsServiceServer()
 }
 
@@ -112,6 +125,9 @@ func (UnimplementedSessionsServiceServer) ListSessions(context.Context, *ListSes
 }
 func (UnimplementedSessionsServiceServer) GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSession not implemented")
+}
+func (UnimplementedSessionsServiceServer) StopAllSessions(context.Context, *StopAllSessionsRequest) (*StopAllSessionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StopAllSessions not implemented")
 }
 func (UnimplementedSessionsServiceServer) mustEmbedUnimplementedSessionsServiceServer() {}
 func (UnimplementedSessionsServiceServer) testEmbeddedByValue()                         {}
@@ -206,6 +222,24 @@ func _SessionsService_GetSession_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SessionsService_StopAllSessions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StopAllSessionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SessionsServiceServer).StopAllSessions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SessionsService_StopAllSessions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SessionsServiceServer).StopAllSessions(ctx, req.(*StopAllSessionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SessionsService_ServiceDesc is the grpc.ServiceDesc for SessionsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +262,10 @@ var SessionsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetSession",
 			Handler:    _SessionsService_GetSession_Handler,
+		},
+		{
+			MethodName: "StopAllSessions",
+			Handler:    _SessionsService_StopAllSessions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

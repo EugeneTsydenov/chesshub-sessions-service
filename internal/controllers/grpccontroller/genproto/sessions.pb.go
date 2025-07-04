@@ -791,6 +791,94 @@ func (x *GetSessionResponse) GetMessage() string {
 	return ""
 }
 
+type StopAllSessionsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserID        int64                  `protobuf:"varint,1,opt,name=userID,proto3" json:"userID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StopAllSessionsRequest) Reset() {
+	*x = StopAllSessionsRequest{}
+	mi := &file_sessions_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StopAllSessionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StopAllSessionsRequest) ProtoMessage() {}
+
+func (x *StopAllSessionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StopAllSessionsRequest.ProtoReflect.Descriptor instead.
+func (*StopAllSessionsRequest) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *StopAllSessionsRequest) GetUserID() int64 {
+	if x != nil {
+		return x.UserID
+	}
+	return 0
+}
+
+type StopAllSessionsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StopAllSessionsResponse) Reset() {
+	*x = StopAllSessionsResponse{}
+	mi := &file_sessions_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StopAllSessionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StopAllSessionsResponse) ProtoMessage() {}
+
+func (x *StopAllSessionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_sessions_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StopAllSessionsResponse.ProtoReflect.Descriptor instead.
+func (*StopAllSessionsResponse) Descriptor() ([]byte, []int) {
+	return file_sessions_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *StopAllSessionsResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 type ListSessionsRequest_Filter struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
 	UserID           *int64                 `protobuf:"varint,1,opt,name=userID,proto3,oneof" json:"userID,omitempty"`
@@ -815,7 +903,7 @@ type ListSessionsRequest_Filter struct {
 
 func (x *ListSessionsRequest_Filter) Reset() {
 	*x = ListSessionsRequest_Filter{}
-	mi := &file_sessions_proto_msgTypes[10]
+	mi := &file_sessions_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -827,7 +915,7 @@ func (x *ListSessionsRequest_Filter) String() string {
 func (*ListSessionsRequest_Filter) ProtoMessage() {}
 
 func (x *ListSessionsRequest_Filter) ProtoReflect() protoreflect.Message {
-	mi := &file_sessions_proto_msgTypes[10]
+	mi := &file_sessions_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1079,7 +1167,11 @@ const file_sessions_proto_rawDesc = "" +
 	"\tsessionID\x18\x01 \x01(\tR\tsessionID\"[\n" +
 	"\x12GetSessionResponse\x12+\n" +
 	"\asession\x18\x01 \x01(\v2\x11.sessions.SessionR\asession\x12\x18\n" +
-	"\aMessage\x18\x02 \x01(\tR\aMessage*:\n" +
+	"\aMessage\x18\x02 \x01(\tR\aMessage\"0\n" +
+	"\x16StopAllSessionsRequest\x12\x16\n" +
+	"\x06userID\x18\x01 \x01(\x03R\x06userID\"3\n" +
+	"\x17StopAllSessionsResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage*:\n" +
 	"\n" +
 	"DeviceType\x12\a\n" +
 	"\x03Web\x10\x00\x12\n" +
@@ -1092,13 +1184,14 @@ const file_sessions_proto_rawDesc = "" +
 	"\vChesshubWeb\x10\x00\x12\x12\n" +
 	"\x0eChesshubMobile\x10\x01\x12\x13\n" +
 	"\x0fChesshubDesktop\x10\x02\x12\x12\n" +
-	"\x0eChesshubTablet\x10\x032\xcc\x02\n" +
+	"\x0eChesshubTablet\x10\x032\xa6\x03\n" +
 	"\x0fSessionsService\x12O\n" +
 	"\fStartSession\x12\x1d.sessions.StartSessionRequest\x1a\x1e.sessions.StartSessionResponse\"\x00\x12L\n" +
 	"\vStopSession\x12\x1c.sessions.StopSessionRequest\x1a\x1d.sessions.StopSessionResponse\"\x00\x12O\n" +
 	"\fListSessions\x12\x1d.sessions.ListSessionsRequest\x1a\x1e.sessions.ListSessionsResponse\"\x00\x12I\n" +
 	"\n" +
-	"GetSession\x12\x1b.sessions.GetSessionRequest\x1a\x1c.sessions.GetSessionResponse\"\x00BlZjgithub.com/EugeneTsydenov/chesshub-user-service/internal/controllers/grpccontroller/genproto;sessionsprotob\x06proto3"
+	"GetSession\x12\x1b.sessions.GetSessionRequest\x1a\x1c.sessions.GetSessionResponse\"\x00\x12X\n" +
+	"\x0fStopAllSessions\x12 .sessions.StopAllSessionsRequest\x1a!.sessions.StopAllSessionsResponse\"\x00BlZjgithub.com/EugeneTsydenov/chesshub-user-service/internal/controllers/grpccontroller/genproto;sessionsprotob\x06proto3"
 
 var (
 	file_sessions_proto_rawDescOnce sync.Once
@@ -1113,7 +1206,7 @@ func file_sessions_proto_rawDescGZIP() []byte {
 }
 
 var file_sessions_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_sessions_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_sessions_proto_goTypes = []any{
 	(DeviceType)(0),                    // 0: sessions.DeviceType
 	(AppType)(0),                       // 1: sessions.AppType
@@ -1127,41 +1220,45 @@ var file_sessions_proto_goTypes = []any{
 	(*Session)(nil),                    // 9: sessions.Session
 	(*GetSessionRequest)(nil),          // 10: sessions.GetSessionRequest
 	(*GetSessionResponse)(nil),         // 11: sessions.GetSessionResponse
-	(*ListSessionsRequest_Filter)(nil), // 12: sessions.ListSessionsRequest.Filter
-	(*duration.Duration)(nil),          // 13: google.protobuf.Duration
-	(*timestamp.Timestamp)(nil),        // 14: google.protobuf.Timestamp
+	(*StopAllSessionsRequest)(nil),     // 12: sessions.StopAllSessionsRequest
+	(*StopAllSessionsResponse)(nil),    // 13: sessions.StopAllSessionsResponse
+	(*ListSessionsRequest_Filter)(nil), // 14: sessions.ListSessionsRequest.Filter
+	(*duration.Duration)(nil),          // 15: google.protobuf.Duration
+	(*timestamp.Timestamp)(nil),        // 16: google.protobuf.Timestamp
 }
 var file_sessions_proto_depIdxs = []int32{
 	3,  // 0: sessions.StartSessionRequest.deviceInfo:type_name -> sessions.DeviceInfo
 	0,  // 1: sessions.DeviceInfo.deviceType:type_name -> sessions.DeviceType
 	1,  // 2: sessions.DeviceInfo.appType:type_name -> sessions.AppType
-	12, // 3: sessions.ListSessionsRequest.filter:type_name -> sessions.ListSessionsRequest.Filter
+	14, // 3: sessions.ListSessionsRequest.filter:type_name -> sessions.ListSessionsRequest.Filter
 	9,  // 4: sessions.ListSessionsResponse.sessions:type_name -> sessions.Session
 	0,  // 5: sessions.Session.deviceType:type_name -> sessions.DeviceType
 	1,  // 6: sessions.Session.appType:type_name -> sessions.AppType
-	13, // 7: sessions.Session.lifetime:type_name -> google.protobuf.Duration
-	14, // 8: sessions.Session.lastActiveAt:type_name -> google.protobuf.Timestamp
-	14, // 9: sessions.Session.updatedAt:type_name -> google.protobuf.Timestamp
-	14, // 10: sessions.Session.createdAt:type_name -> google.protobuf.Timestamp
+	15, // 7: sessions.Session.lifetime:type_name -> google.protobuf.Duration
+	16, // 8: sessions.Session.lastActiveAt:type_name -> google.protobuf.Timestamp
+	16, // 9: sessions.Session.updatedAt:type_name -> google.protobuf.Timestamp
+	16, // 10: sessions.Session.createdAt:type_name -> google.protobuf.Timestamp
 	9,  // 11: sessions.GetSessionResponse.session:type_name -> sessions.Session
 	0,  // 12: sessions.ListSessionsRequest.Filter.deviceType:type_name -> sessions.DeviceType
 	1,  // 13: sessions.ListSessionsRequest.Filter.appType:type_name -> sessions.AppType
-	14, // 14: sessions.ListSessionsRequest.Filter.lastActiveBefore:type_name -> google.protobuf.Timestamp
-	14, // 15: sessions.ListSessionsRequest.Filter.lastActiveAfter:type_name -> google.protobuf.Timestamp
-	14, // 16: sessions.ListSessionsRequest.Filter.updatedBefore:type_name -> google.protobuf.Timestamp
-	14, // 17: sessions.ListSessionsRequest.Filter.updatedAfter:type_name -> google.protobuf.Timestamp
-	14, // 18: sessions.ListSessionsRequest.Filter.createdBefore:type_name -> google.protobuf.Timestamp
-	14, // 19: sessions.ListSessionsRequest.Filter.createdAfter:type_name -> google.protobuf.Timestamp
+	16, // 14: sessions.ListSessionsRequest.Filter.lastActiveBefore:type_name -> google.protobuf.Timestamp
+	16, // 15: sessions.ListSessionsRequest.Filter.lastActiveAfter:type_name -> google.protobuf.Timestamp
+	16, // 16: sessions.ListSessionsRequest.Filter.updatedBefore:type_name -> google.protobuf.Timestamp
+	16, // 17: sessions.ListSessionsRequest.Filter.updatedAfter:type_name -> google.protobuf.Timestamp
+	16, // 18: sessions.ListSessionsRequest.Filter.createdBefore:type_name -> google.protobuf.Timestamp
+	16, // 19: sessions.ListSessionsRequest.Filter.createdAfter:type_name -> google.protobuf.Timestamp
 	2,  // 20: sessions.SessionsService.StartSession:input_type -> sessions.StartSessionRequest
 	5,  // 21: sessions.SessionsService.StopSession:input_type -> sessions.StopSessionRequest
 	7,  // 22: sessions.SessionsService.ListSessions:input_type -> sessions.ListSessionsRequest
 	10, // 23: sessions.SessionsService.GetSession:input_type -> sessions.GetSessionRequest
-	4,  // 24: sessions.SessionsService.StartSession:output_type -> sessions.StartSessionResponse
-	6,  // 25: sessions.SessionsService.StopSession:output_type -> sessions.StopSessionResponse
-	8,  // 26: sessions.SessionsService.ListSessions:output_type -> sessions.ListSessionsResponse
-	11, // 27: sessions.SessionsService.GetSession:output_type -> sessions.GetSessionResponse
-	24, // [24:28] is the sub-list for method output_type
-	20, // [20:24] is the sub-list for method input_type
+	12, // 24: sessions.SessionsService.StopAllSessions:input_type -> sessions.StopAllSessionsRequest
+	4,  // 25: sessions.SessionsService.StartSession:output_type -> sessions.StartSessionResponse
+	6,  // 26: sessions.SessionsService.StopSession:output_type -> sessions.StopSessionResponse
+	8,  // 27: sessions.SessionsService.ListSessions:output_type -> sessions.ListSessionsResponse
+	11, // 28: sessions.SessionsService.GetSession:output_type -> sessions.GetSessionResponse
+	13, // 29: sessions.SessionsService.StopAllSessions:output_type -> sessions.StopAllSessionsResponse
+	25, // [25:30] is the sub-list for method output_type
+	20, // [20:25] is the sub-list for method input_type
 	20, // [20:20] is the sub-list for extension type_name
 	20, // [20:20] is the sub-list for extension extendee
 	0,  // [0:20] is the sub-list for field type_name
@@ -1174,14 +1271,14 @@ func file_sessions_proto_init() {
 	}
 	file_sessions_proto_msgTypes[1].OneofWrappers = []any{}
 	file_sessions_proto_msgTypes[7].OneofWrappers = []any{}
-	file_sessions_proto_msgTypes[10].OneofWrappers = []any{}
+	file_sessions_proto_msgTypes[12].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_sessions_proto_rawDesc), len(file_sessions_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   11,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

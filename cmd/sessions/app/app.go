@@ -58,10 +58,11 @@ type App struct {
 
 	sessionFilterBuilder sessionfilter.Builder
 
-	startSessionUseCase usecase.StartSession
-	stopSessionUseCase  usecase.StopSession
-	listSessionsUseCase usecase.ListSessions
-	getSessionUseCase   usecase.GetSession
+	startSessionUseCase    usecase.StartSession
+	stopSessionUseCase     usecase.StopSession
+	listSessionsUseCase    usecase.ListSessions
+	getSessionUseCase      usecase.GetSession
+	stopAllSessionsUseCase usecase.StopAllSessions
 
 	sessionController *grpccontroller.SessionController
 
@@ -118,8 +119,9 @@ func (a *App) InitDeps(ctx context.Context) error {
 	a.stopSessionUseCase = usecase.NewStopSession(a.sessionService, a.sessionRepo)
 	a.listSessionsUseCase = usecase.NewListSessions(a.sessionFilterBuilder, a.cachedSessionRepo)
 	a.getSessionUseCase = usecase.NewGetSession(a.cachedSessionRepo)
+	a.stopAllSessionsUseCase = usecase.NewStopAllSessions(a.sessionFilterBuilder, a.cachedSessionRepo, a.sessionService)
 
-	a.sessionController = grpccontroller.NewSessionController(a.startSessionUseCase, a.stopSessionUseCase, a.listSessionsUseCase, a.getSessionUseCase)
+	a.sessionController = grpccontroller.NewSessionController(a.startSessionUseCase, a.stopSessionUseCase, a.listSessionsUseCase, a.getSessionUseCase, a.stopAllSessionsUseCase)
 
 	return nil
 }

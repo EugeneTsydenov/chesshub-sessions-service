@@ -12,6 +12,7 @@ service SessionsService {
   rpc StopSession(StopSessionRequest) returns (StopSessionResponse) {}
   rpc ListSessions(ListSessionsRequest) returns (ListSessionsResponse) {}
   rpc GetSession(GetSessionRequest) returns (GetSessionResponse) {}
+  rpc StopAllSessions(StopAllSessionsRequest) returns (StopAllSessionsResponse) {}
 }
 
 message StartSessionRequest {
@@ -114,6 +115,14 @@ message GetSessionRequest {
 message GetSessionResponse {
   Session session = 1;
   string Message = 2;
+}
+
+message StopAllSessionsRequest {
+  int64 userID = 1;
+}
+
+message StopAllSessionsResponse {
+  string message = 1;
 }
 
 
