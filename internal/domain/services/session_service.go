@@ -9,14 +9,16 @@ import (
 )
 
 type SessionService struct {
-	locator interfaces.GeoIPLocator
-	repo    interfaces.SessionRepo
+	locator      interfaces.GeoIPLocator
+	sessionRepo  interfaces.SessionRepo
+	sessionCache interfaces.SessionCache
 }
 
-func NewSessionService(locator interfaces.GeoIPLocator, repo interfaces.SessionRepo) *SessionService {
+func NewSessionService(locator interfaces.GeoIPLocator, repo interfaces.SessionRepo, cache interfaces.SessionCache) *SessionService {
 	return &SessionService{
-		locator: locator,
-		repo:    repo,
+		locator:      locator,
+		sessionRepo:  repo,
+		sessionCache: cache,
 	}
 }
 
@@ -30,7 +32,9 @@ func (svc *SessionService) EnrichLocation(s *session.Session) {
 func (svc *SessionService) DeactivateSession(ctx context.Context, s *session.Session) error {
 	s.Deactivate()
 
-	_, err := svc.repo.Update(ctx, s)
+	err := svc.sessionCache.Del(ctx, s.ID())
+
+	_, err = svc.sessionRepo.Update(ctx, s)
 	if err != nil {
 		return err
 	}

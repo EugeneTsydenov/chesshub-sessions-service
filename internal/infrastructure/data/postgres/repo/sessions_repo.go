@@ -5,12 +5,12 @@ import (
 	"errors"
 	"fmt"
 	domainerrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/errors"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres"
 	postgreserrors "github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres/errors"
 	"time"
 
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/entity/session"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/interfaces"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 )
@@ -27,7 +27,7 @@ func NewPostgresSessionRepository(db *postgres.Database, factory postgres.Sessio
 	return &PostgresSessionRepo{database: db, queryFactory: factory}
 }
 
-func (r *PostgresSessionRepo) Create(ctx context.Context, s *session.Session) (uuid.UUID, error) {
+func (r *PostgresSessionRepo) Create(ctx context.Context, s *session.Session) (*session.Session, error) {
 	query := `INSERT INTO sessions (
 				id, user_id, device_type, device_name, app_type, 
                 app_version, os, os_version, device_model, ip_address, 
@@ -36,7 +36,24 @@ func (r *PostgresSessionRepo) Create(ctx context.Context, s *session.Session) (u
 				$1, $2, $3, $4, $5,
 				$6, $7, $8, $9, $10, 
 			    $11, $12, $13, $14, $15
-			) RETURNING id`
+			) RETURNING 
+			    id,
+    user_id,
+    device_type,
+    device_name,
+    app_type,
+    app_version,
+    os,
+    os_version,
+    device_model,
+    ip_address,
+    city,
+    country,
+    is_active,
+    lifetime,
+    last_active_at,
+    updated_at,
+    created_at`
 
 	deviceInfo := s.DeviceInfo()
 	location := s.Location()
@@ -59,14 +76,12 @@ func (r *PostgresSessionRepo) Create(ctx context.Context, s *session.Session) (u
 		s.LastActiveAt(),
 	)
 
-	var id uuid.UUID
-
-	err := row.Scan(&id)
+	s, err := scanSession(row)
 	if err != nil {
-		return uuid.Nil, postgreserrors.WrapWithMapper("PostgresSessionRepo.Create", err, nil)
+		return nil, postgreserrors.WrapWithMapper("PostgresSessionRepo.Create", err, nil)
 	}
 
-	return id, nil
+	return s, nil
 }
 
 func (r *PostgresSessionRepo) GetByID(ctx context.Context, sessionID uuid.UUID) (*session.Session, error) {
@@ -107,7 +122,7 @@ func (r *PostgresSessionRepo) GetByID(ctx context.Context, sessionID uuid.UUID) 
 	return s, nil
 }
 
-func (r *PostgresSessionRepo) Update(ctx context.Context, session *session.Session) (*uuid.UUID, error) {
+func (r *PostgresSessionRepo) Update(ctx context.Context, session *session.Session) (*session.Session, error) {
 	query := `
 	UPDATE sessions
 	SET
@@ -128,7 +143,24 @@ func (r *PostgresSessionRepo) Update(ctx context.Context, session *session.Sessi
 		updated_at = $15,
 		created_at = $16
 	WHERE id = $17
-	RETURNING id
+	RETURNING 
+		id,
+		user_id,
+		device_type,
+		device_name,
+		app_type,
+		app_version,
+		os,
+		os_version,
+		device_model,
+		ip_address,
+		city,
+		country,
+		is_active,
+		lifetime,
+		last_active_at,
+		updated_at,
+		created_at
 	`
 
 	deviceInfo := session.DeviceInfo()
@@ -154,15 +186,13 @@ func (r *PostgresSessionRepo) Update(ctx context.Context, session *session.Sessi
 		session.ID(),
 	)
 
-	var id *uuid.UUID
-
-	err := row.Scan(&id)
+	s, err := scanSession(row)
 
 	if err != nil {
 		return nil, postgreserrors.WrapWithMapper("PostgresSessionRepo.Update", err, nil)
 	}
 
-	return id, nil
+	return s, nil
 }
 
 func (r *PostgresSessionRepo) Find(ctx context.Context, criteria *session.Criteria) ([]*session.Session, error) {

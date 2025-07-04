@@ -19,6 +19,7 @@ const (
 type Config struct {
 	App      AppConfig      `mapstructure:"app"`
 	Database DatabaseConfig `mapstructure:"database"`
+	Redis    RedisConfig    `mapstructure:"redis"`
 	GeoIp    GeoIp
 }
 
@@ -35,6 +36,14 @@ type DatabaseConfig struct {
 	User     string `mapstructure:"user"`
 	Password string `mapstructure:"password"`
 	SSLMode  string `mapstructure:"ssl_mode"`
+}
+
+type RedisConfig struct {
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	DBNumber int    `mapstructure:"db_number"`
 }
 
 type GeoIp struct {
@@ -89,15 +98,26 @@ func loadEnvVariables() error {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 
-	err := viper.BindEnv("database.password")
-	if err != nil {
-		return fmt.Errorf("failed to bind env variables: %w", err)
+	envVars := []string{
+		"database.password",
+		"redis.password",
+	}
+
+	for _, envVar := range envVars {
+		err := viper.BindEnv(envVar)
+		if err != nil {
+			return fmt.Errorf("failed to bind env variables: %w", err)
+		}
 	}
 
 	return nil
 }
 
-func (d DatabaseConfig) DSN() string {
+func (c *DatabaseConfig) DSN() string {
 	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
-		d.Host, d.Port, d.User, d.Password, d.Name, d.SSLMode)
+		c.Host, c.Port, c.User, c.Password, c.Name, c.SSLMode)
+}
+
+func (c *RedisConfig) ConnStr() string {
+	return fmt.Sprintf("redis://%s:%s@%s:%d/%d", c.User, c.Password, c.Host, c.Port, c.DBNumber)
 }

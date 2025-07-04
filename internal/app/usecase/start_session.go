@@ -12,17 +12,17 @@ type (
 	StartSession UseCase[*dto.StartSessionInputDTO, *dto.StartSessionOutputDTO]
 
 	startSession struct {
-		sessionService interfaces.SessionService
-		sessionRepo    interfaces.SessionRepo
+		sessionService    interfaces.SessionService
+		cachedSessionRepo interfaces.SessionRepo
 	}
 )
 
 var _ StartSession = new(startSession)
 
-func NewStartSession(sessionService interfaces.SessionService, sessionRepo interfaces.SessionRepo) StartSession {
+func NewStartSession(sessionService interfaces.SessionService, cachedRepo interfaces.SessionRepo) StartSession {
 	return &startSession{
-		sessionService: sessionService,
-		sessionRepo:    sessionRepo,
+		sessionService:    sessionService,
+		cachedSessionRepo: cachedRepo,
 	}
 }
 
@@ -38,14 +38,13 @@ func (uc *startSession) Execute(ctx context.Context, input *dto.StartSessionInpu
 	}
 
 	uc.sessionService.EnrichLocation(s)
-
-	sessionID, err := uc.sessionRepo.Create(ctx, s)
+	s, err := uc.cachedSessionRepo.Create(ctx, s)
 	if err != nil {
 		return nil, apperrors.FromDomainError(err)
 	}
 
 	return &dto.StartSessionOutputDTO{
-		SessionID: sessionID,
+		SessionID: s.ID(),
 		Message:   "Session created",
 	}, nil
 }

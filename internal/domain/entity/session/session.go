@@ -7,6 +7,8 @@ import (
 	"github.com/google/uuid"
 )
 
+var DefaultSessionLifetime = time.Hour * 24 * 30
+
 var ErrGenerateID = errors.New("error generating session id")
 
 type Session struct {
@@ -77,11 +79,10 @@ func (s *Session) Initialize() error {
 	}
 	s.Activate()
 
-	day := 24 * time.Hour
-	s.lifetime = 30 * day
+	s.lifetime = DefaultSessionLifetime
 
 	s.RefreshLastActiveAt()
-	
+
 	return nil
 }
 

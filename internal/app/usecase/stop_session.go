@@ -20,10 +20,10 @@ type (
 
 var _ StopSession = new(stopSession)
 
-func NewStopSession(sessionService interfaces.SessionService, sessionRepo interfaces.SessionRepo) StopSession {
+func NewStopSession(sessionService interfaces.SessionService, repo interfaces.SessionRepo) StopSession {
 	return &stopSession{
 		sessionService: sessionService,
-		sessionRepo:    sessionRepo,
+		sessionRepo:    repo,
 	}
 }
 

@@ -12,24 +12,24 @@ type (
 	ListSessions UseCase[*dto.ListSessionsInputDTO, *dto.ListSessionsOutputDTO]
 
 	listSessions struct {
-		filterBuilder sessionfilter.Builder
-		sessionRepo   interfaces.SessionRepo
+		filterBuilder     sessionfilter.Builder
+		cachedSessionRepo interfaces.SessionRepo
 	}
 )
 
 var _ ListSessions = new(listSessions)
 
-func NewListSessions(filterBuilder sessionfilter.Builder, sessionRepo interfaces.SessionRepo) ListSessions {
+func NewListSessions(filterBuilder sessionfilter.Builder, cachedRepo interfaces.SessionRepo) ListSessions {
 	return &listSessions{
-		filterBuilder: filterBuilder,
-		sessionRepo:   sessionRepo,
+		filterBuilder:     filterBuilder,
+		cachedSessionRepo: cachedRepo,
 	}
 }
 
 func (uc listSessions) Execute(ctx context.Context, input *dto.ListSessionsInputDTO) (*dto.ListSessionsOutputDTO, error) {
 	criteria := uc.filterBuilder.BuildCriteria(input.Filter)
 
-	sessions, err := uc.sessionRepo.Find(ctx, criteria)
+	sessions, err := uc.cachedSessionRepo.Find(ctx, criteria)
 	if err != nil {
 		return nil, apperrors.FromDomainError(err)
 	}

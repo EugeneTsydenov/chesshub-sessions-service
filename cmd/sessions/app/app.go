@@ -4,6 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/app/sessionfilter"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres/repo"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/redis"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/redis/cache"
+	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/redis/cachedrepo"
 	"net"
 	"os"
 	"os/signal"
@@ -19,8 +24,6 @@ import (
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/controllers/grpccontroller/interceptor"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/interfaces"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/domain/services"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres"
-	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/data/postgres/repo"
 	"github.com/EugeneTsydenov/chesshub-sessions-service/internal/infrastructure/geoip"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -38,14 +41,18 @@ type App struct {
 	config *config.Config
 	logger *logrus.Logger
 
-	database    *postgres.Database
-	geoDatabase *geoip.Database
+	redisDatabase *redis.Database
+	database      *postgres.Database
+	geoDatabase   *geoip.Database
+
+	sessionCache interfaces.SessionCache
 
 	postgresSessionQueryFactory postgres.SessionQueryFactory
 
 	locator interfaces.GeoIPLocator
 
-	sessionRepo interfaces.SessionRepo
+	sessionRepo       interfaces.SessionRepo
+	cachedSessionRepo interfaces.SessionRepo
 
 	sessionService interfaces.SessionService
 
@@ -78,33 +85,58 @@ func New(cfg *config.Config) *App {
 }
 
 func (a *App) InitDeps(ctx context.Context) error {
-	err := a.initPgDatabase(ctx)
-	if err != nil {
-		a.logger.Info(err)
+	if err := a.initRedisCache(ctx); err != nil {
+		a.logger.Error(err)
 		return err
 	}
 
-	err = a.InitGeoDatabase(ctx)
-	if err != nil {
-		a.logger.Info(err)
+	if err := a.initPgDatabase(ctx); err != nil {
+		a.logger.Error(err)
 		return err
 	}
+
+	if err := a.InitGeoDatabase(ctx); err != nil {
+		a.logger.Error(err)
+		return err
+	}
+
+	a.sessionCache = cache.NewSessionCache(a.redisDatabase)
 
 	a.postgresSessionQueryFactory = postgres.NewSessionQueryFactory()
 
 	a.sessionRepo = repo.NewPostgresSessionRepository(a.database, a.postgresSessionQueryFactory)
+
+	a.cachedSessionRepo = cachedrepo.NewCachedSessionRepo(a.sessionCache, a.sessionRepo)
+
 	a.locator = geoip.NewLocator(a.geoDatabase)
 
-	a.sessionService = services.NewSessionService(a.locator, a.sessionRepo)
+	a.sessionService = services.NewSessionService(a.locator, a.sessionRepo, a.sessionCache)
 
 	a.sessionFilterBuilder = sessionfilter.NewBuilder()
 
-	a.startSessionUseCase = usecase.NewStartSession(a.sessionService, a.sessionRepo)
+	a.startSessionUseCase = usecase.NewStartSession(a.sessionService, a.cachedSessionRepo)
 	a.stopSessionUseCase = usecase.NewStopSession(a.sessionService, a.sessionRepo)
-	a.listSessionsUseCase = usecase.NewListSessions(a.sessionFilterBuilder, a.sessionRepo)
-	a.getSessionUseCase = usecase.NewGetSession(a.sessionRepo)
+	a.listSessionsUseCase = usecase.NewListSessions(a.sessionFilterBuilder, a.cachedSessionRepo)
+	a.getSessionUseCase = usecase.NewGetSession(a.cachedSessionRepo)
 
 	a.sessionController = grpccontroller.NewSessionController(a.startSessionUseCase, a.stopSessionUseCase, a.listSessionsUseCase, a.getSessionUseCase)
+
+	return nil
+}
+
+func (a *App) initRedisCache(ctx context.Context) error {
+	c, err := redis.New(ctx, a.config.Redis.ConnStr())
+	if err != nil {
+		return err
+	}
+
+	cmd := c.Client().Ping(ctx)
+	if err = cmd.Err(); err != nil {
+		return err
+	}
+
+	a.redisDatabase = c
+	a.RegisterShutdowner(c)
 
 	return nil
 }

@@ -19,7 +19,6 @@ services:
       - 1.1.1.1
     networks:
       - chesshub-net
-
   db:
     build:
       context: .
@@ -35,7 +34,28 @@ services:
       - ./postgres/creating-databases.sql:/docker-entrypoint-initdb.d/01-creating-databases.sql
     networks:
       - chesshub-net
-
+  redis:
+    image: redis:7-alpine
+    container_name: chesshub-sessions-local-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - chesshub-net
+  redis-insight:
+    image: redislabs/redisinsight:latest
+    container_name: chesshub-sessions-local-redis-insight
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis
+    volumes:
+      - redisinsight_data:/data
+    networks:
+      - chesshub-net
   adminer:
     image: adminer
     container_name: chesshub-sessions-local-adminer
@@ -46,9 +66,10 @@ services:
       - "9091:8080"
     networks:
       - chesshub-net
-
 networks:
   chesshub-net:
 
 volumes:
   postgres_data:
+  redis_data:
+  redisinsight_data:

@@ -10,5 +10,11 @@ database:
   ssl_mode: disable
   driver: postgres
 
+redis:
+  user: redis
+  host: chesshub-sessions-local-redis
+  port: 6379
+  db_number: 0
+
 geoip:
   database_path: ./geo/GeoTestCity.BIN

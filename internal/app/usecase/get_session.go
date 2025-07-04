@@ -13,15 +13,15 @@ type (
 	GetSession UseCase[*dto.GetSessionInputDTO, *dto.GetSessionOutputDTO]
 
 	getSession struct {
-		sessionRepo interfaces.SessionRepo
+		cachedSessionRepo interfaces.SessionRepo
 	}
 )
 
 var _ GetSession = new(getSession)
 
-func NewGetSession(sessionRepo interfaces.SessionRepo) GetSession {
+func NewGetSession(cachedRepo interfaces.SessionRepo) GetSession {
 	return &getSession{
-		sessionRepo: sessionRepo,
+		cachedSessionRepo: cachedRepo,
 	}
 }
 
@@ -33,7 +33,7 @@ func (uc getSession) Execute(ctx context.Context, input *dto.GetSessionInputDTO)
 		return nil, apperrors.NewInvalidArgumentError(fmt.Sprintf("Invalid session id: %s", sessionID), nil).WithCause(err)
 	}
 
-	s, err := uc.sessionRepo.GetByID(ctx, sessionUUID)
+	s, err := uc.cachedSessionRepo.GetByID(ctx, sessionUUID)
 	if err != nil {
 		return nil, apperrors.FromDomainError(err)
 	}
